@@ -27,11 +27,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public static User from(CreateUserDto userDto) {
+    public static User from(CreateUserDto userDto, String encryptedPassword) {
         return User.builder()
                 .email(userDto.getEmail())
                 .username(userDto.getUsername())
-                .password(userDto.getPassword())
+                .password(encryptedPassword)
                 .build();
     }
 }
