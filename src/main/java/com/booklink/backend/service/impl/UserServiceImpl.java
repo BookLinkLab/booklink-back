@@ -5,7 +5,6 @@ import com.booklink.backend.dto.UserDto;
 import com.booklink.backend.dto.UserResponseDto;
 import com.booklink.backend.dto.UserWithPasswordDto;
 import com.booklink.backend.exception.NotFoundException;
-import com.booklink.backend.exception.SpecialCharacterException;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.UserRepository;
 import com.booklink.backend.service.UserService;
@@ -27,8 +26,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto registerUser(CreateUserDto userDto) {
-        if (userDto.getPassword().contains("$"))
-            throw new SpecialCharacterException("Special characters not allowed here");
         String encryptedPassword = this.passwordEncoder.encode(userDto.getPassword());
         User userToSave = User.from(userDto, encryptedPassword);
         User savedUser = this.userRepository.save(userToSave);
