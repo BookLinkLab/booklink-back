@@ -8,9 +8,7 @@ import java.util.List;
 
 public interface UserService {
     UserDto registerUser(CreateUserDto userDto);
-
-
+    UserResponseDto getUserByEmail(String email);
     UserResponseDto getUserWithPassword(Long id);
-
     List<UserResponseDto> getAllUsers();
 }
