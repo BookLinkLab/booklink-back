@@ -33,6 +33,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDto getUserByEmail(String email) {
+        Optional<User> userOptional = this.userRepository.findByEmail(email);
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(email)));
+        return UserResponseDto.builder().userDto(UserDto.from(user)).build();
+    }
+
+    @Override
     public UserResponseDto getUserWithPassword(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
