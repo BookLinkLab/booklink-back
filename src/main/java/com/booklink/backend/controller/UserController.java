@@ -31,9 +31,9 @@ public class UserController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
-        try{
-            return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(userDto));
-        } catch (DataIntegrityViolationException ex){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.registerUser(userDto));
+        } catch (DataIntegrityViolationException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or email already exists");
         }
     }
