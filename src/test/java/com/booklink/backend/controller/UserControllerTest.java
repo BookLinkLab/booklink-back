@@ -49,7 +49,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void existingEmail() {
+    void existingEmailException() {
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("newuser")
                 .email("user@email.com")
@@ -62,7 +62,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void invalidCreateUserDto(){
+    void invalidCharacterException(){
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("d#")
                 .email("newuser")

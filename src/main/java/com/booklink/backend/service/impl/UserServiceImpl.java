@@ -40,13 +40,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto getUserWithPassword(Long id) {
-        Optional<User> userOptional = this.userRepository.findById(id);
-        User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
-        return UserResponseDto.builder().userWithPasswordDto(UserWithPasswordDto.from(user)).build();
-    }
-
-    @Override
     public List<UserResponseDto> getAllUsers() {
         List<User> users = this.userRepository.findAll();
         return users.stream().map(UserResponseDto::from).toList();

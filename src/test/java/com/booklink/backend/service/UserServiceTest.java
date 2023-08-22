@@ -74,6 +74,4 @@ public class UserServiceTest {
         assertThrows(DataIntegrityViolationException.class, () -> userService.registerUser(existingEmailDto));
         assertEquals(1, userService.getAllUsers().size());
     }
-
-
 }
