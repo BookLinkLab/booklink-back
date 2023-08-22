@@ -1,4 +1,4 @@
-package com.booklink.backend;
+package com.booklink.backend.config;
 
 import com.booklink.backend.service.impl.UserDetailsServiceImpl;
 import lombok.NonNull;
@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @org.springframework.context.annotation.Configuration
 @EnableWebSecurity
@@ -27,7 +28,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authz -> authz
                         .anyRequest()
                         .permitAll())
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new CustomJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
