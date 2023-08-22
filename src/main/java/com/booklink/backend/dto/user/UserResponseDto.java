@@ -1,4 +1,4 @@
-package com.booklink.backend.dto;
+package com.booklink.backend.dto.user;
 
 import com.booklink.backend.model.User;
 import com.fasterxml.jackson.annotation.JsonInclude;

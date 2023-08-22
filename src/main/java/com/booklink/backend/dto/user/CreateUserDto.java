@@ -1,4 +1,4 @@
-package com.booklink.backend.dto;
+package com.booklink.backend.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -24,5 +24,4 @@ public class CreateUserDto {
     @NotBlank(message = "Password must not be blank")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Password must contain only letters and numbers")
     private String password;
-
 }
