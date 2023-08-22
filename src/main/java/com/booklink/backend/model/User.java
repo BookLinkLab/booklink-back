@@ -1,6 +1,6 @@
 package com.booklink.backend.model;
 
-import com.booklink.backend.dto.CreateUserDto;
+import com.booklink.backend.dto.user.CreateUserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

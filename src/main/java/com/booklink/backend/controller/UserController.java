@@ -1,8 +1,7 @@
 package com.booklink.backend.controller;
 
-import com.booklink.backend.dto.CreateUserDto;
-import com.booklink.backend.dto.UserResponseDto;
-import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.dto.user.UserResponseDto;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -37,17 +36,6 @@ public class UserController {
         } catch (DataIntegrityViolationException ex){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or email already exists");
         }
-    }
-
-    @GetMapping("/{id}")
-    public UserResponseDto getUser(@PathVariable Long id, @RequestParam String template) {
-        //secured
-        if (template.equals("full")) {
-            return this.userService.getUserWithPassword(id);
-        } else if (template.equals("basic")) {
-            return this.userService.getUser(id);
-        }
-        throw new NotFoundException("Template %s not found".formatted(id));
     }
 
     @GetMapping()
