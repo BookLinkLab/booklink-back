@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getUserByEmail(String email) {
         Optional<User> userOptional = this.userRepository.findByEmail(email);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(email)));
-        return UserResponseDto.builder().userDto(UserDto.from(user)).build();
+        return UserResponseDto.builder().userWithPasswordDto(UserWithPasswordDto.from(user)).build();
     }
 
     @Override
