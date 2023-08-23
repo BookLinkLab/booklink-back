@@ -73,4 +73,12 @@ public class UserControllerTest {
         );
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+
+    @Test
+    void getUserById(){
+        ResponseEntity<UserDto> response = restTemplate.exchange(
+                baseUrl + "/1", HttpMethod.GET, null, UserDto.class
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }

@@ -3,6 +3,7 @@ package com.booklink.backend.service;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserResponseDto;
+import com.booklink.backend.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -41,6 +42,10 @@ public class UserServiceTest {
 
         UserDto myUser = allUsers.get(0).getUserDto();
         assertEquals(myUser, savedUser);
+
+
+        UserDto userDto = userService.getUserById(savedUser.getId());
+        assertEquals(savedUser, userDto);
     }
 
     @Test
@@ -73,5 +78,10 @@ public class UserServiceTest {
 
         assertThrows(DataIntegrityViolationException.class, () -> userService.registerUser(existingEmailDto));
         assertEquals(1, userService.getAllUsers().size());
+    }
+
+    @Test
+    void exceptionTest(){
+        assertThrows(NotFoundException.class, () -> userService.getUserById(1L));
     }
 }
