@@ -3,6 +3,10 @@ package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
+import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.dto.user.UserDto;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,6 +15,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,18 +27,81 @@ public class AuthControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+
     @Test
-    void login() {
+    void notFoundLogin() {
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .email("email@gmail.com")
                 .password("password")
                 .build();
 
-        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
-                "/auth", loginRequestDto, LoginResponseDto.class
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth", loginRequestDto, String.class
         );
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void wrongPasswordLogin() {
+
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("user")
+                .email("email@gmail.com")
+                .password("password")
+                .build();
+
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
+                "/user", createUserDto, UserDto.class);
+
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email("email@gmail.com")
+                .password("password1")
+                .build();
+
+        ResponseEntity<String> response1 = restTemplate.postForEntity(
+                "/auth", loginRequestDto, String.class
+        );
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response1.getStatusCode());
+    }
+
+    @Test
+    void invalidLogin() {
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email("email")
+                .password("password")
+                .build();
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth", loginRequestDto, String.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    }
+
+    @Test
+    void validLogin() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("user")
+                .email("email@gmail.com")
+                .password("password")
+                .build();
+
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
+                "/user", createUserDto, UserDto.class);
+
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email("email@gmail.com")
+                .password("password")
+                .build();
+
+        ResponseEntity<String> response1 = restTemplate.postForEntity(
+                "/auth", loginRequestDto, String.class
+        );
+
+        assertEquals(HttpStatus.OK, response1.getStatusCode());
     }
 
 }
