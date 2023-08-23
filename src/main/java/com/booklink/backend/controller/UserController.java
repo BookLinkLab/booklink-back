@@ -1,7 +1,9 @@
 package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.dto.user.UpdateUserDTO;
 import com.booklink.backend.dto.user.UserResponseDto;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,4 +49,19 @@ public class UserController {
     public List<UserResponseDto> getAllUsers() {
         return this.userService.getAllUsers();
     }
+
+    @PutMapping("{id}")
+    public void updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+        ResponseEntity.badRequest();
+        try {
+            this.userService.updateUser(id, updateUserDTO);
+            ResponseEntity.ok();
+        }
+        catch (NotFoundException ex){
+            ResponseEntity.notFound();
+        }
+
+    }
+
+
 }
