@@ -1,4 +1,4 @@
-package com.booklink.backend;
+package com.booklink.backend.config;
 
 import com.booklink.backend.service.impl.UserDetailsServiceImpl;
 import lombok.NonNull;
