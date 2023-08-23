@@ -44,4 +44,11 @@ public class UserServiceImpl implements UserService {
         List<User> users = this.userRepository.findAll();
         return users.stream().map(UserResponseDto::from).toList();
     }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(id)));
+        return UserDto.from(user);
+    }
 }

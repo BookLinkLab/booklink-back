@@ -1,6 +1,7 @@
 package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserResponseDto;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -38,7 +39,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("{email}")
+    @GetMapping("/email/{email}")
     public UserResponseDto getUserByEmail(@PathVariable String email) {
         return this.userService.getUserByEmail(email);
     }
@@ -46,5 +47,10 @@ public class UserController {
     @GetMapping()
     public List<UserResponseDto> getAllUsers() {
         return this.userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserProfile(@PathVariable Long id) {
+        return ResponseEntity.ok(this.userService.getUserById(id));
     }
 }

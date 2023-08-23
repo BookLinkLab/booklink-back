@@ -10,4 +10,5 @@ public interface UserService {
     UserDto registerUser(CreateUserDto userDto);
     UserResponseDto getUserByEmail(String email);
     List<UserResponseDto> getAllUsers();
+    UserDto getUserById(Long id);
 }
