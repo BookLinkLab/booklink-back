@@ -2,7 +2,9 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
-import com.booklink.backend.dto.UserDto;
+import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserResponseDto;
+import com.booklink.backend.dto.user.UserWithPasswordDto;
 import com.booklink.backend.exception.WrongCredentialsException;
 import com.booklink.backend.model.User;
 import com.booklink.backend.service.AuthService;
@@ -28,9 +30,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userService.getUserByEmail(loginRequestDto.getEmail());
+        UserWithPasswordDto user = userService.getUserByEmail(loginRequestDto.getEmail()).getUserWithPasswordDto();
         if (passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
-            UserDto userDto = UserDto.from(user);
+            UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getEmail());
             String token = jwtUtil.generateToken(userDto.getEmail());
             return LoginResponseDto.builder().user(userDto).token(token).build();
         }

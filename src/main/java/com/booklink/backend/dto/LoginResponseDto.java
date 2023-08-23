@@ -1,5 +1,6 @@
 package com.booklink.backend.dto;
 
+import com.booklink.backend.dto.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
