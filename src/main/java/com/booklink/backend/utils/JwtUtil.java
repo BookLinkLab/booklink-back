@@ -1,6 +1,8 @@
 package com.booklink.backend.utils;
 
+
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -33,9 +35,9 @@ public class JwtUtil {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
-            throw new BadCredentialsException("INVALID_CREDENTIALS", ex);
+            return false;
         } catch (ExpiredJwtException ex) {
-            throw ex;
+            return false;
         }
     }
 

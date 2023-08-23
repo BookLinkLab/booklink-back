@@ -18,18 +18,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final CustomJwtAuthenticationFilter CustomJwtAuthenticationFilter;
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, com.booklink.backend.config.CustomJwtAuthenticationFilter customJwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        CustomJwtAuthenticationFilter = customJwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authz -> authz
-                        .anyRequest()
-                        .permitAll())
+        http
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new CustomJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .cors(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/auth/**","/user/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(e -> e.authenticationEntryPoint(this.jwtAuthenticationEntryPoint))
+                .addFilterBefore(CustomJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

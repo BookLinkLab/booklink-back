@@ -7,8 +7,10 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class LoginRequestDto {
+
     @Email
     @NotNull
     private String email;
