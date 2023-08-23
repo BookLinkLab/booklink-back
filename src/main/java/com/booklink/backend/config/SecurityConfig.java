@@ -2,6 +2,7 @@ package com.booklink.backend.config;
 
 import com.booklink.backend.service.impl.UserDetailsServiceImpl;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,6 +22,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomJwtAuthenticationFilter CustomJwtAuthenticationFilter;
 
+    @Autowired
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, com.booklink.backend.config.CustomJwtAuthenticationFilter customJwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
@@ -33,10 +35,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/**","/user/**").permitAll()
+                        .requestMatchers("/auth", "/user").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(e -> e.authenticationEntryPoint(this.jwtAuthenticationEntryPoint))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(this.jwtAuthenticationEntryPoint)
+                )
                 .addFilterBefore(CustomJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
