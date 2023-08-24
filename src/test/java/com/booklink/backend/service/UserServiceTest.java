@@ -68,10 +68,7 @@ public class UserServiceTest {
                 .password("password")
                 .build();
         assertThrows(DataIntegrityViolationException.class, () -> userService.registerUser(existingEmailDto));
-    }
 
-    @Test
-    void exceptionTest(){
-        assertThrows(NotFoundException.class, () -> userService.getUserById(1L));
+        assertThrows(NotFoundException.class, () -> userService.getUserById(0L));
     }
 }
