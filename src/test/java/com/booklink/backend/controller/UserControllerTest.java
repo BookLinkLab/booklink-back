@@ -1,25 +1,29 @@
 package com.booklink.backend.controller;
 
+import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.dto.user.UserDto;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.booklink.backend.dto.user.UpdateUserDTO;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.util.Assert;
 
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,16 +35,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
+
+
     @Autowired
     private UserRepository userRepository;
 
     private final String baseUrl = "/user";
 
-
-
-
     @BeforeEach
     void setup() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("user")
+                .email("user@email.com")
+                .password("password")
+                .build();
+        restTemplate.postForEntity(baseUrl, createUserDto, UserDto.class);
+
         User user = User.builder()
                 .username("Facundo")
                 .email("facundo@gmail.com")
@@ -48,6 +58,96 @@ public class UserControllerTest {
                 .build();
 
         userRepository.save(user);
+    }
+
+    @Test
+    void registerUser() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("newUser")
+                .email("newUser@email.com")
+                .password("password")
+                .build();
+
+        ResponseEntity<UserDto> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), UserDto.class
+        );
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        UserDto responseUser = UserDto.builder()
+                .id(2L)
+                .username("newUser")
+                .email("newUser@email.com")
+                .build();
+        assertEquals(response.getBody(), responseUser);
+    }
+
+    @Test
+    void getAllUsers() {
+        ResponseEntity<List<UserDto>> response = this.restTemplate.exchange(
+                this.baseUrl, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+                }
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void existingEmailException() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("newUser")
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
+        );
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void existingUsernameException() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("user")
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
+        );
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void invalidUsernameException() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("d#")
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
+        );
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void invalidPasswordException() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("newUser")
+                .email("user@email.com")
+                .password("$")
+                .build();
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
+        );
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void getUserById(){
+        ResponseEntity<UserDto> response = restTemplate.exchange(
+                baseUrl + "/1", HttpMethod.GET, null, UserDto.class
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
 
@@ -88,7 +188,7 @@ public class UserControllerTest {
         ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO,String.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
-        }
+    }
 
     @Test
     void invalidInput_400_Test() {
@@ -130,8 +230,6 @@ public class UserControllerTest {
                 baseUrl + "/" + userId, HttpMethod.PUT, new HttpEntity<>(updateUserDTO), responseType
         );
     }
-
-
 
 
 

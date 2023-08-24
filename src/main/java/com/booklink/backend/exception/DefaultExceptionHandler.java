@@ -1,6 +1,8 @@
 package com.booklink.backend.exception;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +15,13 @@ import java.util.Map;
 @ControllerAdvice
 public class DefaultExceptionHandler {
 
+    Logger logger = LoggerFactory.getLogger(DefaultExceptionHandler.class);
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<Object> handleEntityNotFound(NotFoundException exception){
+        logger.info(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
@@ -25,5 +34,4 @@ public class DefaultExceptionHandler {
         });
         return ResponseEntity.badRequest().body(errors);
     }
-
 }
