@@ -50,6 +50,13 @@ public class UserControllerTest {
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), UserDto.class
         );
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        UserDto responseUser = UserDto.builder()
+                .id(2L)
+                .username("newUser")
+                .email("newUser@email.com")
+                .build();
+        assertEquals(response.getBody(), responseUser);
     }
 
     @Test
