@@ -58,5 +58,6 @@ public class UserServiceImpl implements UserService {
         user.setUsername(updateUserDTO.getUsername());
         String encryptedPassword = this.passwordEncoder.encode(updateUserDTO.getPassword());
         user.setPassword(encryptedPassword);
+        userRepository.save(user);
     }
 }

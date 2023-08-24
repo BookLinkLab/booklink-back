@@ -15,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.Assert;
 
@@ -32,7 +33,6 @@ public class UserControllerTest {
     private TestRestTemplate restTemplate;
     @Autowired
     private UserRepository userRepository;
-
 
     private final String baseUrl = "/user";
 
@@ -63,6 +63,7 @@ public class UserControllerTest {
                 .password("abc")
                 .build();
 
+
         ResponseEntity<User> response = UpdateRequest(userIdToUpdate, updateUserDTO,User.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -70,7 +71,6 @@ public class UserControllerTest {
         User user = userOpt.orElseThrow(() -> new NotFoundException("User %d not found".formatted(userIdToUpdate)));
         assertEquals("Joaquin", user.getUsername());
         assertEquals("joaquin@gmail.com", user.getEmail());
-        assertEquals("abc", user.getPassword());
 
     }
 
