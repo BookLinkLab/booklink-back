@@ -3,7 +3,6 @@ package com.booklink.backend.controller;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UpdateUserDTO;
-import com.booklink.backend.dto.user.UserResponseDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -39,12 +38,7 @@ public class UserController {
 
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
-        try {
-            this.userService.updateUser(id, updateUserDTO);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+            return this.userService.updateUser(id, updateUserDTO);
+            }
 }
