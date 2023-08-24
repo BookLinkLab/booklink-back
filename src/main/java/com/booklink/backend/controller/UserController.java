@@ -29,4 +29,9 @@ public class UserController {
     public List<UserDto> getAllUsers() {
         return this.userService.getAllUsers();
     }
+
+    @GetMapping("/{id}")
+    public UserDto getUserProfile(@PathVariable Long id) {
+        return this.userService.getUserById(id);
+    }
 }
