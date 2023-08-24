@@ -4,6 +4,8 @@ import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,9 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto registerUser(@Valid @RequestBody CreateUserDto userDto) {
-        return this.userService.registerUser(userDto);
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody CreateUserDto createUserDto) {
+        UserDto userDto = this.userService.registerUser(createUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
     @GetMapping()
