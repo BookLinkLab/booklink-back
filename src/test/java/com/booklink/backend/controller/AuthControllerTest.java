@@ -2,6 +2,7 @@ package com.booklink.backend.controller;
 
 
 import com.booklink.backend.dto.LoginRequestDto;
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import org.junit.jupiter.api.Test;
@@ -9,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.annotation.DirtiesContext;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -41,6 +43,9 @@ public class AuthControllerTest {
 
     @Test
     void wrongPasswordLogin() {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setOutputStreaming(false);
+        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
 
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("user")
@@ -65,6 +70,11 @@ public class AuthControllerTest {
 
     @Test
     void invalidLogin() {
+
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setOutputStreaming(false);
+        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .email("email")
                 .password("password")
@@ -99,6 +109,39 @@ public class AuthControllerTest {
         );
 
         assertEquals(HttpStatus.OK, response1.getStatusCode());
+        assertEquals(response.getBody().getEmail(), createUserDto.getEmail());
+    }
+
+
+    @Test
+    void userProfileWithCredentials(){
+
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("user")
+                .email("user@email.com")
+                .password("password")
+                .build();
+
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
+                "/user", createUserDto, UserDto.class);
+
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email("user@email.com")
+                .password("password")
+                .build();
+
+        LoginResponseDto loginResponseDto = restTemplate.exchange(
+                "/auth", HttpMethod.POST, new HttpEntity<>(loginRequestDto), LoginResponseDto.class
+        ).getBody();
+
+        assertNotNull(loginResponseDto);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponseDto.getToken());
+
+        ResponseEntity<UserDto> response2 = restTemplate.exchange(
+                "/user/user@email.com", HttpMethod.GET, new HttpEntity<>(headers), UserDto.class
+        );
+        assertEquals(HttpStatus.OK, response2.getStatusCode());
     }
 
 }

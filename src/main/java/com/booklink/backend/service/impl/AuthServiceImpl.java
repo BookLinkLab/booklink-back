@@ -30,14 +30,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        UserWithPasswordDto user = userService.getUserByEmail(loginRequestDto.getEmail()).getUserWithPasswordDto();
-        if (passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
-            UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getEmail());
-            String token = jwtUtil.generateToken(userDto.getEmail());
-            return LoginResponseDto.builder().user(userDto).token(token).build();
-        }
-        else {
-            throw new WrongCredentialsException("Wrong credentials");
-        }
+        UserDto userDto = this.userService.authorizedGetByEmail(loginRequestDto);
+        String token = jwtUtil.generateToken(userDto.getUsername());
+        return LoginResponseDto.builder().user(userDto).token(token).build();
     }
 }

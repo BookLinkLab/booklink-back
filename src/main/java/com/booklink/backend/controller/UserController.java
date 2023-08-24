@@ -40,7 +40,7 @@ public class UserController {
 
     @GetMapping("{email}")
     public UserResponseDto getUserByEmail(@PathVariable String email) {
-        return this.userService.getUserByEmail(email);
+        return null;
     }
 
     @GetMapping()
