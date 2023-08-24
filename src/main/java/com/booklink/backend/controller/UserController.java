@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -51,17 +50,15 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public void updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
-        ResponseEntity.badRequest();
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
         try {
             this.userService.updateUser(id, updateUserDTO);
-            ResponseEntity.ok();
+            return ResponseEntity.ok().build();
         }
-        catch (NotFoundException ex){
-            ResponseEntity.notFound();
+        catch (NotFoundException exception){
+            return ResponseEntity.notFound().build();
         }
-
-    }
+     }
 
 
 }

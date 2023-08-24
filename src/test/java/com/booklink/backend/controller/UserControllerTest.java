@@ -20,6 +20,8 @@ import org.springframework.util.Assert;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
@@ -30,6 +32,7 @@ public class UserControllerTest {
     private TestRestTemplate restTemplate;
     @Autowired
     private UserRepository userRepository;
+
 
     private final String baseUrl = "/user";
 
@@ -43,12 +46,13 @@ public class UserControllerTest {
                 .email("facundo@gmail.com")
                 .password("123")
                 .build();
-        restTemplate.postForEntity(baseUrl, user, User.class);
+
+        userRepository.save(user);
     }
 
 
     @Test
-    void updateUser(){
+    void updateUserTest(){
 
         Long userIdToUpdate = 1L;
 
@@ -59,17 +63,77 @@ public class UserControllerTest {
                 .password("abc")
                 .build();
 
-        ResponseEntity<User> response = restTemplate.exchange(
-                baseUrl + "/1", HttpMethod.PUT, new HttpEntity<>(updateUserDTO), User.class
-        );
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<User> response = UpdateRequest(userIdToUpdate, updateUserDTO,User.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Optional<User> userOpt = userRepository.findById(userIdToUpdate);
         User user = userOpt.orElseThrow(() -> new NotFoundException("User %d not found".formatted(userIdToUpdate)));
-        Assertions.assertEquals("Joaquin", user.getUsername());
-        Assertions.assertEquals("joaquin@gmail.com", user.getEmail());
-        Assertions.assertEquals("abc", user.getPassword());
+        assertEquals("Joaquin", user.getUsername());
+        assertEquals("joaquin@gmail.com", user.getEmail());
+        assertEquals("abc", user.getPassword());
 
     }
+
+    @Test
+    void notFoundUser_404_Test(){
+        UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
+                .username("Joaquin")
+                .email("joaquin@gmail.com")
+                .password("abc")
+                .build();
+
+        Long userId = 80L;
+
+
+        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO,String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        }
+
+    @Test
+    void invalidInput_400_Test() {
+        Long userId = 1L;
+
+        UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
+                .username("Jo")
+                .email("joaquin@gmail.com")
+                .password("abc")
+                .build();
+
+        UpdateUserDTO updateUserDTO1 = UpdateUserDTO.builder()
+                .username("Jo")
+                .email("joaquin")
+                .password("abc")
+                .build();
+
+        UpdateUserDTO updateUserDTO2 = UpdateUserDTO.builder()
+                .username("Joaquin*#")
+                .email("joaquin@gmail.com")
+                .password("abc")
+                .build();
+
+
+        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO,String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        ResponseEntity<String> response1 = UpdateRequest(userId, updateUserDTO1,String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response1.getStatusCode());
+
+        ResponseEntity<String> response2 = UpdateRequest(userId, updateUserDTO2,String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
+
+    }
+
+
+    private <T> ResponseEntity<T> UpdateRequest(Long userId, UpdateUserDTO updateUserDTO, Class<T> responseType) {
+        return restTemplate.exchange(
+                baseUrl + "/" + userId, HttpMethod.PUT, new HttpEntity<>(updateUserDTO), responseType
+        );
+    }
+
+
+
+
+
 
 }
