@@ -50,6 +50,13 @@ public class UserControllerTest {
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), UserDto.class
         );
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        UserDto responseUser = UserDto.builder()
+                .id(2L)
+                .username("newUser")
+                .email("newUser@email.com")
+                .build();
+        assertEquals(response.getBody(), responseUser);
     }
 
     @Test
@@ -71,7 +78,20 @@ public class UserControllerTest {
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
         );
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void existingUsernameException() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("user")
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
+        );
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
     @Test
