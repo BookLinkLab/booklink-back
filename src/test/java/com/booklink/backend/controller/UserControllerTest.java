@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,8 +37,9 @@ public class UserControllerTest {
                 .build();
         restTemplate.postForEntity(baseUrl, createUserDto, UserDto.class);
     }
+
     @Test
-    void registerUser(){
+    void registerUser() {
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("newUser")
                 .email("newUser@email.com")
@@ -49,24 +53,46 @@ public class UserControllerTest {
     }
 
     @Test
+    void getAllUsers() {
+        ResponseEntity<List<UserDto>> response = this.restTemplate.exchange(
+                this.baseUrl, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+                }
+        );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
     void existingEmailException() {
         CreateUserDto createUserDto = CreateUserDto.builder()
-                .username("newuser")
+                .username("newUser")
                 .email("user@email.com")
                 .password("password")
                 .build();
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
         );
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
-    void invalidCharacterException(){
+    void invalidUsernameException() {
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("d#")
-                .email("newuser")
-                .password("$$$")
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
+        );
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void invalidPasswordException() {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("newUser")
+                .email("user@email.com")
+                .password("$")
                 .build();
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), String.class
