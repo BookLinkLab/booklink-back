@@ -35,7 +35,7 @@ public class Forum {
     @ManyToMany(cascade = CascadeType.DETACH)
     private List<User> member_list;
 
-    //TODO handle member_list dto to entity
+    //TODO handle member_list [ List<UserDto> -> List<User> ]
     public static Forum from(CreateForumDto forumDto) {
         return Forum.builder()
                 .id(forumDto.getUserId())
@@ -43,7 +43,7 @@ public class Forum {
                 .user_id(forumDto.getUserId())
                 .description(forumDto.getDescription())
                 .img(forumDto.getImg())
-                //.member_list(forumDto.getMembers())
+                //.member_list(forumDto.getMembers().stream().map(User::fromDto).toList())
                 .build();
     }
 }

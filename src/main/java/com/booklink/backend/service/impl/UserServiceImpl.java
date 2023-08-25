@@ -42,4 +42,10 @@ public class UserServiceImpl implements UserService {
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(id)));
         return UserDto.from(user);
     }
+
+    @Override
+    public List<UserDto> getAllUsersById(List<Long> usersId) {
+        List<User> users = userRepository.findAllById(usersId);
+        return users.stream().map(UserDto::from).toList();
+    }
 }

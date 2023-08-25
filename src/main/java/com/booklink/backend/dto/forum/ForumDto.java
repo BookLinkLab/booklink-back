@@ -16,7 +16,7 @@ import java.util.List;
 public class ForumDto {
     private Long id;
     private String name;
-    private UserDto user;
+    private Long userId;
     private String description;
     private String img;
     private List<UserDto> memberList;
@@ -25,7 +25,7 @@ public class ForumDto {
         return ForumDto.builder()
                 .id(forum.getId())
                 .name(forum.getName())
-                .user(UserDto.from(forum.getUser()))
+                .userId(forum.getUser_id())
                 .description(forum.getDescription())
                 .img(forum.getImg())
                 .memberList(forum.getMember_list().stream().map(UserDto::from).toList())

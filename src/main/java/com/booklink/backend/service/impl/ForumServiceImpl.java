@@ -2,10 +2,13 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -20,9 +23,16 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
     @Override
     public ForumDto createForum(CreateForumDto forumDto) {
-        userService.getUserById(forumDto.getUserId());
+        UserDto forumCreator = userService.getUserById(forumDto.getUserId());
+        List<UserDto> members = userService.getAllUsersById(forumDto.getMembers().stream().map(UserDto::getId).toList());
         Forum forumToSave = Forum.from(forumDto);
         Forum savedForum = forumRepository.save(forumToSave);
         return ForumDto.from(savedForum);
+    }
+
+    @Override
+    public List<ForumDto> getAllForums() {
+        List<Forum> forums = forumRepository.findAll();
+        return forums.stream().map(ForumDto::from).toList();
     }
 }
