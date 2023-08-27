@@ -13,6 +13,7 @@ services:
         DB_NAME: ${POSTGRES_DB}
         DB_HOST: postgres
         DB_PORT: 5432
+        JWT_SECRET: ${JWT_SECRET}
       env_file:
         - .env
       depends_on:
