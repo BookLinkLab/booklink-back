@@ -3,8 +3,6 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.UserDto;
-import com.booklink.backend.dto.user.UserResponseDto;
-import com.booklink.backend.dto.user.UserWithPasswordDto;
 import com.booklink.backend.exception.WrongCredentialsException;
 import com.booklink.backend.model.User;
 import com.booklink.backend.service.AuthService;
