@@ -3,8 +3,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
-import com.booklink.backend.dto.user.UserResponseDto;
-import com.booklink.backend.dto.user.UserWithPasswordDto;
+import com.booklink.backend.dto.user.*;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.WrongCredentialsException;
 import com.booklink.backend.model.User;
@@ -35,6 +34,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getAllUsers() {
+        List<User> users = this.userRepository.findAll();
+        return users.stream().map(UserDto::from).toList();
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(id)));
+        return UserDto.from(user);
+    }
+
+    @Override
+    public UserDto updateUser(long id, UpdateUserDTO updateUserDTO) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
+        user.setEmail(updateUserDTO.getEmail());
+        user.setUsername(updateUserDTO.getUsername());
+        String encryptedPassword = this.passwordEncoder.encode(updateUserDTO.getPassword());
+        user.setPassword(encryptedPassword);
+        return UserDto.from(userRepository.save(user));
+
+    }
+
+    @Override
     public UserDto authorizedGetByEmail(LoginRequestDto loginRequestDto) {
         Optional<User> userOptional = this.userRepository.findByEmail(loginRequestDto.getEmail());
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(loginRequestDto.getEmail())));
@@ -44,14 +68,4 @@ public class UserServiceImpl implements UserService {
         }
         return UserDto.from(user);
     }
-
-    @Override
-    public List<UserResponseDto> getAllUsers() {
-        List<User> users = this.userRepository.findAll();
-        return users.stream().map(UserResponseDto::from).toList();
-    }
-
-
-
-
 }

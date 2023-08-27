@@ -1,16 +1,14 @@
 package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.user.CreateUserDto;
-import com.booklink.backend.dto.user.UserResponseDto;
+import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UpdateUserDTO;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -23,28 +21,24 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registerUser(@Valid @RequestBody CreateUserDto userDto, BindingResult result) {
-        if (result.hasErrors()) {
-            StringBuilder errors = new StringBuilder();
-            for (ObjectError fieldError : result.getAllErrors()) {
-                errors.append(fieldError.getDefaultMessage()).append("\n");
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.registerUser(userDto));
-        } catch (DataIntegrityViolationException ex) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or email already exists");
-        }
-    }
-
-    @GetMapping("{email}")
-    public UserResponseDto getUserByEmail(@PathVariable String email) {
-        return null;
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody CreateUserDto createUserDto) {
+        UserDto userDto = this.userService.registerUser(createUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
     @GetMapping()
-    public List<UserResponseDto> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return this.userService.getAllUsers();
     }
+
+    @GetMapping("/{id}")
+    public UserDto getUserProfile(@PathVariable Long id) {
+        return this.userService.getUserById(id);
+    }
+
+
+    @PutMapping("{id}")
+    public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+            return this.userService.updateUser(id, updateUserDTO);
+            }
 }

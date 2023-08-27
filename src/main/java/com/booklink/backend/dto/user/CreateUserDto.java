@@ -22,6 +22,7 @@ public class CreateUserDto {
     private String email;
 
     @NotBlank(message = "Password must not be blank")
+    @Size(min = 8, max = 24, message = "Password must be between 8 and 24 characters")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Password must contain only letters and numbers")
     private String password;
 }
