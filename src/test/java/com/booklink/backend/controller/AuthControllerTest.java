@@ -2,7 +2,6 @@ package com.booklink.backend.controller;
 
 
 import com.booklink.backend.dto.LoginRequestDto;
-import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import org.junit.jupiter.api.Test;
@@ -11,13 +10,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.annotation.DirtiesContext;
 
 
 import static com.booklink.backend.utils.ControllerTestUtils.setOutputStreamingFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)

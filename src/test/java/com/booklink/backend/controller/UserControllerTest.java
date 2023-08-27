@@ -19,10 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
@@ -31,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -201,7 +198,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser
     void notFoundUser_404_Test(){
 
         setOutputStreamingFalse(restTemplate);
