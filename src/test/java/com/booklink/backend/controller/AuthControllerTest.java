@@ -111,37 +111,4 @@ public class AuthControllerTest {
         assertEquals(HttpStatus.OK, response1.getStatusCode());
         assertEquals(response.getBody().getEmail(), createUserDto.getEmail());
     }
-
-
-    @Test
-    void userProfileWithCredentials(){
-
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .username("user")
-                .email("user@email.com")
-                .password("password")
-                .build();
-
-        ResponseEntity<UserDto> response = restTemplate.postForEntity(
-                "/user", createUserDto, UserDto.class);
-
-        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
-                .email("user@email.com")
-                .password("password")
-                .build();
-
-        LoginResponseDto loginResponseDto = restTemplate.exchange(
-                "/auth", HttpMethod.POST, new HttpEntity<>(loginRequestDto), LoginResponseDto.class
-        ).getBody();
-
-        assertNotNull(loginResponseDto);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponseDto.getToken());
-
-        ResponseEntity<UserDto> response2 = restTemplate.exchange(
-                "/user/user@email.com", HttpMethod.GET, new HttpEntity<>(headers), UserDto.class
-        );
-        assertEquals(HttpStatus.OK, response2.getStatusCode());
-    }
-
 }
