@@ -1,9 +1,11 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.*;
 import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.WrongCredentialsException;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.UserRepository;
 import com.booklink.backend.service.UserService;
@@ -54,5 +56,16 @@ public class UserServiceImpl implements UserService {
         user.setPassword(encryptedPassword);
         return UserDto.from(userRepository.save(user));
 
+    }
+
+    @Override
+    public UserDto authorizedGetByEmail(LoginRequestDto loginRequestDto) {
+        Optional<User> userOptional = this.userRepository.findByEmail(loginRequestDto.getEmail());
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(loginRequestDto.getEmail())));
+        boolean passwordMatches = this.passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
+        if (!passwordMatches) {
+            throw new WrongCredentialsException("Wrong credentials");
+        }
+        return UserDto.from(user);
     }
 }
