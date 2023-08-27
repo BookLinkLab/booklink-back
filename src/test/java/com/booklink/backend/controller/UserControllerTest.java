@@ -20,10 +20,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
+import static com.booklink.backend.utils.ControllerTestUtils.setOutputStreamingFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -164,11 +167,7 @@ public class UserControllerTest {
 
     @Test
     void getUserById(){
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setOutputStreaming(false);
-        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
-
-
+        setOutputStreamingFalse(restTemplate);
 
         ResponseEntity<UserDto> response = restTemplate.exchange(
                 baseUrl + "/1", HttpMethod.GET, null, UserDto.class
@@ -179,9 +178,7 @@ public class UserControllerTest {
 
     @Test
     void updateUserTest(){
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setOutputStreaming(false);
-        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+        setOutputStreamingFalse(restTemplate);
 
         Long userIdToUpdate = 1L;
 
@@ -204,11 +201,10 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     void notFoundUser_404_Test(){
 
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setOutputStreaming(false);
-        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+        setOutputStreamingFalse(restTemplate);
 
         UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
                 .username("Joaquin")
@@ -227,9 +223,7 @@ public class UserControllerTest {
     @Test
     void invalidInput_400_Test() {
 
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setOutputStreaming(false);
-        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+        setOutputStreamingFalse(restTemplate);
 
         Long userId = 1L;
 

@@ -15,6 +15,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.annotation.DirtiesContext;
 
 
+import static com.booklink.backend.utils.ControllerTestUtils.setOutputStreamingFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -43,9 +44,7 @@ public class AuthControllerTest {
 
     @Test
     void wrongPasswordLogin() {
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setOutputStreaming(false);
-        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+        setOutputStreamingFalse(restTemplate);
 
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("user")
@@ -71,9 +70,7 @@ public class AuthControllerTest {
     @Test
     void invalidLogin() {
 
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setOutputStreaming(false);
-        restTemplate.getRestTemplate().setRequestFactory(requestFactory);
+        setOutputStreamingFalse(restTemplate);
 
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .email("email")
@@ -111,4 +108,8 @@ public class AuthControllerTest {
         assertEquals(HttpStatus.OK, response1.getStatusCode());
         assertEquals(response.getBody().getEmail(), createUserDto.getEmail());
     }
+
+
 }
+
+
