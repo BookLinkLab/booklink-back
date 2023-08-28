@@ -2,6 +2,7 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,11 @@ public class UserServiceTest {
         assertEquals(myUser, savedUser);
 
 
-        UserDto userDto = userService.getUserById(savedUser.getId());
-        assertEquals(savedUser, userDto);
+        UserProfileDto userDto = userService.getUserById(savedUser.getId());
+        assertEquals(savedUser.getId(), userDto.getId());
+
+        assertTrue(userDto.getForumsCreated().isEmpty());
+        assertTrue(userDto.getForumsJoined().isEmpty());
     }
 
     @Test
