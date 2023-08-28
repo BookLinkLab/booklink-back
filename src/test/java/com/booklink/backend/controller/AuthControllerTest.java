@@ -2,6 +2,7 @@ package com.booklink.backend.controller;
 
 
 import com.booklink.backend.dto.LoginRequestDto;
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import org.junit.jupiter.api.Test;
@@ -90,8 +91,8 @@ public class AuthControllerTest {
                 .password("password")
                 .build();
 
-        ResponseEntity<UserDto> response = restTemplate.postForEntity(
-                "/user", createUserDto, UserDto.class);
+        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
+                "/user", createUserDto, LoginResponseDto.class);
 
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .email("email@gmail.com")
@@ -103,7 +104,7 @@ public class AuthControllerTest {
         );
 
         assertEquals(HttpStatus.OK, response1.getStatusCode());
-        assertEquals(response.getBody().getEmail(), createUserDto.getEmail());
+        assertEquals(response.getBody().getUser().getEmail(), createUserDto.getEmail());
     }
 
 
