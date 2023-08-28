@@ -60,9 +60,8 @@ public class ForumControllerTest {
     @Test
     void createForum() {
         CreateForumDto createForumDto = CreateForumDto.builder()
-                .name("Interstellar")
-                .userId(1L)
-                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
                 .build();
 
@@ -73,9 +72,9 @@ public class ForumControllerTest {
 
         ForumDto responseForum = ForumDto.builder()
                 .id(1L)
-                .name("Interstellar")
+                .name("Science of Interstellar")
                 .userId(1L)
-                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
                 .members(new ArrayList<>())
                 .build();
