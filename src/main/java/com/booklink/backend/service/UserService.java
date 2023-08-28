@@ -12,8 +12,6 @@ public interface UserService {
     UserDto registerUser(CreateUserDto userDto);
     UserProfileDto getUserById(Long id);
 
-    UserDto getUserById(Long id);
-
     UserDto getUserByUsername(String username);
 
     List<UserDto> getAllUsers();
