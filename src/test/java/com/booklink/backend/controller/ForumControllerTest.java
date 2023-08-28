@@ -59,7 +59,7 @@ public class ForumControllerTest {
                 .userId(1L)
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
-                .memberList(new ArrayList<>())
+                .members(new ArrayList<>())
                 .build();
         assertEquals(response.getBody(), responseForum);
     }
