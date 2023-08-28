@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +45,6 @@ public class ForumServiceTest {
                 .userId(forumCreator.getId())
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
-                .members(List.of(forumCreator))
                 .build();
         ForumDto savedForum = forumService.createForum(createForumDto);
         List<ForumDto> allForums = forumService.getAllForums();
@@ -64,7 +62,6 @@ public class ForumServiceTest {
                 .userId(-1L)
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
-                .members(null)
                 .build();
         assertThrows(NotFoundException.class, () -> forumService.createForum(createForumDto));
     }

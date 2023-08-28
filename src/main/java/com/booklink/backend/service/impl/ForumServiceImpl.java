@@ -2,7 +2,6 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
-import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.UserService;
@@ -23,8 +22,8 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
     @Override
     public ForumDto createForum(CreateForumDto forumDto) {
-        UserDto forumCreator = userService.getUserById(forumDto.getUserId());
-        List<UserDto> members = userService.getAllUsersById(forumDto.getMembers().stream().map(UserDto::getId).toList());
+        /* throws NotFoundException if user doesn't exist */
+        userService.getUserById(forumDto.getUserId());
         Forum forumToSave = Forum.from(forumDto);
         Forum savedForum = forumRepository.save(forumToSave);
         return ForumDto.from(savedForum);

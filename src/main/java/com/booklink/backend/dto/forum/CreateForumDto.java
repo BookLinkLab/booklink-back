@@ -1,6 +1,5 @@
 package com.booklink.backend.dto.forum;
 
-import com.booklink.backend.dto.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -8,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +25,4 @@ public class CreateForumDto {
 
     @NotBlank(message = "Image url must not be blank")
     private String img;
-
-    private List<UserDto> members;
 }

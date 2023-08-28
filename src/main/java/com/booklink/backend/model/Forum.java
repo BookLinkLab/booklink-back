@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,10 +33,9 @@ public class Forum {
 
     private String img;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<User> member_list;
 
-    //TODO handle member_list [ List<UserDto> -> List<User> ]
     public static Forum from(CreateForumDto forumDto) {
         return Forum.builder()
                 .id(forumDto.getUserId())
@@ -43,7 +43,7 @@ public class Forum {
                 .user_id(forumDto.getUserId())
                 .description(forumDto.getDescription())
                 .img(forumDto.getImg())
-                //.member_list(forumDto.getMembers().stream().map(User::fromDto).toList())
+                .member_list(new ArrayList<>())
                 .build();
     }
 }

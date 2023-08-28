@@ -9,6 +9,4 @@ public interface UserService {
     UserDto registerUser(CreateUserDto userDto);
     UserDto getUserById(Long id);
     List<UserDto> getAllUsers();
-
-    List<UserDto> getAllUsersById(List<Long> usersId);
 }
