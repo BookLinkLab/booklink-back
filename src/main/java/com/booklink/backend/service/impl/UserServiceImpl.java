@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long id) {
+    public UserProfileDto getUserById(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(id)));
-        return UserDto.from(user);
+        return UserProfileDto.from(user);
     }
 
     @Override
