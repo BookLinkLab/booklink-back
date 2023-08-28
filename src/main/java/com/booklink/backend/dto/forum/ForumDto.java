@@ -19,16 +19,16 @@ public class ForumDto {
     private Long userId;
     private String description;
     private String img;
-    private List<UserDto> memberList;
+    private List<UserDto> members;
 
     public static ForumDto from(Forum forum) {
         return ForumDto.builder()
                 .id(forum.getId())
                 .name(forum.getName())
-                .userId(forum.getUser_id())
+                .userId(forum.getUserId())
                 .description(forum.getDescription())
                 .img(forum.getImg())
-                .memberList(forum.getMember_list().stream().map(UserDto::from).toList())
+                .members(forum.getMembers().stream().map(UserDto::from).toList())
                 .build();
     }
 }

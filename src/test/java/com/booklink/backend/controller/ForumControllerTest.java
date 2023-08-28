@@ -1,68 +1,66 @@
-package com.booklink.backend.service;
+package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
-import com.booklink.backend.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-public class ForumServiceTest {
+public class ForumControllerTest {
     @Autowired
-    private ForumService forumService;
-    @Autowired
-    private UserService userService;
+    private TestRestTemplate restTemplate;
+
+    private final String baseUrl = "/forum";
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("user")
-                .email("user@mail.com")
+                .email("user@email.com")
                 .password("password")
                 .build();
-        userService.registerUser(createUserDto);
+        restTemplate.postForEntity("/user", createUserDto, UserDto.class);
     }
 
     @Test
-    void happyPathTest() {
-        UserDto forumCreator = userService.getAllUsers().get(0);
-        assertTrue(forumService.getAllForums().isEmpty());
-
+    void createForum() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
-                .userId(forumCreator.getId())
+                .userId(1L)
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
                 .build();
-        ForumDto savedForum = forumService.createForum(createForumDto);
-        List<ForumDto> allForums = forumService.getAllForums();
-        assertFalse(allForums.isEmpty());
-        assertEquals(1, allForums.size());
 
-        ForumDto myForum = allForums.get(0);
-        assertEquals(myForum, savedForum);
-    }
+        ResponseEntity<ForumDto> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createForumDto), ForumDto.class
+        );
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-    @Test
-    void exceptionTest() {
-        CreateForumDto createForumDto = CreateForumDto.builder()
+        ForumDto responseForum = ForumDto.builder()
+                .id(1L)
                 .name("Interstellar")
-                .userId(-1L)
-                .description("Welcome to the forum dedicated to the movie Interstellar!")
+                .userId(1L)
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .members(new ArrayList<>())
                 .build();
-        assertThrows(NotFoundException.class, () -> forumService.createForum(createForumDto));
+        assertEquals(response.getBody(), responseForum);
     }
 }
