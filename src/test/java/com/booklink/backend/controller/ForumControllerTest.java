@@ -1,5 +1,7 @@
 package com.booklink.backend.controller;
 
+import com.booklink.backend.dto.LoginRequestDto;
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.CreateUserDto;
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,6 +40,21 @@ public class ForumControllerTest {
                 .password("password")
                 .build();
         restTemplate.postForEntity("/user", createUserDto, UserDto.class);
+
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
+                "/auth", loginRequestDto, LoginResponseDto.class
+        );
+        String token = response.getBody().getToken();
+        restTemplate.getRestTemplate().setInterceptors(
+                List.of((request, body, execution) -> {
+                    request.getHeaders().add("Authorization", "Bearer " + token);
+                    return execution.execute(request, body);
+                })
+        );
     }
 
     @Test
