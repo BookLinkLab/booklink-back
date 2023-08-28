@@ -29,7 +29,6 @@ public class InitializationConfig implements CommandLineRunner {
     }
 
     private void loadUsers(){
-        User usuario1 = User.builder().username("Facundo").email("facu@gmail.com").password("1234").build();
         User usuario2 = User.builder().username("Tomas").email("tomas@gmail.com").password("to140799").build();
         User usuario3 = User.builder().username("juancho1").email("juan@hotmail.com").password("puc3tmm").build();
         User usuario4 = User.builder().username("FerLopez").email("Lopezf@gmail.com").password("50tru1b").build();
@@ -38,7 +37,6 @@ public class InitializationConfig implements CommandLineRunner {
         User usuario8 = User.builder().username("Vir Tapia").email("viru@gmail.com").password("vel14for").build();
         User usuario9 = User.builder().username("Rubenbarra").email("rubenBarra@gmail.com").password("ru123").build();
         User usuario10 = User.builder().username("darioPereira").email("pereira.dario@gmail.com").password("lhi1769").build();
-        userRepository.save(usuario1);
         userRepository.save(usuario2);
         userRepository.save(usuario3);
         userRepository.save(usuario4);
