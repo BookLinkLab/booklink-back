@@ -36,11 +36,10 @@ public class Forum {
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<User> members;
 
-    public static Forum from(CreateForumDto forumDto) {
+    public static Forum from(CreateForumDto forumDto, Long userId) {
         return Forum.builder()
-                .id(forumDto.getUserId())
                 .name(forumDto.getName())
-                .userId(forumDto.getUserId())
+                .userId(userId)
                 .description(forumDto.getDescription())
                 .img(forumDto.getImg())
                 .members(new ArrayList<>())
