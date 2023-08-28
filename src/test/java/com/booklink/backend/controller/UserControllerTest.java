@@ -1,5 +1,7 @@
 package com.booklink.backend.controller;
 
+import com.booklink.backend.dto.LoginRequestDto;
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +23,12 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Optional;
 
+import static com.booklink.backend.utils.ControllerTestUtils.setOutputStreamingFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -58,6 +61,23 @@ public class UserControllerTest {
                 .build();
 
         userRepository.save(user);
+
+
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email("user@email.com")
+                .password("password")
+                .build();
+        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
+                "/auth", loginRequestDto, LoginResponseDto.class
+        );
+        String token = response.getBody().getToken();
+        restTemplate.getRestTemplate().setInterceptors(
+                List.of((request, body, execution) -> {
+                    request.getHeaders().add("Authorization", "Bearer " + token);
+                    return execution.execute(request, body);
+                })
+        );
+
     }
 
     @Test
@@ -144,6 +164,8 @@ public class UserControllerTest {
 
     @Test
     void getUserById(){
+        setOutputStreamingFalse(restTemplate);
+
         ResponseEntity<UserDto> response = restTemplate.exchange(
                 baseUrl + "/1", HttpMethod.GET, null, UserDto.class
         );
@@ -153,6 +175,7 @@ public class UserControllerTest {
 
     @Test
     void updateUserTest(){
+        setOutputStreamingFalse(restTemplate);
 
         Long userIdToUpdate = 1L;
 
@@ -176,6 +199,9 @@ public class UserControllerTest {
 
     @Test
     void notFoundUser_404_Test(){
+
+        setOutputStreamingFalse(restTemplate);
+
         UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
                 .username("Joaquin")
                 .email("joaquin@gmail.com")
@@ -192,6 +218,9 @@ public class UserControllerTest {
 
     @Test
     void invalidInput_400_Test() {
+
+        setOutputStreamingFalse(restTemplate);
+
         Long userId = 1L;
 
         UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
