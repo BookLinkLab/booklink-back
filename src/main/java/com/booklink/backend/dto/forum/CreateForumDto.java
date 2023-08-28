@@ -17,12 +17,12 @@ public class CreateForumDto {
     @Size(min = 4, max = 32, message = "Forum name must be between 4 and 32 characters")
     private String name;
 
-    @NotNull(message = "Forum creator must not be blank")
+    @NotNull(message = "Forum creator must not be null")
     private Long userId;
 
     @NotBlank(message = "Description must not be blank")
+    @Size(max = 512)
     private String description;
-
-    @NotBlank(message = "Image url must not be blank")
+    
     private String img;
 }

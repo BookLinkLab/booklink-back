@@ -23,7 +23,7 @@ public class Forum {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Long user_id;
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
