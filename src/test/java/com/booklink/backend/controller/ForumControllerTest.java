@@ -71,9 +71,9 @@ public class ForumControllerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         ForumDto responseForum = ForumDto.builder()
-                .id(1L)
+                .id(6L)
                 .name("Science of Interstellar")
-                .userId(1L)
+                .userId(10L)
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
                 .members(new ArrayList<>())
