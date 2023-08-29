@@ -88,8 +88,8 @@ public class UserControllerTest {
                 .password("password")
                 .build();
 
-        ResponseEntity<UserDto> response = restTemplate.exchange(
-                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), UserDto.class
+        ResponseEntity<LoginResponseDto> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createUserDto), LoginResponseDto.class
         );
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -98,7 +98,7 @@ public class UserControllerTest {
                 .username("newUser")
                 .email("newUser@email.com")
                 .build();
-        assertEquals(response.getBody(), responseUser);
+        assertEquals(response.getBody().getUser(), responseUser);
     }
 
     @Test

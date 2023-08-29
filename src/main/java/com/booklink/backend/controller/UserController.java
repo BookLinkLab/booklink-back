@@ -1,5 +1,6 @@
 package com.booklink.backend.controller;
 
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UpdateUserDTO;
@@ -22,8 +23,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody CreateUserDto createUserDto) {
-        UserDto userDto = this.userService.registerUser(createUserDto);
+    public ResponseEntity<LoginResponseDto> registerUser(@Valid @RequestBody CreateUserDto createUserDto) {
+        LoginResponseDto userDto = this.userService.registerUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
