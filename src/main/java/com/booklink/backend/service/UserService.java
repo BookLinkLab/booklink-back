@@ -11,8 +11,7 @@ import java.util.List;
 
 public interface UserService {
     LoginResponseDto registerUser(CreateUserDto userDto);
-    UserDto getUserById(Long id);
-    UserDto registerUser(CreateUserDto userDto);
+
     UserProfileDto getUserById(Long id);
 
     UserDto getUserByUsername(String username);
