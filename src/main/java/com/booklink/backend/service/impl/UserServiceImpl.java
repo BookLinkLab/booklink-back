@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         String encryptedPassword = this.passwordEncoder.encode(userDto.getPassword());
         User userToSave = User.from(userDto, encryptedPassword);
         User savedUser = this.userRepository.save(userToSave);
-        String token = jwtUtil.generateToken(savedUser.getUsername());
+        String token = jwtUtil.generateToken(savedUser.getId().toString());
         return LoginResponseDto.builder().user(UserDto.from(savedUser)).token(token).build();
     }
 
