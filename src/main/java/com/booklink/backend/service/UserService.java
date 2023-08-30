@@ -2,7 +2,7 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
-import com.booklink.backend.dto.user.UpdateUserDTO;
+import com.booklink.backend.dto.user.UpdateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.LoginRequestDto;
 
@@ -12,6 +12,6 @@ public interface UserService {
     LoginResponseDto registerUser(CreateUserDto userDto);
     UserDto getUserById(Long id);
     List<UserDto> getAllUsers();
-    UserDto updateUser(long id, UpdateUserDTO updateUserDTO);
+    UserDto updateUser(long id, UpdateUserDto updateUserDTO);
     UserDto authorizedGetByEmail(LoginRequestDto loginRequestDto);
 }

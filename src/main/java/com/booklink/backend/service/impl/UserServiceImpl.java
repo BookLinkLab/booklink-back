@@ -52,15 +52,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(long id, UpdateUserDTO updateUserDTO) {
+    public UserDto updateUser(long id, UpdateUserDto updateUserDto) {
         Optional<User> userOptional = this.userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
-        user.setEmail(updateUserDTO.getEmail());
-        user.setUsername(updateUserDTO.getUsername());
-        String encryptedPassword = this.passwordEncoder.encode(updateUserDTO.getPassword());
-        user.setPassword(encryptedPassword);
+        if (updateUserDto.getEmail() != null) {
+            user.setEmail(updateUserDto.getEmail());
+        }
+        if (updateUserDto.getUsername() != null) {
+            user.setUsername(updateUserDto.getUsername());
+        }
+        if (updateUserDto.getPassword() != null) {
+            String encryptedPassword = this.passwordEncoder.encode(updateUserDto.getPassword());
+            user.setPassword(encryptedPassword);
+        }
         return UserDto.from(userRepository.save(user));
-
     }
 
     @Override
