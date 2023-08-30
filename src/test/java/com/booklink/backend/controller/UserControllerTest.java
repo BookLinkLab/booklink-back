@@ -7,7 +7,7 @@ import com.booklink.backend.dto.user.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.booklink.backend.dto.user.UpdateUserDTO;
+import com.booklink.backend.dto.user.UpdateUserDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.UserRepository;
@@ -27,8 +27,6 @@ import static com.booklink.backend.utils.ControllerTestUtils.setOutputStreamingF
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -163,7 +161,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserById(){
+    void getUserById() {
         setOutputStreamingFalse(restTemplate);
 
         ResponseEntity<UserDto> response = restTemplate.exchange(
@@ -174,20 +172,20 @@ public class UserControllerTest {
 
 
     @Test
-    void updateUserTest(){
+    void updateUserTest() {
         setOutputStreamingFalse(restTemplate);
 
         Long userIdToUpdate = 1L;
 
 
-        UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
+        UpdateUserDto updateUserDTO = UpdateUserDto.builder()
                 .username("Joaquin")
                 .email("joaquin@gmail.com")
                 .password("abc")
                 .build();
 
 
-        ResponseEntity<User> response = UpdateRequest(userIdToUpdate, updateUserDTO,User.class);
+        ResponseEntity<User> response = UpdateRequest(userIdToUpdate, updateUserDTO, User.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Optional<User> userOpt = userRepository.findById(userIdToUpdate);
@@ -198,11 +196,11 @@ public class UserControllerTest {
     }
 
     @Test
-    void notFoundUser_404_Test(){
+    void notFoundUser_404_Test() {
 
         setOutputStreamingFalse(restTemplate);
 
-        UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
+        UpdateUserDto updateUserDTO = UpdateUserDto.builder()
                 .username("Joaquin")
                 .email("joaquin@gmail.com")
                 .password("abc")
@@ -211,7 +209,7 @@ public class UserControllerTest {
         Long userId = 80L;
 
 
-        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO,String.class);
+        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO, String.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     }
@@ -223,44 +221,39 @@ public class UserControllerTest {
 
         Long userId = 1L;
 
-        UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
+        UpdateUserDto updateUserDTO = UpdateUserDto.builder()
                 .username("Jo")
                 .email("joaquin@gmail.com")
                 .password("abc")
                 .build();
 
-        UpdateUserDTO updateUserDTO1 = UpdateUserDTO.builder()
+        UpdateUserDto updateUserDto1 = UpdateUserDto.builder()
                 .username("Jo")
                 .email("joaquin")
                 .password("abc")
                 .build();
 
-        UpdateUserDTO updateUserDTO2 = UpdateUserDTO.builder()
+        UpdateUserDto updateUserDto2 = UpdateUserDto.builder()
                 .username("Joaquin*#")
                 .email("joaquin@gmail.com")
                 .password("abc")
                 .build();
 
 
-        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO,String.class);
+        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-        ResponseEntity<String> response1 = UpdateRequest(userId, updateUserDTO1,String.class);
+        ResponseEntity<String> response1 = UpdateRequest(userId, updateUserDto1, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response1.getStatusCode());
 
-        ResponseEntity<String> response2 = UpdateRequest(userId, updateUserDTO2,String.class);
+        ResponseEntity<String> response2 = UpdateRequest(userId, updateUserDto2, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
-
     }
 
 
-    private <T> ResponseEntity<T> UpdateRequest(Long userId, UpdateUserDTO updateUserDTO, Class<T> responseType) {
+    private <T> ResponseEntity<T> UpdateRequest(Long userId, UpdateUserDto updateUserDTO, Class<T> responseType) {
         return restTemplate.exchange(
-                baseUrl + "/" + userId, HttpMethod.PUT, new HttpEntity<>(updateUserDTO), responseType
+                baseUrl + "/" + userId, HttpMethod.PATCH, new HttpEntity<>(updateUserDTO), responseType
         );
     }
-
-
-
-
 }
