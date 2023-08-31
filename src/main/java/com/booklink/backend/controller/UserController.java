@@ -3,6 +3,7 @@ package com.booklink.backend.controller;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UpdateUserDto;
 import com.booklink.backend.dto.user.UpdateUserDTO;
 import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.NotFoundException;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -39,8 +41,8 @@ public class UserController {
     }
 
 
-    @PutMapping("{id}")
-    public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
-            return this.userService.updateUser(id, updateUserDTO);
-            }
+    @PatchMapping("{id}")
+    public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDto updateUserDTO) {
+        return this.userService.updateUser(id, updateUserDTO);
+    }
 }
