@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         String encryptedPassword = this.passwordEncoder.encode(userDto.getPassword());
         User userToSave = User.from(userDto, encryptedPassword);
         User savedUser = this.userRepository.save(userToSave);
-        String token = jwtUtil.generateToken(savedUser.getUsername());
+        String token = jwtUtil.generateToken(savedUser.getId().toString());
         return LoginResponseDto.builder().user(UserDto.from(savedUser)).token(token).build();
     }
 
@@ -52,14 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserByUsername(String username) {
-        Optional<User> userOptional = this.userRepository.findByUsername(username);
-        User user = userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(username)));
-        return UserDto.from(user);
-    }
-
-    @Override
-    public UserDto updateUser(long id, UpdateUserDTO updateUserDTO) {
+    public UserDto updateUser(long id, UpdateUserDto updateUserDTO) {
         Optional<User> userOptional = this.userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
         user.setEmail(updateUserDTO.getEmail());

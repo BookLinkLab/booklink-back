@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         UserDto userDto = this.userService.authorizedGetByEmail(loginRequestDto);
-        String token = jwtUtil.generateToken(userDto.getUsername());
+        String token = jwtUtil.generateToken(userDto.getId().toString());
         return LoginResponseDto.builder().user(userDto).token(token).build();
     }
 }

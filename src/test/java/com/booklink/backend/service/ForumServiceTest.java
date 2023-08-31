@@ -42,7 +42,7 @@ public class ForumServiceTest {
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
                 .build();
-        ForumDto savedForum = forumService.createForum(createForumDto, "user");
+        ForumDto savedForum = forumService.createForum(createForumDto, 1L);
         List<ForumDto> allForums = forumService.getAllForums();
         assertFalse(allForums.isEmpty());
         assertEquals(1, allForums.size());

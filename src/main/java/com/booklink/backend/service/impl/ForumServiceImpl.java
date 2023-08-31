@@ -21,8 +21,8 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public ForumDto createForum(CreateForumDto forumDto, String username) {
-        UserDto forumCreator = userService.getUserByUsername(username);
+    public ForumDto createForum(CreateForumDto forumDto, Long userId) {
+        UserDto forumCreator = userService.getUserById(userId);
         Forum forumToSave = Forum.from(forumDto, forumCreator.getId());
         Forum savedForum = forumRepository.save(forumToSave);
         return ForumDto.from(savedForum);

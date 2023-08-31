@@ -22,7 +22,7 @@ public class ForumController {
 
     @PostMapping
     public ResponseEntity<ForumDto> createForum(@Valid @RequestBody CreateForumDto createForumDto) {
-        ForumDto forumDto = forumService.createForum(createForumDto, securityUtil.getLoggedUser().getUsername());
+        ForumDto forumDto = forumService.createForum(createForumDto, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
     }
 }

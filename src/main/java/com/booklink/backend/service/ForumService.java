@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ForumService {
 
-    ForumDto createForum(CreateForumDto forumDto, String username);
+    ForumDto createForum(CreateForumDto forumDto, Long userId);
 
     List<ForumDto> getAllForums();
 }
