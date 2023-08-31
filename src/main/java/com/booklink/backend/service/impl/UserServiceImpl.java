@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(long id, UpdateUserDTO updateUserDTO) {
+    public UserDto updateUser(long id, UpdateUserDto updateUserDTO) {
         Optional<User> userOptional = this.userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
         user.setEmail(updateUserDTO.getEmail());
