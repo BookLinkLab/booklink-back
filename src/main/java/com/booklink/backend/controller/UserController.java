@@ -2,11 +2,9 @@ package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
-import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UpdateUserDto;
-import com.booklink.backend.dto.user.UpdateUserDTO;
+import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
-import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
