@@ -2,8 +2,9 @@ package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
-import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UpdateUserDto;
+import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserProfile(@PathVariable Long id) {
+    public UserProfileDto getUserProfile(@PathVariable Long id) {
         return this.userService.getUserById(id);
     }
 
