@@ -92,7 +92,7 @@ public class UserControllerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         UserDto responseUser = UserDto.builder()
-                .id(3L)
+                .id(12L)
                 .username("newUser")
                 .email("newUser@email.com")
                 .build();
