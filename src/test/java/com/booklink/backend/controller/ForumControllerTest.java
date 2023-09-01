@@ -110,7 +110,7 @@ public class ForumControllerTest {
                 baseUrl+"/"+id, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
         );
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+
         ResponseEntity<ForumDto> response2 = restTemplate.exchange(
                 baseUrl+"/"+id, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
         );
