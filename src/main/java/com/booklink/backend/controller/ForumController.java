@@ -1,7 +1,10 @@
 package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
+import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.user.UpdateUserDto;
+import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.utils.SecurityUtil;
 import jakarta.validation.Valid;
@@ -25,4 +28,11 @@ public class ForumController {
         ForumDto forumDto = forumService.createForum(createForumDto, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
     }
+
+
+    @PatchMapping("/{id}")
+    public ForumDto editForum(@PathVariable Long id, @Valid @RequestBody EditForumDto editForumDto) {
+        return this.forumService.editForum(id, editForumDto);
+    }
+
 }

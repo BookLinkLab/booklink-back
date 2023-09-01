@@ -1,15 +1,18 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
+import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
@@ -34,4 +37,15 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         List<Forum> forums = forumRepository.findAll();
         return forums.stream().map(ForumDto::from).toList();
     }
+
+    @Override
+    public ForumDto editForum(Long id, EditForumDto editForumDto) {
+        Optional<Forum> forumOptional = forumRepository.findById(id);
+        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
+        forumToEdit.setName(editForumDto.getName());
+        forumToEdit.setDescription(editForumDto.getDescription());
+        return ForumDto.from(forumRepository.save(forumToEdit));
+    }
+
+
 }
