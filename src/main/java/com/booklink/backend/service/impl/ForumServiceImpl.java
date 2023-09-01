@@ -3,6 +3,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.UserService;
@@ -21,8 +22,8 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public ForumDto createForum(CreateForumDto forumDto, String username) {
-        UserDto forumCreator = userService.getUserByUsername(username);
+    public ForumDto createForum(CreateForumDto forumDto, Long userId) {
+        UserProfileDto forumCreator = userService.getUserById(userId);
         Forum forumToSave = Forum.from(forumDto, forumCreator.getId());
         Forum savedForum = forumRepository.save(forumToSave);
         return ForumDto.from(savedForum);

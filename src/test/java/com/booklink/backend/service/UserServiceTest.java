@@ -1,7 +1,9 @@
 package com.booklink.backend.service;
 
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,9 @@ public class UserServiceTest {
                 .email("user@mail.com")
                 .password("password")
                 .build();
-        UserDto savedUser = userService.registerUser(createUserDto);
+        LoginResponseDto registerDto = userService.registerUser(createUserDto);
+        UserDto savedUser = registerDto.getUser();
+        assertFalse(registerDto.getToken().isEmpty());
 
         List<UserDto> allUsers = userService.getAllUsers();
         assertFalse(allUsers.isEmpty());
@@ -43,8 +47,11 @@ public class UserServiceTest {
         assertEquals(myUser, savedUser);
 
 
-        UserDto userDto = userService.getUserById(savedUser.getId());
-        assertEquals(savedUser, userDto);
+        UserProfileDto userDto = userService.getUserById(savedUser.getId());
+        assertEquals(savedUser.getId(), userDto.getId());
+
+        assertTrue(userDto.getForumsCreated().isEmpty());
+        assertTrue(userDto.getForumsJoined().isEmpty());
     }
 
     @Test

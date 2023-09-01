@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -26,6 +28,12 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Forum> forumsCreated;
+
+    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER)
+    private List<Forum> forumsJoined;
 
     public static User from(CreateUserDto userDto, String encryptedPassword) {
         return User.builder()
