@@ -36,6 +36,9 @@ public class Forum {
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<User> members;
 
+    @ManyToMany(cascade = CascadeType.DETACH)
+    private List<Tag> tags;
+
     public static Forum from(CreateForumDto forumDto, Long userId) {
         return Forum.builder()
                 .name(forumDto.getName())
