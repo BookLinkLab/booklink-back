@@ -50,4 +50,18 @@ public class ExceptionHandler {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AlreadyAssignedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<?> handleAlreadyAssigned(AlreadyAssignedException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserNotAdminException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<?> handleUserNotAdmin(UserNotAdminException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 }
