@@ -50,4 +50,11 @@ public class ExceptionHandler {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(MemberAlreadyJoinedForumException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<?> handleMemberAlreadyJoinedForum(MemberAlreadyJoinedForumException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

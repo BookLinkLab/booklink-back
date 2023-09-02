@@ -6,6 +6,9 @@ import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
+import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -79,5 +83,56 @@ public class ForumControllerTest {
                 .members(new ArrayList<>())
                 .build();
         assertEquals(response.getBody(), responseForum);
+    }
+
+    @Test
+    void JoinForum() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        ResponseEntity<ForumDto> response = restTemplate.exchange(
+                baseUrl + "/6/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        UserDto loggedUser = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@email.com")
+                .build();
+
+        ForumDto responseForum = ForumDto.builder()
+                .id(6L)
+                .name("Science of Interstellar")
+                .userId(10L)
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .members(new ArrayList<>(List.of(loggedUser)))
+                .build();
+
+        assertEquals(responseForum, response.getBody());
+    }
+
+    @Test
+    void JoinForumException() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        restTemplate.exchange(
+                baseUrl + "/6/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl + "/6/join", HttpMethod.POST, new HttpEntity<>(null), String.class);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 }

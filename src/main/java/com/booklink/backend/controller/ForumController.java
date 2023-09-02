@@ -25,4 +25,9 @@ public class ForumController {
         ForumDto forumDto = forumService.createForum(createForumDto, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
     }
+
+    @PostMapping("{id}/join")
+    public ForumDto joinForum(@PathVariable Long id) {
+        return forumService.joinForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
+    }
 }

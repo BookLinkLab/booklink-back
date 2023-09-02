@@ -4,8 +4,10 @@ import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,9 @@ public class ForumServiceTest {
 
     @Test
     void happyPathTest() {
-         assertFalse(forumService.getAllForums().isEmpty());
+        assertFalse(forumService.getAllForums().isEmpty());
 
+        //create forum
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -53,5 +56,18 @@ public class ForumServiceTest {
 
         ForumDto myForum = allForums.get(5);
         assertEquals(myForum, savedForum);
+
+        //join user
+        UserDto loggedUser = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        assertTrue(myForum.getMembers().isEmpty());
+        forumService.joinForum(myForum.getId(), loggedUser.getId());
+        assertFalse(forumService.getAllForums().get(5).getMembers().isEmpty());
+
+        assertThrows(MemberAlreadyJoinedForumException.class, () -> forumService.joinForum(myForum.getId(), loggedUser.getId()));
     }
 }
