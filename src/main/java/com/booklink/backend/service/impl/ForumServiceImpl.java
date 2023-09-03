@@ -3,11 +3,17 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.AlreadyAssignedException;
+import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.UserNotAdminException;
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.Tag;
 import com.booklink.backend.repository.ForumRepository;
+import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +24,12 @@ import java.util.Optional;
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
     private final ForumRepository forumRepository;
     private final UserService userService;
+    private final TagService tagService;
 
-    public ForumServiceImpl(ForumRepository forumRepository, UserService userService) {
+    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService) {
         this.forumRepository = forumRepository;
         this.userService = userService;
+        this.tagService = tagService;
     }
 
     @Override
@@ -39,6 +47,17 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
+    public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
+        Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
+        if (!forum.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        Tag tag = tagService.findOrCreateTag(createTagDto);
+        if (forumRepository.existsByIdAndTagsContaining(forumId, tag)) throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
+        forum.getTags().add(tag);
+        Forum savedForum = forumRepository.save(forum);
+        return ForumDto.from(savedForum);
+    }
+
+    @Override
     public ForumDto editForum(Long id, EditForumDto editForumDto) {
         Optional<Forum> forumOptional = forumRepository.findById(id);
         Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
@@ -46,6 +65,5 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));
     }
-
 
 }

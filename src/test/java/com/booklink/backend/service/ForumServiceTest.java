@@ -3,7 +3,11 @@ package com.booklink.backend.service;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.exception.AlreadyAssignedException;
+import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.UserNotAdminException;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
@@ -59,6 +63,12 @@ public class ForumServiceTest {
         ForumDto myForum = allForums.get(5);
         assertEquals(myForum, savedForum);
 
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+
+        ForumDto forumWithTag = forumService.addTagToForum(6L, 1L, createTagDto);
+        assertEquals(1, forumWithTag.getTags().size());
 
         EditForumDto editForumDto = EditForumDto.builder()
                 .name("Don Quijote")
@@ -66,7 +76,7 @@ public class ForumServiceTest {
                 .build();
 
 
-       Long id = 6L;
+        Long id = 6L;
 
         forumService.editForum(id,editForumDto);
 
@@ -81,5 +91,45 @@ public class ForumServiceTest {
         assertEquals("Don Quijote", forum.getName());
         assertEquals("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ", forum.getDescription());
 
+
+
+    }
+
+
+    @Test
+    void forumNotFound(){
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+        assertThrows(NotFoundException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
+    }
+
+    @Test
+    void userNotForumAdmin(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 6L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+        assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(6L, 2L, createTagDto));
+    }
+
+    @Test
+    void tagAlreadyAssigned(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+        forumService.addTagToForum(6L, 1L, createTagDto);
+        assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
     }
 }
