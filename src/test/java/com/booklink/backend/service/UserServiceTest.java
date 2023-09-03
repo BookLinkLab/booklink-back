@@ -26,7 +26,8 @@ public class UserServiceTest {
 
     @Test
     void happyPathTest() {
-        assertTrue(userService.getAllUsers().isEmpty());
+
+        assertEquals(9, userService.getAllUsers().size());
 
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username("user")
@@ -39,9 +40,9 @@ public class UserServiceTest {
 
         List<UserDto> allUsers = userService.getAllUsers();
         assertFalse(allUsers.isEmpty());
-        assertEquals(1, allUsers.size());
+        assertEquals(10, allUsers.size());
 
-        UserDto myUser = allUsers.get(0);
+        UserDto myUser = allUsers.get(9);
 
         assertEquals(myUser, savedUser);
 
