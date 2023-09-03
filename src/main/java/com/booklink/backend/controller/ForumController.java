@@ -27,8 +27,8 @@ public class ForumController {
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
     }
 
-    @PostMapping("/{forumId}/tag")
-    public ForumDto addTagToForum(@PathVariable Long forumId, @Valid @RequestBody CreateTagDto createTagDto){
-        return forumService.addTagToForum(forumId, Long.valueOf(securityUtil.getLoggedUser().getUsername()), createTagDto);
+    @PostMapping("/{id}/tag")
+    public ForumDto addTagToForum(@PathVariable Long id, @Valid @RequestBody CreateTagDto createTagDto){
+        return forumService.addTagToForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()), createTagDto);
     }
 }
