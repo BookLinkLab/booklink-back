@@ -32,7 +32,7 @@ public class ForumController {
 
     @PatchMapping("/{id}")
     public ForumDto editForum(@PathVariable Long id, @Valid @RequestBody EditForumDto editForumDto) {
-        return this.forumService.editForum(id, editForumDto);
+        return this.forumService.editForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()) , editForumDto);
     }
 
     @PostMapping("/{id}/tag")

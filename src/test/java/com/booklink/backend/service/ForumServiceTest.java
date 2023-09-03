@@ -77,14 +77,17 @@ public class ForumServiceTest {
 
 
         Long id = 6L;
+        Long adminUserId = 1L;
 
-        forumService.editForum(id,editForumDto);
+
+        forumService.editForum(id, adminUserId ,editForumDto);
 
 
         List<ForumDto> allForums1 = forumService.getAllForums();
 
         assertEquals(6, allForums1.size());
         assertNotEquals(allForums,allForums1);
+        assertEquals(1, forumWithTag.getTags().size());
 
         Optional<Forum> forumOptional = forumRepository.findById(id);
         Forum forum = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
@@ -116,6 +119,28 @@ public class ForumServiceTest {
                 .name("Tag")
                 .build();
         assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(6L, 2L, createTagDto));
+    }
+
+    @Test
+    void notAdminEdit(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        EditForumDto editForumDto = EditForumDto.builder()
+                .name("Don Quijote")
+                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .build();
+
+        Long nonAdminUserId = 3L;
+        Long forumId = 6L;
+
+        assertThrows(UserNotAdminException.class, () -> forumService.editForum(forumId, nonAdminUserId ,editForumDto));
+
+
     }
 
     @Test

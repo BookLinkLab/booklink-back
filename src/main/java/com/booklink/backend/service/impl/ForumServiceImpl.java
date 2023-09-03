@@ -58,9 +58,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public ForumDto editForum(Long id, EditForumDto editForumDto) {
-        Optional<Forum> forumOptional = forumRepository.findById(id);
-        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
+    public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
+        Optional<Forum> forumOptional = forumRepository.findById(forumId);
+        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
+        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));

@@ -182,7 +182,14 @@ public class ForumControllerTest {
     @Test
     void editForum(){
 
-        Long id = 1L;
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
 
         EditForumDto editForumDto = EditForumDto.builder()
                 .name("Don Quijote")
@@ -200,16 +207,18 @@ public class ForumControllerTest {
                 .build();
 
 
+        Long forumId = 6L;
+
         ResponseEntity<ForumDto> response = restTemplate.exchange(
-                baseUrl+"/"+id, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
+                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
         );
         ResponseEntity<ForumDto> response1 = restTemplate.exchange(
-                baseUrl+"/"+id, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
+                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
         );
 
 
         ResponseEntity<ForumDto> response2 = restTemplate.exchange(
-                baseUrl+"/"+id, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
+                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
         );
 
 

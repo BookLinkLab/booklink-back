@@ -15,5 +15,5 @@ public interface ForumService {
     List<ForumDto> getAllForums();
     ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto);
 
-    ForumDto editForum(Long id, EditForumDto editForumDto);
+    ForumDto editForum(Long id, Long userId, EditForumDto editForumDto);
 }
