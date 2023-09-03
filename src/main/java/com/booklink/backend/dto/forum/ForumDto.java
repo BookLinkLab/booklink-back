@@ -1,5 +1,6 @@
 package com.booklink.backend.dto.forum;
 
+import com.booklink.backend.dto.tag.TagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.model.Forum;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class ForumDto {
     private String description;
     private String img;
     private List<UserDto> members;
+    private List<TagDto> tags;
 
     public static ForumDto from(Forum forum) {
         return ForumDto.builder()
@@ -29,6 +31,7 @@ public class ForumDto {
                 .description(forum.getDescription())
                 .img(forum.getImg())
                 .members(forum.getMembers().stream().map(UserDto::from).toList())
+                .tags(forum.getTags().stream().map(TagDto::from).toList())
                 .build();
     }
 }

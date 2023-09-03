@@ -2,6 +2,7 @@ package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.utils.SecurityUtil;
 import jakarta.validation.Valid;
@@ -24,5 +25,10 @@ public class ForumController {
     public ResponseEntity<ForumDto> createForum(@Valid @RequestBody CreateForumDto createForumDto) {
         ForumDto forumDto = forumService.createForum(createForumDto, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
+    }
+
+    @PostMapping("/{id}/tag")
+    public ForumDto addTagToForum(@PathVariable Long id, @Valid @RequestBody CreateTagDto createTagDto){
+        return forumService.addTagToForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()), createTagDto);
     }
 }
