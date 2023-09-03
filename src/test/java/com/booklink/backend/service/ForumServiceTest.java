@@ -62,7 +62,7 @@ public class ForumServiceTest {
                 .name("Tag")
                 .build();
 
-        ForumDto forumWithTag = forumService.addTagToForum(1L, 1L, createTagDto);
+        ForumDto forumWithTag = forumService.addTagToForum(6L, 1L, createTagDto);
         assertEquals(1, forumWithTag.getTags().size());
     }
 
@@ -71,7 +71,7 @@ public class ForumServiceTest {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
-        assertThrows(NotFoundException.class, () -> forumService.addTagToForum(1L, 1L, createTagDto));
+        assertThrows(NotFoundException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
     }
 
     @Test
@@ -81,11 +81,11 @@ public class ForumServiceTest {
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
                 .build();
-        forumService.createForum(createForumDto, 1L);
+        forumService.createForum(createForumDto, 6L);
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
-        assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(1L, 2L, createTagDto));
+        assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(6L, 2L, createTagDto));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ForumServiceTest {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
-        forumService.addTagToForum(1L, 1L, createTagDto);
-        assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(1L, 1L, createTagDto));
+        forumService.addTagToForum(6L, 1L, createTagDto);
+        assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
     }
 }

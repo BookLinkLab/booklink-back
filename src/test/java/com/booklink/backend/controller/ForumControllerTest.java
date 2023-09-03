@@ -98,7 +98,7 @@ public class ForumControllerTest {
                 .build();
 
         ResponseEntity<ForumDto> response = restTemplate.exchange(
-                baseUrl + "/1/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
+                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -110,7 +110,7 @@ public class ForumControllerTest {
                 .build();
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/1/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
+                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
         );
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -146,7 +146,7 @@ public class ForumControllerTest {
                 .build();
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/1/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
+                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
         );
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -168,11 +168,11 @@ public class ForumControllerTest {
                 .build();
 
         restTemplate.exchange(
-                baseUrl + "/1/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
+                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
         );
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/1/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
+                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
         );
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
