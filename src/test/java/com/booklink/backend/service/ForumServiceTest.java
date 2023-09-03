@@ -2,7 +2,11 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
+import com.booklink.backend.exception.AlreadyAssignedException;
+import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.UserNotAdminException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +53,49 @@ public class ForumServiceTest {
 
         ForumDto myForum = allForums.get(0);
         assertEquals(myForum, savedForum);
+
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+
+        ForumDto forumWithTag = forumService.addTagToForum(1L, 1L, createTagDto);
+        assertEquals(1, forumWithTag.getTags().size());
+    }
+
+    @Test
+    void forumNotFound(){
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+        assertThrows(NotFoundException.class, () -> forumService.addTagToForum(1L, 1L, createTagDto));
+    }
+
+    @Test
+    void userNotForumAdmin(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+        assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(1L, 2L, createTagDto));
+    }
+
+    @Test
+    void tagAlreadyAssigned(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+        forumService.addTagToForum(1L, 1L, createTagDto);
+        assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(1L, 1L, createTagDto));
     }
 }

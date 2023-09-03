@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,12 +23,13 @@ public class Tag {
 
     private String name;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<Forum> forums;
 
     public static Tag from(CreateTagDto createTagDto) {
         return Tag.builder()
                 .name(createTagDto.getName())
+                .forums(new ArrayList<>())
                 .build();
     }
 

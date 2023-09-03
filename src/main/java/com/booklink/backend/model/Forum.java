@@ -36,7 +36,7 @@ public class Forum {
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<User> members;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<Tag> tags;
 
     public static Forum from(CreateForumDto forumDto, Long userId) {
@@ -46,6 +46,7 @@ public class Forum {
                 .description(forumDto.getDescription())
                 .img(forumDto.getImg())
                 .members(new ArrayList<>())
+                .tags(new ArrayList<>())
                 .build();
     }
 }
