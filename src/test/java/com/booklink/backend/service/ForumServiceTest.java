@@ -1,9 +1,11 @@
 package com.booklink.backend.service;
 
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.exception.JoinOwnForumException;
 import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
@@ -58,16 +60,42 @@ public class ForumServiceTest {
         assertEquals(myForum, savedForum);
 
         //join user
-        UserDto loggedUser = UserDto.builder()
+        UserDto userToJoin = UserDto.builder()
                 .id(10L)
                 .username("user")
                 .email("user@mail.com")
                 .build();
 
         assertTrue(myForum.getMembers().isEmpty());
-        forumService.joinForum(myForum.getId(), loggedUser.getId());
+        forumService.joinForum(myForum.getId(), userToJoin.getId());
         assertFalse(forumService.getAllForums().get(5).getMembers().isEmpty());
+    }
 
-        assertThrows(MemberAlreadyJoinedForumException.class, () -> forumService.joinForum(myForum.getId(), loggedUser.getId()));
+    @Test
+    void exceptionTest() {
+        UserDto userToJoin = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+
+        ForumDto myForum = forumService.createForum(createForumDto, userToJoin.getId());
+        assertThrows(JoinOwnForumException.class, () -> forumService.joinForum(myForum.getId(), userToJoin.getId()));
+
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("newUser")
+                .email("newUser@email.com")
+                .password("password")
+                .build();
+        LoginResponseDto loginResponseDto = userService.registerUser(createUserDto);
+
+        forumService.joinForum(myForum.getId(), loginResponseDto.getUser().getId());
+        assertThrows(MemberAlreadyJoinedForumException.class, () -> forumService.joinForum(myForum.getId(), loginResponseDto.getUser().getId()));
     }
 }

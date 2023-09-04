@@ -3,6 +3,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.user.UserProfileDto;
+import com.booklink.backend.exception.JoinOwnForumException;
 import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
@@ -43,12 +44,15 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         User memberToJoin = userService.getUserEntityById(userId);
         Forum forumToJoin = getForumEntityById(id);
 
+        if (forumToJoin.getUser().getId().equals(userId))
+            throw new JoinOwnForumException("No puedes unirte a tu propio foro");
+
         forumToJoin.getMembers()
                 .stream()
                 .filter(member -> member.getId().equals(memberToJoin.getId()))
                 .findAny()
                 .ifPresent(existingMember -> {
-                    throw new MemberAlreadyJoinedForumException("El usuario %s ya se unió al foro".formatted(memberToJoin.getId()));
+                    throw new MemberAlreadyJoinedForumException("Ya perteneces a este foro");
                 });
 
         forumToJoin.getMembers().add(memberToJoin);
