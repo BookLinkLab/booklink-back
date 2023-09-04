@@ -3,6 +3,7 @@ package com.booklink.backend.controller;
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
+import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
@@ -177,4 +178,54 @@ public class ForumControllerTest {
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
+
+    @Test
+    void editForum(){
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+
+        EditForumDto editForumDto = EditForumDto.builder()
+                .name("Don Quijote")
+                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .build();
+
+        EditForumDto editForumDto1 = EditForumDto.builder()
+                .name("Don Quijote")
+                .description("")
+                .build();
+
+        EditForumDto editForumDto2 = EditForumDto.builder()
+                .name("D")
+                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .build();
+
+
+        Long forumId = 6L;
+
+        ResponseEntity<ForumDto> response = restTemplate.exchange(
+                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
+        );
+        ResponseEntity<ForumDto> response1 = restTemplate.exchange(
+                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
+        );
+
+
+        ResponseEntity<ForumDto> response2 = restTemplate.exchange(
+                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
+        );
+
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response1.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
+
+    }
+
 }

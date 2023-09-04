@@ -1,10 +1,12 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.CreateForumDto;
+import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.AlreadyAssignedException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotAdminException;
@@ -16,6 +18,7 @@ import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
@@ -53,4 +56,15 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         Forum savedForum = forumRepository.save(forum);
         return ForumDto.from(savedForum);
     }
+
+    @Override
+    public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
+        Optional<Forum> forumOptional = forumRepository.findById(forumId);
+        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
+        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        forumToEdit.setName(editForumDto.getName());
+        forumToEdit.setDescription(editForumDto.getDescription());
+        return ForumDto.from(forumRepository.save(forumToEdit));
+    }
+
 }
