@@ -1,5 +1,6 @@
 package com.booklink.backend.service;
 
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
@@ -9,8 +10,11 @@ import com.booklink.backend.exception.AlreadyAssignedException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotAdminException;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.exception.JoinOwnForumException;
+import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,8 +52,9 @@ public class ForumServiceTest {
 
     @Test
     void happyPathTest() {
-         assertFalse(forumService.getAllForums().isEmpty());
+        assertFalse(forumService.getAllForums().isEmpty());
 
+        //create forum
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -63,6 +68,17 @@ public class ForumServiceTest {
         ForumDto myForum = allForums.get(5);
         assertEquals(myForum, savedForum);
 
+        //join user
+        UserDto userToJoin = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        assertTrue(myForum.getMembers().isEmpty());
+        forumService.joinForum(myForum.getId(), userToJoin.getId());
+        assertFalse(forumService.getAllForums().get(5).getMembers().isEmpty());
+
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
@@ -75,32 +91,53 @@ public class ForumServiceTest {
                 .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
                 .build();
 
-
         Long id = 6L;
         Long adminUserId = 1L;
 
-
-        forumService.editForum(id, adminUserId ,editForumDto);
-
+        forumService.editForum(id, adminUserId, editForumDto);
 
         List<ForumDto> allForums1 = forumService.getAllForums();
 
         assertEquals(6, allForums1.size());
-        assertNotEquals(allForums,allForums1);
+        assertNotEquals(allForums, allForums1);
         assertEquals(1, forumWithTag.getTags().size());
 
         Optional<Forum> forumOptional = forumRepository.findById(id);
         Forum forum = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
         assertEquals("Don Quijote", forum.getName());
         assertEquals("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ", forum.getDescription());
-
-
-
     }
 
+    @Test
+    void exceptionTest() {
+        UserDto userToJoin = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+
+        ForumDto myForum = forumService.createForum(createForumDto, userToJoin.getId());
+        assertThrows(JoinOwnForumException.class, () -> forumService.joinForum(myForum.getId(), userToJoin.getId()));
+
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username("newUser")
+                .email("newUser@email.com")
+                .password("password")
+                .build();
+        LoginResponseDto loginResponseDto = userService.registerUser(createUserDto);
+
+        forumService.joinForum(myForum.getId(), loginResponseDto.getUser().getId());
+        assertThrows(MemberAlreadyJoinedForumException.class, () -> forumService.joinForum(myForum.getId(), loginResponseDto.getUser().getId()));
+    }
 
     @Test
-    void forumNotFound(){
+    void forumNotFound() {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
@@ -108,7 +145,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void userNotForumAdmin(){
+    void userNotForumAdmin() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -122,7 +159,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void notAdminEdit(){
+    void notAdminEdit() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -138,13 +175,11 @@ public class ForumServiceTest {
         Long nonAdminUserId = 3L;
         Long forumId = 6L;
 
-        assertThrows(UserNotAdminException.class, () -> forumService.editForum(forumId, nonAdminUserId ,editForumDto));
-
-
+        assertThrows(UserNotAdminException.class, () -> forumService.editForum(forumId, nonAdminUserId, editForumDto));
     }
 
     @Test
-    void tagAlreadyAssigned(){
+    void tagAlreadyAssigned() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")

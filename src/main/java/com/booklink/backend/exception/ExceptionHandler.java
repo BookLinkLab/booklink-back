@@ -51,6 +51,20 @@ public class ExceptionHandler {
         }
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(MemberAlreadyJoinedForumException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<?> handleMemberAlreadyJoinedForum(MemberAlreadyJoinedForumException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(JoinOwnForumException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<?> handleJoinOwnForum(JoinOwnForumException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(AlreadyAssignedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<?> handleAlreadyAssigned(AlreadyAssignedException e) {

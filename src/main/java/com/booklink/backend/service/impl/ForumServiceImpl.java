@@ -6,11 +6,15 @@ import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
+import com.booklink.backend.exception.JoinOwnForumException;
+import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.AlreadyAssignedException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotAdminException;
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.User;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.TagService;
@@ -49,9 +53,11 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
         Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forum.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        if (!forum.getUserId().equals(userId))
+            throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         Tag tag = tagService.findOrCreateTag(createTagDto);
-        if (forumRepository.existsByIdAndTagsContaining(forumId, tag)) throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
+        if (forumRepository.existsByIdAndTagsContaining(forumId, tag))
+            throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
         forum.getTags().add(tag);
         Forum savedForum = forumRepository.save(forum);
         return ForumDto.from(savedForum);
@@ -61,10 +67,38 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
         Optional<Forum> forumOptional = forumRepository.findById(forumId);
         Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        if (!forumToEdit.getUserId().equals(userId))
+            throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));
     }
 
+    @Override
+    public ForumDto joinForum(Long id, Long userId) {
+        User memberToJoin = userService.getUserEntityById(userId);
+        Forum forumToJoin = getForumEntityById(id);
+
+        if (forumToJoin.getUser().getId().equals(userId))
+            throw new JoinOwnForumException("No puedes unirte a tu propio foro");
+
+        forumToJoin.getMembers()
+                .stream()
+                .filter(member -> member.getId().equals(memberToJoin.getId()))
+                .findAny()
+                .ifPresent(existingMember -> {
+                    throw new MemberAlreadyJoinedForumException("Ya perteneces a este foro");
+                });
+
+        forumToJoin.getMembers().add(memberToJoin);
+        forumRepository.save(forumToJoin);
+
+        return ForumDto.from(forumToJoin);
+    }
+
+    @Override
+    public Forum getForumEntityById(Long id) {
+        Optional<Forum> forumOptional = forumRepository.findById(id);
+        return forumOptional.orElseThrow(() -> new NotFoundException("Forum %s not found".formatted(id)));
+    }
 }

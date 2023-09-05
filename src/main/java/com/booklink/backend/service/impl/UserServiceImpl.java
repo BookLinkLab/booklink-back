@@ -52,6 +52,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserEntityById(Long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        return userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(id)));
+    }
+
+    @Override
     public UserDto updateUser(long id, UpdateUserDto updateUserDTO) {
         Optional<User> userOptional = this.userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User %d not found".formatted(id)));
