@@ -92,6 +92,7 @@ public class ForumControllerTest {
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
                 .members(new ArrayList<>(List.of(newUser)))
+                .tags(new ArrayList<>())
                 .build();
 
         assertEquals(responseForum, response.getBody());
