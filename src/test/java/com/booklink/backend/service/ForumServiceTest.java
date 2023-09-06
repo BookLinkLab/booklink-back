@@ -3,6 +3,7 @@ package com.booklink.backend.service;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.exception.AlreadyAssignedException;
@@ -157,4 +158,68 @@ public class ForumServiceTest {
         forumService.addTagToForum(6L, 1L, createTagDto);
         assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
     }
+
+
+    @Test
+    void searchForumsByNameAndTag(){
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Fiction")
+                .build();
+        forumService.addTagToForum(6L, 1L, createTagDto);
+        List<Long> tagIds = new ArrayList<>();
+        tagIds.add(1L);
+        List<ForumViewDto> forums = forumService.searchForums("LORD OF THE RINGS", tagIds);
+        assertEquals(1, forums.size());
+        assertEquals(forumName, forums.get(0).getName());
+
+        tagIds.add(2L);
+        List<ForumViewDto> forums4 = forumService.searchForums("LORD OF THE RINGS", tagIds);
+        assertEquals(0, forums4.size());
+
+    }
+    @Test
+    void searchForumsByTag(){
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Fiction")
+                .build();
+        forumService.addTagToForum(6L, 1L, createTagDto);
+        List<Long> tagIds = new ArrayList<>();
+        tagIds.add(1L);
+
+        List<ForumViewDto> forums2 = forumService.searchForums(null, tagIds);
+        assertEquals(1, forums2.size());
+        assertEquals(forumName, forums2.get(0).getName());
+
+    }
+
+    @Test
+    void searchForumsByName(){
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        List<ForumViewDto> forums3 = forumService.searchForums("LORD OF THE RINGS", null);
+        assertEquals(1, forums3.size());
+        assertEquals(forumName, forums3.get(0).getName());
+
+    }
+
 }

@@ -5,6 +5,7 @@ import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
@@ -225,6 +226,49 @@ public class ForumControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, response1.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
+
+    }
+
+    @Test
+    void searchForums(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag")
+                .build();
+
+        restTemplate.exchange(
+                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
+        );
+
+        ResponseEntity<List> response = restTemplate.exchange(
+                baseUrl + "/search?forumName=Forum&tagIds=1", HttpMethod.GET, null, List.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+        System.out.println(response.getBody().get(0));
+
+
+        ResponseEntity<List> response2 = restTemplate.exchange(
+                baseUrl + "/search?forumName=Forum", HttpMethod.GET, null, List.class
+        );
+        assertEquals(HttpStatus.OK, response2.getStatusCode());
+        assertEquals(1, response2.getBody().size());
+
+        ResponseEntity<List> response3 = restTemplate.exchange(
+                baseUrl + "/search?tagIds=1", HttpMethod.GET, null, List.class
+        );
+
+        assertEquals(HttpStatus.OK, response3.getStatusCode());
+        assertEquals(1, response3.getBody().size());
+
 
     }
 

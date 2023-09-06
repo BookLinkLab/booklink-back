@@ -3,6 +3,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
@@ -65,6 +66,25 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));
+    }
+
+    @Override
+    public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds) {
+        if(tagIds == null  && forumName != null){
+            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
+            return forums.stream().map(ForumViewDto::from).toList();
+        } else if (forumName == null && tagIds != null) {
+            List<Forum> forums = forumRepository.findAllByTagsIdIn(tagIds);
+            return forums.stream().map(ForumViewDto::from).toList();
+        }
+        else if (forumName == null) {
+            List<Forum> forums = forumRepository.findAll();
+            return forums.stream().map(ForumViewDto::from).toList();
+        }
+        else {
+            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
+            return forums.stream().map(ForumViewDto::from).toList();
+        }
     }
 
 }
