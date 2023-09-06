@@ -5,12 +5,15 @@ import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
+import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.AlreadyAssignedException;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotAdminException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
@@ -67,6 +70,34 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
+    public ForumDto joinForum(Long id, Long userId) {
+        User memberToJoin = userService.getUserEntityById(userId);
+        Forum forumToJoin = getForumEntityById(id);
+
+        if (forumToJoin.getUser().getId().equals(userId))
+            throw new JoinOwnForumException("No puedes unirte a tu propio foro");
+
+        forumToJoin.getMembers()
+                .stream()
+                .filter(member -> member.getId().equals(memberToJoin.getId()))
+                .findAny()
+                .ifPresent(existingMember -> {
+                    throw new MemberAlreadyJoinedForumException("Ya perteneces a este foro");
+                });
+
+        forumToJoin.getMembers().add(memberToJoin);
+        forumRepository.save(forumToJoin);
+
+        return ForumDto.from(forumToJoin);
+    }
+
+    @Override
+    public Forum getForumEntityById(Long id) {
+        Optional<Forum> forumOptional = forumRepository.findById(id);
+        return forumOptional.orElseThrow(() -> new NotFoundException("Forum %s not found".formatted(id)));
+    }
+
+    @Override
     public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds) {
         if(tagIds == null  && forumName != null){
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
@@ -84,5 +115,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             return forums.stream().map(ForumViewDto::from).toList();
         }
     }
+
 
 }

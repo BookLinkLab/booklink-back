@@ -30,13 +30,18 @@ public class ForumController {
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
     }
 
+    @PostMapping("/{id}/join")
+    public ForumDto joinForum(@PathVariable Long id) {
+        return forumService.joinForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
+    }
+
     @PatchMapping("/{id}")
     public ForumDto editForum(@PathVariable Long id, @Valid @RequestBody EditForumDto editForumDto) {
-        return this.forumService.editForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()) , editForumDto);
+        return this.forumService.editForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()), editForumDto);
     }
 
     @PostMapping("/{id}/tag")
-    public ForumDto addTagToForum(@PathVariable Long id, @Valid @RequestBody CreateTagDto createTagDto){
+    public ForumDto addTagToForum(@PathVariable Long id, @Valid @RequestBody CreateTagDto createTagDto) {
         return forumService.addTagToForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()), createTagDto);
     }
 
