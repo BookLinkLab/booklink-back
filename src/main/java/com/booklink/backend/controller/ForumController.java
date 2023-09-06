@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/forum")
 public class ForumController {
@@ -42,4 +44,10 @@ public class ForumController {
     public ForumDto addTagToForum(@PathVariable Long id, @Valid @RequestBody CreateTagDto createTagDto) {
         return forumService.addTagToForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()), createTagDto);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchForums(@RequestParam(name = "forumName", required = false) String forumName,@RequestParam(name = "tagIds", required = false) List<Long> tagIds) {
+        return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(forumName, tagIds));
+    }
+
 }

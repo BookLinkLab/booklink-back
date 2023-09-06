@@ -3,19 +3,15 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
-import com.booklink.backend.exception.JoinOwnForumException;
-import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
+import com.booklink.backend.exception.*;
 import com.booklink.backend.exception.NotFoundException;
-import com.booklink.backend.exception.NotFoundException;
-import com.booklink.backend.exception.AlreadyAssignedException;
-import com.booklink.backend.exception.NotFoundException;
-import com.booklink.backend.exception.UserNotAdminException;
 import com.booklink.backend.model.Forum;
-import com.booklink.backend.model.User;
 import com.booklink.backend.model.Tag;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
@@ -53,11 +49,9 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
         Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forum.getUserId().equals(userId))
-            throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        if (!forum.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         Tag tag = tagService.findOrCreateTag(createTagDto);
-        if (forumRepository.existsByIdAndTagsContaining(forumId, tag))
-            throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
+        if (forumRepository.existsByIdAndTagsContaining(forumId, tag)) throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
         forum.getTags().add(tag);
         Forum savedForum = forumRepository.save(forum);
         return ForumDto.from(savedForum);
@@ -67,8 +61,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
         Optional<Forum> forumOptional = forumRepository.findById(forumId);
         Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forumToEdit.getUserId().equals(userId))
-            throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));
@@ -101,4 +94,25 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         Optional<Forum> forumOptional = forumRepository.findById(id);
         return forumOptional.orElseThrow(() -> new NotFoundException("Forum %s not found".formatted(id)));
     }
+
+    @Override
+    public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds) {
+        if(tagIds == null  && forumName != null){
+            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
+            return forums.stream().map(ForumViewDto::from).toList();
+        } else if (forumName == null && tagIds != null) {
+            List<Forum> forums = forumRepository.findAllByTagsIdIn(tagIds);
+            return forums.stream().map(ForumViewDto::from).toList();
+        }
+        else if (forumName == null) {
+            List<Forum> forums = forumRepository.findAll();
+            return forums.stream().map(ForumViewDto::from).toList();
+        }
+        else {
+            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
+            return forums.stream().map(ForumViewDto::from).toList();
+        }
+    }
+
+
 }
