@@ -340,6 +340,13 @@ public class ForumControllerTest {
         assertEquals(HttpStatus.OK, response3.getStatusCode());
         assertEquals(1, response3.getBody().size());
 
+        ResponseEntity<List> response4 = restTemplate.exchange(
+                baseUrl + "/search", HttpMethod.GET, null, List.class
+        );
+
+        assertEquals(HttpStatus.OK, response3.getStatusCode());
+        assertEquals(1, response3.getBody().size());
+
 
     }
 

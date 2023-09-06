@@ -7,9 +7,7 @@ import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
-import com.booklink.backend.exception.AlreadyAssignedException;
-import com.booklink.backend.exception.NotFoundException;
-import com.booklink.backend.exception.UserNotAdminException;
+import com.booklink.backend.exception.*;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
@@ -259,6 +257,24 @@ public class ForumServiceTest {
         List<ForumViewDto> forums3 = forumService.searchForums("LORD OF THE RINGS", null);
         assertEquals(1, forums3.size());
         assertEquals(forumName, forums3.get(0).getName());
+
+    }
+//    searchForumsByNameNullAndTagsNull
+
+    @Test
+    void searchForumsByNameNullAndTagsNull(){
+
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        List<ForumViewDto> forums3 = forumService.searchForums(null, null);
+        assertEquals(6, forums3.size());
+        assertEquals(forumName, forums3.get(5).getName());
 
     }
 
