@@ -5,7 +5,6 @@ import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.forum.ForumViewDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 

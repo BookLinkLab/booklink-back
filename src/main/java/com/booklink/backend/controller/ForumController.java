@@ -3,8 +3,6 @@ package com.booklink.backend.controller;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
-import com.booklink.backend.dto.user.UpdateUserDto;
-import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.utils.SecurityUtil;

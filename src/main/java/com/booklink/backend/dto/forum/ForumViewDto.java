@@ -1,7 +1,6 @@
 package com.booklink.backend.dto.forum;
 
 import com.booklink.backend.dto.tag.TagDto;
-import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.model.Forum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

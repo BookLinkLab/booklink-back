@@ -9,8 +9,6 @@ import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.exception.AlreadyAssignedException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotAdminException;
-import com.booklink.backend.dto.user.UserDto;
-import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.repository.ForumRepository;
 import org.junit.jupiter.api.BeforeEach;
