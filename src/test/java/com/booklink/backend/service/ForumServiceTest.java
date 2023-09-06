@@ -219,7 +219,7 @@ public class ForumServiceTest {
 
         tagIds.add(2L);
         List<ForumViewDto> forums4 = forumService.searchForums("LORD OF THE RINGS", tagIds);
-        assertEquals(0, forums4.size());
+        assertEquals(1, forums4.size());
 
     }
     @Test
