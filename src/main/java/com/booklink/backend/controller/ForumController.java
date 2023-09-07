@@ -26,23 +26,23 @@ public class ForumController {
 
     @PostMapping
     public ResponseEntity<ForumDto> createForum(@Valid @RequestBody CreateForumDto createForumDto) {
-        ForumDto forumDto = forumService.createForum(createForumDto, securityUtil.getLoggedUsername());
+        ForumDto forumDto = forumService.createForum(createForumDto, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(forumDto);
     }
 
     @PostMapping("/{id}/join")
     public ForumDto joinForum(@PathVariable Long id) {
-        return forumService.joinForum(id, securityUtil.getLoggedUsername());
+        return forumService.joinForum(id, securityUtil.getLoggedUserId());
     }
 
     @PatchMapping("/{id}")
     public ForumDto editForum(@PathVariable Long id, @Valid @RequestBody EditForumDto editForumDto) {
-        return this.forumService.editForum(id, securityUtil.getLoggedUsername(), editForumDto);
+        return this.forumService.editForum(id, securityUtil.getLoggedUserId(), editForumDto);
     }
 
     @PostMapping("/{id}/tag")
     public ForumDto addTagToForum(@PathVariable Long id, @Valid @RequestBody CreateTagDto createTagDto) {
-        return forumService.addTagToForum(id, securityUtil.getLoggedUsername(), createTagDto);
+        return forumService.addTagToForum(id, securityUtil.getLoggedUserId(), createTagDto);
     }
 
     @GetMapping("/search")
@@ -51,7 +51,7 @@ public class ForumController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteForum(@PathVariable Long id) {
-        forumService.deleteForum(id, securityUtil.getLoggedUsername());
+        forumService.deleteForum(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("Forum deleted successfully");
     }
 

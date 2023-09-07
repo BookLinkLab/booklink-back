@@ -11,7 +11,7 @@ public class SecurityUtil {
         return (UserDetails) user;
     }
 
-    public Long getLoggedUsername() {
+    public Long getLoggedUserId() {
         return Long.valueOf(getLoggedUser().getUsername());
     }
 }
