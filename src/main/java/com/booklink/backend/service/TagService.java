@@ -8,4 +8,6 @@ import java.util.List;
 public interface TagService {
     Tag findOrCreateTag(CreateTagDto createTagDto);
     List<Tag> getAllTags();
+
+    void deleteTag(Long id);
 }
