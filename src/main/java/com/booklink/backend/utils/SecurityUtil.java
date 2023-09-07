@@ -10,4 +10,8 @@ public class SecurityUtil {
         Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return (UserDetails) user;
     }
+
+    public Long getLoggedUsername() {
+        return Long.valueOf(getLoggedUser().getUsername());
+    }
 }
