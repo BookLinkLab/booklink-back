@@ -350,4 +350,67 @@ public class ForumControllerTest {
 
     }
 
+    @Test
+    void deleteForum(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void deleteForumException(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        ResponseEntity<String> response1 = restTemplate.exchange(
+                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response1.getStatusCode());
+    }
+
+    @Test
+    void deleteForumException2(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        ResponseEntity<String> response1 = restTemplate.exchange(
+                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response1.getStatusCode());
+    }
+
 }

@@ -49,5 +49,10 @@ public class ForumController {
     public ResponseEntity<?> searchForums(@RequestParam(name = "forumName", required = false) String forumName,@RequestParam(name = "tagIds", required = false) List<Long> tagIds) {
         return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(forumName, tagIds));
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteForum(@PathVariable Long id) {
+        forumService.deleteForum(id, Long.valueOf(securityUtil.getLoggedUser().getUsername()));
+        return ResponseEntity.status(HttpStatus.OK).body("Forum deleted successfully");
+    }
 
 }
