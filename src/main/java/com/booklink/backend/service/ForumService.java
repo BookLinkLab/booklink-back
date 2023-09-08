@@ -23,4 +23,6 @@ public interface ForumService {
     List<ForumViewDto> searchForums(String forumName, List<Long> tagIds);
 
     ForumGetDto getForumById(Long id);
+
+    void deleteForum(Long id, Long userId);
 }
