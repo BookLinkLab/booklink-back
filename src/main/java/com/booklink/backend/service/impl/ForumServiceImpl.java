@@ -1,9 +1,6 @@
 package com.booklink.backend.service.impl;
 
-import com.booklink.backend.dto.forum.CreateForumDto;
-import com.booklink.backend.dto.forum.EditForumDto;
-import com.booklink.backend.dto.forum.ForumDto;
-import com.booklink.backend.dto.forum.ForumViewDto;
+import com.booklink.backend.dto.forum.*;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
@@ -112,6 +109,12 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
             return forums.stream().map(ForumViewDto::from).toList();
         }
+    }
+
+    @Override
+    public ForumGetDto getForumById(Long id) {
+        Forum forum = this.getForumEntityById(id);
+        return ForumGetDto.from(forum);
     }
 
 

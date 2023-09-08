@@ -3,6 +3,7 @@ package com.booklink.backend.controller;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumGetDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.utils.SecurityUtil;
@@ -49,5 +50,11 @@ public class ForumController {
     public ResponseEntity<?> searchForums(@RequestParam(name = "forumName", required = false) String forumName,@RequestParam(name = "tagIds", required = false) List<Long> tagIds) {
         return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(forumName, tagIds));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ForumGetDto> getForumById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(forumService.getForumById(id));
+    }
+
 
 }
