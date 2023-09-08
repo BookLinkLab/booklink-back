@@ -54,13 +54,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserEntityById(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        return userOptional.orElseThrow(() -> new NotFoundException("User %s not found".formatted(id)));
+        return userOptional.orElseThrow(() -> new NotFoundException("El usuario %s no fue encontrado".formatted(id)));
     }
 
     @Override
     public UserDto updateUser(long id, UpdateUserDto updateUserDTO) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        User user = userOptional.orElseThrow(() -> new NotFoundException("El Usuario no fue encontrado"));
+        User user = userOptional.orElseThrow(() -> new NotFoundException("El Usuario %s no fue encontrado".formatted(id)));
         user.setEmail(updateUserDTO.getEmail());
         user.setUsername(updateUserDTO.getUsername());
         String encryptedPassword = this.passwordEncoder.encode(updateUserDTO.getPassword());
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto authorizedGetByEmail(LoginRequestDto loginRequestDto) {
         Optional<User> userOptional = this.userRepository.findByEmail(loginRequestDto.getEmail());
-        User user = userOptional.orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
+        User user = userOptional.orElseThrow(() -> new NotFoundException("El usuario %s no fue encontrado".formatted(loginRequestDto.getEmail())));
         boolean passwordMatches = this.passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
         if (!passwordMatches) {
             throw new WrongCredentialsException("Credenciales invalidas");
