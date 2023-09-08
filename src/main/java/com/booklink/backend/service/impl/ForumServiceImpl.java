@@ -114,5 +114,17 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         }
     }
 
+    @Override
+    public void deleteForum(Long id, Long userId) {
+        Forum forumToDelete = getForumEntityById(id);
+        List<Tag> tagToDelete = forumToDelete.getTags();
+        if (!forumToDelete.getUserId().equals(userId)) throw new UserNotAdminException("Solo el administrador del foro puede eliminarlo");
+        forumRepository.delete(forumToDelete);
+        for (Tag tag: tagToDelete) {
+            if (!forumRepository.existsByTagsContaining(tag)) {
+                tagService.deleteTag(tag.getId());
+            }
+        }
+    }
 
 }

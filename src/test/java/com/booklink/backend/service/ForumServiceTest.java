@@ -278,4 +278,44 @@ public class ForumServiceTest {
 
     }
 
+
+    @Test
+    void deleteForum(){
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        forumService.deleteForum(6L, 1L);
+        List<ForumDto> allForums = forumService.getAllForums();
+        assertEquals(5, allForums.size());
+    }
+
+    @Test
+    void deleteForumNotFound(){
+        assertThrows(NotFoundException.class, () -> forumService.deleteForum(6L, 1L));
+    }
+
+    @Test
+    void deleteForumAndCheckTags(){
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Fiction")
+                .build();
+
+        forumService.addTagToForum(6L, 1L, createTagDto);
+        forumService.deleteForum(6L, 1L);
+        List<ForumDto> allForums = forumService.getAllForums();
+        assertEquals(5, allForums.size());
+        assertEquals(0, allForums.get(4).getTags().size());
+    }
+
 }

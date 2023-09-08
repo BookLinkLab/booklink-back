@@ -20,4 +20,6 @@ public interface ForumRepository extends JpaRepository<Forum, Long> {
     List<Forum> findAllByNameContainingIgnoreCase(String forumName);
 
     List<Forum> findAllByTagsIdIn(List<Long> tagIds);
+
+    boolean existsByTagsContaining(Tag tag);
 }
