@@ -48,10 +48,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
-        Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forum.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("El foro no fue encontrado"));
+        if (!forum.getUserId().equals(userId)) throw new UserNotAdminException("No eres es el administrador del foro");
         Tag tag = tagService.findOrCreateTag(createTagDto);
-        if (forumRepository.existsByIdAndTagsContaining(forumId, tag)) throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
+        if (forumRepository.existsByIdAndTagsContaining(forumId, tag)) throw new AlreadyAssignedException("La etiqueta %s ya fue asignada al foro".formatted(tag.getName()));
         forum.getTags().add(tag);
         Forum savedForum = forumRepository.save(forum);
         return ForumDto.from(savedForum);
@@ -60,8 +60,8 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
         Optional<Forum> forumOptional = forumRepository.findById(forumId);
-        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("El foro no fue encontrado"));
+        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("No eres es el administrador del foro %s".formatted(forumToEdit.getName()));
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));
@@ -92,7 +92,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public Forum getForumEntityById(Long id) {
         Optional<Forum> forumOptional = forumRepository.findById(id);
-        return forumOptional.orElseThrow(() -> new NotFoundException("Forum %s not found".formatted(id)));
+        return forumOptional.orElseThrow(() -> new NotFoundException("El foro no fue encontrado".formatted(id)));
     }
 
     @Override

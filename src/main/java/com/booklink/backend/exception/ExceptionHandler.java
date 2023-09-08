@@ -35,7 +35,7 @@ public class ExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        this.logger.info("Validation errors: " + errorMessages);
+        this.logger.info("Errores de validación: " + errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
     }
 
@@ -45,7 +45,7 @@ public class ExceptionHandler {
         this.logger.info(e.getMessage());
         Matcher matcher = Pattern.compile("Detail: Key \\((.*)\\)").matcher(e.getMostSpecificCause().getMessage());
         if (matcher.find()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Duplicate key: \"" + matcher.group(1).replaceAll("[)(]", " ") + "\"");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Valor duplicado: \"" + matcher.group(1).replaceAll("[)(]", " ") + "\"");
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }

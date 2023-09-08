@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateUserDto {
-    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Username must contain only letters and numbers")
-    @Size(min = 3, max = 24, message = "Username must have between 3 and 24 characters.")
+    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "El nombre de usuario solo debe tener letras y números")
+    @Size(min = 3, max = 24, message = "El nombre de usuario debe tener entre 3 y 24 caracteres")
     private String username;
 
     @Email
