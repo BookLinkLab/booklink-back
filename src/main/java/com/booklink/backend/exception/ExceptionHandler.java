@@ -78,4 +78,11 @@ public class ExceptionHandler {
         this.logger.info(e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(MemberDoesntBelongForumException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<?> handleMemberDoesntBelongToForum(MemberDoesntBelongForumException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }

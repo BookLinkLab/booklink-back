@@ -49,9 +49,11 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
         Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forum.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        if (!forum.getUserId().equals(userId))
+            throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         Tag tag = tagService.findOrCreateTag(createTagDto);
-        if (forumRepository.existsByIdAndTagsContaining(forumId, tag)) throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
+        if (forumRepository.existsByIdAndTagsContaining(forumId, tag))
+            throw new AlreadyAssignedException("Etiqueta %s ya asignada al foro %d".formatted(tag.getName(), forumId));
         forum.getTags().add(tag);
         Forum savedForum = forumRepository.save(forum);
         return ForumDto.from(savedForum);
@@ -61,7 +63,8 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
         Optional<Forum> forumOptional = forumRepository.findById(forumId);
         Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %d no encontrado".formatted(forumId)));
-        if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
+        if (!forumToEdit.getUserId().equals(userId))
+            throw new UserNotAdminException("Usuario %d no es el administrador del foro %d".formatted(userId, forumId));
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
         return ForumDto.from(forumRepository.save(forumToEdit));
@@ -97,18 +100,16 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
     @Override
     public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds) {
-        if(tagIds == null  && forumName != null){
+        if (tagIds == null && forumName != null) {
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
             return forums.stream().map(ForumViewDto::from).toList();
         } else if (forumName == null && tagIds != null) {
             List<Forum> forums = forumRepository.findAllByTagsIdIn(tagIds);
             return forums.stream().map(ForumViewDto::from).toList();
-        }
-        else if (forumName == null) {
+        } else if (forumName == null) {
             List<Forum> forums = forumRepository.findAll();
             return forums.stream().map(ForumViewDto::from).toList();
-        }
-        else {
+        } else {
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
             return forums.stream().map(ForumViewDto::from).toList();
         }
@@ -118,13 +119,23 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public void deleteForum(Long id, Long userId) {
         Forum forumToDelete = getForumEntityById(id);
         List<Tag> tagToDelete = forumToDelete.getTags();
-        if (!forumToDelete.getUserId().equals(userId)) throw new UserNotAdminException("Solo el administrador del foro puede eliminarlo");
+        if (!forumToDelete.getUserId().equals(userId))
+            throw new UserNotAdminException("Solo el administrador del foro puede eliminarlo");
         forumRepository.delete(forumToDelete);
-        for (Tag tag: tagToDelete) {
+        for (Tag tag : tagToDelete) {
             if (!forumRepository.existsByTagsContaining(tag)) {
                 tagService.deleteTag(tag.getId());
             }
         }
     }
 
+    @Override
+    public void leaveForum(Long id, Long userId) {
+        User memberToLeave = userService.getUserEntityById(userId);
+        Forum forumToLeave = getForumEntityById(id);
+
+        boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
+        if (removed) forumRepository.save(forumToLeave);
+        else throw new MemberDoesntBelongForumException("Ya no perteneces a este foro");
+    }
 }

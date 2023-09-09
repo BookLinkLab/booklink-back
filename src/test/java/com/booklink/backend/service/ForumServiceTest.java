@@ -48,7 +48,7 @@ public class ForumServiceTest {
 
     @Test
     void happyPathTest() {
-         assertFalse(forumService.getAllForums().isEmpty());
+        assertFalse(forumService.getAllForums().isEmpty());
 
         //create forum
         CreateForumDto createForumDto = CreateForumDto.builder()
@@ -92,20 +92,19 @@ public class ForumServiceTest {
         Long adminUserId = 1L;
 
 
-        forumService.editForum(id, adminUserId ,editForumDto);
+        forumService.editForum(id, adminUserId, editForumDto);
 
 
         List<ForumDto> allForums1 = forumService.getAllForums();
 
         assertEquals(6, allForums1.size());
-        assertNotEquals(allForums,allForums1);
+        assertNotEquals(allForums, allForums1);
         assertEquals(1, forumWithTag.getTags().size());
 
         Optional<Forum> forumOptional = forumRepository.findById(id);
         Forum forum = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
         assertEquals("Don Quijote", forum.getName());
         assertEquals("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ", forum.getDescription());
-
 
 
     }
@@ -140,7 +139,7 @@ public class ForumServiceTest {
 
 
     @Test
-    void forumNotFound(){
+    void forumNotFound() {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
@@ -148,7 +147,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void userNotForumAdmin(){
+    void userNotForumAdmin() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -162,7 +161,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void notAdminEdit(){
+    void notAdminEdit() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -178,13 +177,13 @@ public class ForumServiceTest {
         Long nonAdminUserId = 3L;
         Long forumId = 6L;
 
-        assertThrows(UserNotAdminException.class, () -> forumService.editForum(forumId, nonAdminUserId ,editForumDto));
+        assertThrows(UserNotAdminException.class, () -> forumService.editForum(forumId, nonAdminUserId, editForumDto));
 
 
     }
 
     @Test
-    void tagAlreadyAssigned(){
+    void tagAlreadyAssigned() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
@@ -199,7 +198,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void searchForumsByNameAndTag(){
+    void searchForumsByNameAndTag() {
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
@@ -222,8 +221,9 @@ public class ForumServiceTest {
         assertEquals(1, forums4.size());
 
     }
+
     @Test
-    void searchForumsByTag(){
+    void searchForumsByTag() {
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
@@ -245,7 +245,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void searchForumsByName(){
+    void searchForumsByName() {
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
@@ -262,7 +262,7 @@ public class ForumServiceTest {
 //    searchForumsByNameNullAndTagsNull
 
     @Test
-    void searchForumsByNameNullAndTagsNull(){
+    void searchForumsByNameNullAndTagsNull() {
 
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
@@ -280,7 +280,7 @@ public class ForumServiceTest {
 
 
     @Test
-    void deleteForum(){
+    void deleteForum() {
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
@@ -294,12 +294,12 @@ public class ForumServiceTest {
     }
 
     @Test
-    void deleteForumNotFound(){
+    void deleteForumNotFound() {
         assertThrows(NotFoundException.class, () -> forumService.deleteForum(6L, 1L));
     }
 
     @Test
-    void deleteForumAndCheckTags(){
+    void deleteForumAndCheckTags() {
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
@@ -316,6 +316,62 @@ public class ForumServiceTest {
         List<ForumDto> allForums = forumService.getAllForums();
         assertEquals(5, allForums.size());
         assertEquals(0, allForums.get(4).getTags().size());
+    }
+
+    @Test
+    void leaveForumTest() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        List<ForumDto> allForums = forumService.getAllForums();
+        ForumDto myForum = allForums.get(5);
+
+        UserDto user = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        forumService.joinForum(myForum.getId(), user.getId());
+        forumService.leaveForum(myForum.getId(), user.getId());
+    }
+
+    @Test
+    void leaveForumWhenUserIsNotMember() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        List<ForumDto> allForums = forumService.getAllForums();
+        ForumDto myForum = allForums.get(5);
+
+        UserDto loggedUser = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        assertThrows(MemberDoesntBelongForumException.class,
+                () -> forumService.leaveForum(myForum.getId(), loggedUser.getId()));
+    }
+
+    @Test
+    void leaveForumNotFound() {
+        UserDto loggedUser = UserDto.builder()
+                .id(10L)
+                .username("user")
+                .email("user@mail.com")
+                .build();
+
+        assertThrows(NotFoundException.class,
+                () -> forumService.leaveForum(-1L, loggedUser.getId()));
     }
 
 }
