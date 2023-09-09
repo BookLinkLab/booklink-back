@@ -136,6 +136,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
         boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
         if (removed) forumRepository.save(forumToLeave);
-        else throw new MemberDoesntBelongForumException("Ya no perteneces a este foro");
+        else throw new MemberDoesntBelongForumException("No perteneces a este foro");
     }
 }
