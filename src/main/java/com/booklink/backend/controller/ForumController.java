@@ -3,6 +3,7 @@ package com.booklink.backend.controller;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumGetDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.utils.SecurityUtil;
@@ -54,5 +55,11 @@ public class ForumController {
         forumService.deleteForum(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("Forum deleted successfully");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ForumGetDto> getForumById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(forumService.getForumById(id));
+    }
+
 
 }
