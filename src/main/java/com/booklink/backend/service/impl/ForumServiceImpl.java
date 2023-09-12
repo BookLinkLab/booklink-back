@@ -93,6 +93,11 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
+    public ForumDto getForumById(Long id) {
+        return ForumDto.from(getForumEntityById(id));
+    }
+
+    @Override
     public Forum getForumEntityById(Long id) {
         Optional<Forum> forumOptional = forumRepository.findById(id);
         return forumOptional.orElseThrow(() -> new NotFoundException("Forum %s not found".formatted(id)));
@@ -136,6 +141,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
         boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
         if (removed) forumRepository.save(forumToLeave);
-        else throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(id));
+        else
+            throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(getForumById(id).getName()));
     }
 }

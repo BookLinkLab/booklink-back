@@ -17,6 +17,8 @@ public interface ForumService {
 
     ForumDto joinForum(Long id, Long userId);
 
+    ForumDto getForumById(Long id);
+
     Forum getForumEntityById(Long id);
 
     ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto);
