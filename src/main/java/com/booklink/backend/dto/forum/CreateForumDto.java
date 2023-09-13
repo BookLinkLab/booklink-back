@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreateForumDto {
-    @NotBlank(message = "Forum name must not be blank")
-    @Size(min = 4, max = 32, message = "Forum name must be between 4 and 32 characters")
+    @NotBlank(message = "El nombre del foro no puede estar vacío")
+    @Size(min = 4, max = 32, message = "El nombre del foro debe tener entre 4 y 32 caracteres")
     private String name;
 
-    @NotBlank(message = "Description must not be blank")
+    @NotBlank(message = "La descripción no puede estar vacía")
     @Size(max = 512)
     private String description;
 

@@ -53,7 +53,7 @@ public class ForumController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteForum(@PathVariable Long id) {
         forumService.deleteForum(id, securityUtil.getLoggedUserId());
-        return ResponseEntity.status(HttpStatus.OK).body("Forum deleted successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Foro %s eliminado".formatted(id));
     }
 
     @GetMapping("/{id}")

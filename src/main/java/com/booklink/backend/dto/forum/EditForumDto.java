@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class EditForumDto {
-    @NotBlank(message = "El nombre del foro no puede ser vacío")
+    @NotBlank(message = "El nombre del foro no puede estar vacío")
     @Size(min = 4, max = 32, message = "El nombre del foro debe tener entre 4 y 32 caracteres")
     private String name;
 

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreateTagDto {
-    @NotBlank(message = "Nombre de la etiqueta no puede estar vacío")
-    @Size(min = 3, max = 20, message = "Nombre de la etiqueta debe tener entre 4 y 32 caracteres")
+    @NotBlank(message = "El nombre de la etiqueta no puede estar vacío")
+    @Size(min = 3, max = 20, message = "El nombre de la etiqueta debe tener entre 4 y 32 caracteres")
     private String name;
 }
