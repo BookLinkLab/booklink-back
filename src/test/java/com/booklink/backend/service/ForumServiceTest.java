@@ -8,6 +8,7 @@ import com.booklink.backend.exception.*;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,8 @@ public class ForumServiceTest {
     private ForumRepository forumRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TagService tagService;
 
     @BeforeEach
     public void setup() {
@@ -79,10 +82,16 @@ public class ForumServiceTest {
 
         ForumDto forumWithTag = forumService.addTagToForum(6L, 1L, createTagDto);
         assertEquals(1, forumWithTag.getTags().size());
+        assertEquals(1, tagService.getAllTags().size());
+
+        CreateTagDto tag2 = CreateTagDto.builder()
+                .name("Tag2")
+                .build();
 
         EditForumDto editForumDto = EditForumDto.builder()
                 .name("Don Quijote")
                 .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .tags(List.of(tag2))
                 .build();
 
 
@@ -90,14 +99,18 @@ public class ForumServiceTest {
         Long adminUserId = 1L;
 
 
-        forumService.editForum(id, adminUserId ,editForumDto);
+        ForumDto editedForum = forumService.editForum(id, adminUserId ,editForumDto);
 
 
         List<ForumDto> allForums1 = forumService.getAllForums();
+        List<Tag> allTags = tagService.getAllTags();
+
+        assertEquals(1, allTags.size());
+        assertEquals("Tag2", allTags.get(0).getName());
+        assertEquals(1, editedForum.getTags().size());
 
         assertEquals(6, allForums1.size());
         assertNotEquals(allForums,allForums1);
-        assertEquals(1, forumWithTag.getTags().size());
 
         Optional<Forum> forumOptional = forumRepository.findById(id);
         Forum forum = forumOptional.orElseThrow(() -> new NotFoundException("%d del foro no encontrado".formatted(id)));
