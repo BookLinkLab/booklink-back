@@ -25,7 +25,6 @@ public class EditForumDto {
     @Size(max = 512)
     private String description;
 
-    @NotEmpty(message = "La lista de etiquetas no puede estar vacía")
     private List<CreateTagDto> tags;
 
 }

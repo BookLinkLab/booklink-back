@@ -64,12 +64,13 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
         forumToEdit.getTags().clear();
         forumToEdit.getTags().addAll(newTags);
+        Forum savedForum = forumRepository.save(forumToEdit);
         for (Tag tag: oldTags) {
             if (!forumRepository.existsByTagsContaining(tag)) {
                 tagService.deleteTag(tag.getId());
             }
         }
-        return ForumDto.from(forumRepository.save(forumToEdit));
+        return ForumDto.from(savedForum);
     }
 
     @Override
