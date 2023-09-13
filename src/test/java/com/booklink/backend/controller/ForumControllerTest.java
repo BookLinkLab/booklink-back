@@ -263,20 +263,27 @@ public class ForumControllerTest {
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag56")
+                .build();
+
 
         EditForumDto editForumDto = EditForumDto.builder()
                 .name("Don Quijote")
-                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes")
+                .tags(List.of(createTagDto))
                 .build();
 
         EditForumDto editForumDto1 = EditForumDto.builder()
                 .name("Don Quijote")
                 .description("")
+                .tags(List.of(createTagDto))
                 .build();
 
         EditForumDto editForumDto2 = EditForumDto.builder()
                 .name("D")
                 .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .tags(List.of(createTagDto))
                 .build();
 
 

@@ -83,6 +83,7 @@ public class ForumServiceTest {
         EditForumDto editForumDto = EditForumDto.builder()
                 .name("Don Quijote")
                 .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .tags(List.of(createTagDto))
                 .build();
 
 
