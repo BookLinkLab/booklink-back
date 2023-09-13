@@ -9,6 +9,7 @@ import com.booklink.backend.dto.forum.ForumGetDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +159,7 @@ public class ForumControllerTest {
 
 
     @Test
-    void addTagToForum(){
+    void addTagToForum() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
@@ -178,7 +179,7 @@ public class ForumControllerTest {
     }
 
     @Test
-    void forumNotFoundException(){
+    void forumNotFoundException() {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
@@ -228,7 +229,7 @@ public class ForumControllerTest {
     }
 
     @Test
-    void tagAlreadyAssigned(){
+    void tagAlreadyAssigned() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
@@ -290,15 +291,15 @@ public class ForumControllerTest {
         Long forumId = 6L;
 
         ResponseEntity<ForumDto> response = restTemplate.exchange(
-                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
         );
         ResponseEntity<ForumDto> response1 = restTemplate.exchange(
-                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
         );
 
 
         ResponseEntity<ForumDto> response2 = restTemplate.exchange(
-                baseUrl+"/"+forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
         );
 
 
@@ -309,7 +310,7 @@ public class ForumControllerTest {
     }
 
     @Test
-    void searchForums(){
+    void searchForums() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
@@ -359,7 +360,7 @@ public class ForumControllerTest {
     }
 
     @Test
-    void deleteForum(){
+    void deleteForum() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
@@ -376,7 +377,7 @@ public class ForumControllerTest {
     }
 
     @Test
-    void deleteForumException(){
+    void deleteForumException() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
@@ -428,4 +429,65 @@ public class ForumControllerTest {
 
 
 
+    @Test
+    void leaveForum() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+        createUserAndLogIn("member11", "member@mail.com", "password");
+        restTemplate.postForEntity(baseUrl + "/6/join", null, ForumDto.class);
+
+        ResponseEntity<UserProfileDto> getResponse = restTemplate.exchange(
+                "/user/11", HttpMethod.GET, new HttpEntity<>(null), UserProfileDto.class
+        );
+        assertEquals(1, Objects.requireNonNull(getResponse.getBody()).getForumsJoined().size());
+
+        ResponseEntity<String> deleteResponse = restTemplate.exchange(
+                baseUrl + "/6/leave", HttpMethod.DELETE, new HttpEntity<>(null), String.class
+        );
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+
+        ResponseEntity<UserProfileDto> getResponse2 = restTemplate.exchange(
+                "/user/11", HttpMethod.GET, new HttpEntity<>(null), UserProfileDto.class
+        );
+        assertEquals(0, Objects.requireNonNull(getResponse2.getBody()).getForumsJoined().size());
+    }
+
+    @Test
+    void leaveForumNotFound() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+       createUserAndLogIn("member11", "member@mail.com", "password");
+
+        ResponseEntity<String> notExistentResponse = restTemplate.exchange(
+                baseUrl + "/-1/leave", HttpMethod.DELETE, new HttpEntity<>(null), String.class
+        );
+        assertEquals(HttpStatus.NOT_FOUND, notExistentResponse.getStatusCode());
+    }
+
+    @Test
+    void leaveForumWhenUserIsNotMember() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .build();
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        createUserAndLogIn("member11", "member@mail.com", "password");
+
+        ResponseEntity<String> notMemberResponse = restTemplate.exchange(
+                baseUrl + "/6/leave", HttpMethod.DELETE, new HttpEntity<>(null), String.class
+        );
+        assertEquals(HttpStatus.NOT_FOUND, notMemberResponse.getStatusCode());
+    }
 }

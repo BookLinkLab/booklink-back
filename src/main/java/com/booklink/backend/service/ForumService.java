@@ -25,4 +25,6 @@ public interface ForumService {
     ForumGetDto getForumById(Long id);
 
     void deleteForum(Long id, Long userId);
+
+    void leaveForum(Long id, Long userId);
 }

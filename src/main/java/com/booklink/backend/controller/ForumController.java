@@ -36,6 +36,12 @@ public class ForumController {
         return forumService.joinForum(id, securityUtil.getLoggedUserId());
     }
 
+    @DeleteMapping("/{id}/leave")
+    public ResponseEntity<?> leaveForum(@PathVariable Long id) {
+        forumService.leaveForum(id, securityUtil.getLoggedUserId());
+        return ResponseEntity.status(HttpStatus.OK).body("Foro %s abandonado correctamente".formatted(id));
+    }
+
     @PatchMapping("/{id}")
     public ForumDto editForum(@PathVariable Long id, @Valid @RequestBody EditForumDto editForumDto) {
         return this.forumService.editForum(id, securityUtil.getLoggedUserId(), editForumDto);
