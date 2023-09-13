@@ -1,14 +1,9 @@
 package com.booklink.backend.service.impl;
 
-import com.booklink.backend.dto.forum.CreateForumDto;
-import com.booklink.backend.dto.forum.EditForumDto;
-import com.booklink.backend.dto.forum.ForumDto;
-import com.booklink.backend.dto.forum.ForumViewDto;
+import com.booklink.backend.dto.forum.*;
 import com.booklink.backend.dto.tag.CreateTagDto;
-import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.*;
-import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
@@ -17,6 +12,7 @@ import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +60,17 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         if (!forumToEdit.getUserId().equals(userId)) throw new UserNotAdminException("No eres es el administrador del foro %s".formatted(forumToEdit.getName()));
         forumToEdit.setName(editForumDto.getName());
         forumToEdit.setDescription(editForumDto.getDescription());
-        return ForumDto.from(forumRepository.save(forumToEdit));
+        List<Tag> oldTags = new ArrayList<>(forumToEdit.getTags());
+        List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
+        forumToEdit.getTags().clear();
+        forumToEdit.getTags().addAll(newTags);
+        Forum savedForum = forumRepository.save(forumToEdit);
+        for (Tag tag: oldTags) {
+            if (!forumRepository.existsByTagsContaining(tag)) {
+                tagService.deleteTag(tag.getId());
+            }
+        }
+        return ForumDto.from(savedForum);
     }
 
     @Override
@@ -126,5 +132,11 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             }
         }
     }
+    @Override
+    public ForumGetDto getForumById(Long id) {
+        Forum forum = this.getForumEntityById(id);
+        return ForumGetDto.from(forum);
+    }
+
 
 }

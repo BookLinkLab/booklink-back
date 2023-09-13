@@ -5,6 +5,7 @@ import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.forum.EditForumDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumGetDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
@@ -262,20 +263,27 @@ public class ForumControllerTest {
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
+        CreateTagDto createTagDto = CreateTagDto.builder()
+                .name("Tag56")
+                .build();
+
 
         EditForumDto editForumDto = EditForumDto.builder()
                 .name("Don Quijote")
-                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes")
+                .tags(List.of(createTagDto))
                 .build();
 
         EditForumDto editForumDto1 = EditForumDto.builder()
                 .name("Don Quijote")
                 .description("")
+                .tags(List.of(createTagDto))
                 .build();
 
         EditForumDto editForumDto2 = EditForumDto.builder()
                 .name("D")
                 .description("analisis,discusión y debate acerca de la magistral obra de Miguel de Cervantes ")
+                .tags(List.of(createTagDto))
                 .build();
 
 
@@ -389,5 +397,35 @@ public class ForumControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response1.getStatusCode());
     }
+
+
+    @Test
+    void getForumById(){
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Forum")
+                .description("description")
+                .img("img")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
+
+        ResponseEntity<ForumGetDto> response = restTemplate.exchange(
+                baseUrl + "/6", HttpMethod.GET, null, ForumGetDto.class
+        );
+
+
+        ResponseEntity<String> response1 = restTemplate.exchange(
+                baseUrl + "/356", HttpMethod.GET, null, String.class
+        );
+
+
+        assertEquals(HttpStatus.NOT_FOUND, response1.getStatusCode());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(6, response.getBody().getId());
+
+    }
+
+
 
 }
