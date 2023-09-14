@@ -6,6 +6,7 @@ import com.booklink.backend.dto.user.UpdateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.service.UserService;
+import com.booklink.backend.utils.SecurityUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,11 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final SecurityUtil securityUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SecurityUtil securityUtil) {
         this.userService = userService;
+        this.securityUtil = securityUtil;
     }
 
     @PostMapping
@@ -41,6 +44,6 @@ public class UserController {
 
     @PatchMapping("{id}")
     public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDto updateUserDTO) {
-        return this.userService.updateUser(id, updateUserDTO);
+        return this.userService.updateUser(securityUtil.getLoggedUserId(), updateUserDTO);
     }
 }
