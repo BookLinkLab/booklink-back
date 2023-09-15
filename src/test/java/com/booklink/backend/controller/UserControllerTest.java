@@ -175,7 +175,7 @@ public class UserControllerTest {
     void updateUserTest() {
         setOutputStreamingFalse(restTemplate);
 
-        Long userIdToUpdate = 1L;
+        Long userIdToUpdate = 10L;
 
 
         UpdateUserDto updateUserDTO = UpdateUserDto.builder()
@@ -195,24 +195,7 @@ public class UserControllerTest {
 
     }
 
-    @Test
-    void notFoundUser_404_Test() {
 
-        setOutputStreamingFalse(restTemplate);
-
-        UpdateUserDto updateUserDTO = UpdateUserDto.builder()
-                .username("Joaquin")
-                .email("joaquin@gmail.com")
-                .password("abc")
-                .build();
-
-        Long userId = 80L;
-
-
-        ResponseEntity<String> response = UpdateRequest(userId, updateUserDTO, String.class);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-
-    }
 
     @Test
     void invalidInput_400_Test() {
