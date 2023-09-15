@@ -70,12 +70,14 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %s no encontrado".formatted(getForumById(forumId).getTitle())));
         if (!forumToEdit.getUserId().equals(userId))
             throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(getForumById(forumId).getTitle()));
-        forumToEdit.setName(editForumDto.getName());
-        forumToEdit.setDescription(editForumDto.getDescription());
+        if (editForumDto.getName() != null) forumToEdit.setName(editForumDto.getName());
+        if (editForumDto.getDescription() != null) forumToEdit.setDescription(editForumDto.getDescription());
         List<Tag> oldTags = new ArrayList<>(forumToEdit.getTags());
-        List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
-        forumToEdit.getTags().clear();
-        forumToEdit.getTags().addAll(newTags);
+        if (editForumDto.getTags() != null) {
+            List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
+            forumToEdit.getTags().clear();
+            forumToEdit.getTags().addAll(newTags);
+        }
         Forum savedForum = forumRepository.save(forumToEdit);
         for (Tag tag : oldTags) {
             if (!forumRepository.existsByTagsContaining(tag)) {
