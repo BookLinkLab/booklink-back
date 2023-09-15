@@ -1,11 +1,14 @@
 package com.booklink.backend.dto.forum;
 
+import com.booklink.backend.dto.tag.CreateTagDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +24,6 @@ public class CreateForumDto {
     private String description;
 
     private String img;
+
+    private List<CreateTagDto> tags;
 }

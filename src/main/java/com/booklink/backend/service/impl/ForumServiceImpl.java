@@ -29,11 +29,20 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public ForumDto createForum(CreateForumDto forumDto, Long userId) {
+    public ForumDto createForum(CreateForumDto createForumDto, Long userId) {
         UserProfileDto forumCreator = userService.getUserById(userId);
-        Forum forumToSave = Forum.from(forumDto, forumCreator.getId());
+        Forum forumToSave = Forum.from(createForumDto, forumCreator.getId());
         Forum savedForum = forumRepository.save(forumToSave);
-        return ForumDto.from(savedForum);
+
+        List<CreateTagDto> tags = createForumDto.getTags();
+        ForumDto lastForum = ForumDto.from(savedForum);
+
+        if (tags != null) {
+            for (CreateTagDto tag : tags) {
+                lastForum = addTagToForum(savedForum.getId(), userId, tag);
+            }
+        }
+        return lastForum;
     }
 
     @Override
@@ -68,7 +77,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToEdit.getTags().clear();
         forumToEdit.getTags().addAll(newTags);
         Forum savedForum = forumRepository.save(forumToEdit);
-        for (Tag tag: oldTags) {
+        for (Tag tag : oldTags) {
             if (!forumRepository.existsByTagsContaining(tag)) {
                 tagService.deleteTag(tag.getId());
             }
@@ -134,6 +143,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             }
         }
     }
+
     @Override
     public ForumGetDto getForumById(Long id) {
         Forum forum = this.getForumEntityById(id);
