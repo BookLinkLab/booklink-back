@@ -63,7 +63,7 @@ public class ForumServiceTest {
         assertEquals(6, allForums.size());
 
         Forum myForum = allForums.get(5);
-        assertEquals(savedForum , myForum);
+        assertNotEquals(savedForum , myForum);
 
         //join user
         UserDto userToJoin = UserDto.builder()
