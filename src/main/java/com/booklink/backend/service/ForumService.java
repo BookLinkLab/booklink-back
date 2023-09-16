@@ -10,7 +10,7 @@ public interface ForumService {
 
     ForumDto createForum(CreateForumDto forumDto, Long userId);
 
-    List<ForumDto> getAllForums();
+    List<Forum> getAllForums();
 
     ForumDto joinForum(Long id, Long userId);
 
@@ -20,9 +20,9 @@ public interface ForumService {
 
     ForumDto editForum(Long id, Long userId, EditForumDto editForumDto);
 
-    List<ForumViewDto> searchForums(String forumName, List<Long> tagIds);
+    List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId);
 
-    ForumGetDto getForumById(Long id);
+    ForumGetDto getForumById(Long id, Long userId);
 
     void deleteForum(Long id, Long userId);
 

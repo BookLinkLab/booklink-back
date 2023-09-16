@@ -19,14 +19,16 @@ public class ForumViewDto {
     private String img;
     private Integer members;
     private List<TagDto> tags;
+    private boolean searcherIsMember;
 
-    public static ForumViewDto from(Forum forum) {
+    public static ForumViewDto from(Forum forum, boolean isForumMember) {
         return ForumViewDto.builder()
                 .id(forum.getId())
                 .name(forum.getName())
                 .img(forum.getImg())
                 .members(forum.getMembers().size())
                 .tags(forum.getTags().stream().map(TagDto::from).toList())
+                .searcherIsMember(isForumMember)
                 .build();
     }
 }
