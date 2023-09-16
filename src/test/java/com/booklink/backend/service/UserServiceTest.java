@@ -103,7 +103,7 @@ public class UserServiceTest {
         User user1 = userService.getUserEntityById(2L);
         User user2 = userService.getUserEntityById(3L);
 
-
+       //primer busqueda (usuario 3 busca al 2)
        UserProfileDto userSearched = userService.getUserById(user1.getId(), user2.getId());
 
        assertEquals(1, userSearched.getForumsCreated().size());
@@ -114,10 +114,13 @@ public class UserServiceTest {
         List<ForumDto> forums1 = userSearched.getForumsCreated();
         forums1.addAll(userSearched.getForumsJoined());
 
+        //testeando la primera busqueda
         for (ForumDto forum : forums1) {
             assertFalse(forum.isSearcherIsMember()); // testeando que el userId 3 no es miembro de ningun foro del userId 2
         }
 
+
+        //testeando la primer busqueda pero ahora el userId 3 se une al foro 4 del userId 2
         forumService.joinForum(4L, user2.getId());
         UserProfileDto userSearchedAgain = userService.getUserById(user1.getId(), user2.getId());
 
@@ -128,22 +131,24 @@ public class UserServiceTest {
 
 
 
-
+        //segunda busqueda (usuario 8 busca al 2)
         UserProfileDto userSearched2 = userService.getUserById(2L, 8L);
         List<ForumDto> forums2 = userSearched2.getForumsCreated();
 
 
+        // testeando que el user 8 es miembro de todos los foros del user 2
         for (ForumDto forum : forums2) {
-            assertTrue(forum.isSearcherIsMember()); // testeando que el user 8 es miembro de todos los foros del user 2
+            assertTrue(forum.isSearcherIsMember());
         }
 
 
-        //testeando que el user 8 no es miembro del foro 5 del que el user 3 creo (hecho mas arriba en el test)
+        //tercera busqueda (usuario 8 busca al 3)
         UserProfileDto userSearched3 = userService.getUserById(3L, 8L);
 
         List<ForumDto> forums3 = userSearched3.getForumsCreated();
         forums3.addAll(userSearched3.getForumsJoined());
 
+        //testeando que el user 8 no es miembro del foro 5 del que el user 3 creo (hecho mas arriba en el test) y si del resto de los foros del user 3
         for (ForumDto forum : forums2) {
             if(forum.getId() == 6L){assertFalse(forum.isSearcherIsMember());}
             else{

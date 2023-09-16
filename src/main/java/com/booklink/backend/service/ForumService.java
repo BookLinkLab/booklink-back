@@ -10,7 +10,7 @@ public interface ForumService {
 
     ForumDto createForum(CreateForumDto forumDto, Long userId);
 
-    List<Forum> getAllForums();
+    List<ForumDto> getAllForums();
 
     ForumDto joinForum(Long id, Long userId);
 

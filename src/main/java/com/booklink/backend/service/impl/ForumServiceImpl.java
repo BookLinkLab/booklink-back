@@ -38,9 +38,15 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public List<Forum> getAllForums() {
-        return forumRepository.findAll();
+    public List<ForumDto> getAllForums() {
+        List<Forum> forums = forumRepository.findAll();
+        List<ForumDto> forumsDtos = new ArrayList<>();
+        for (Forum forum : forums) {
+            forumsDtos.add(ForumDto.from(forum, false));
+        }
+        return forumsDtos;
     }
+
 
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {

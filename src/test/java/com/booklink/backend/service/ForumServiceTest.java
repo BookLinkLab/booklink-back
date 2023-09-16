@@ -58,11 +58,11 @@ public class ForumServiceTest {
                 .img("www.1085607313601204255.com")
                 .build();
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
-        List<Forum> allForums = forumService.getAllForums();
+        List<ForumDto> allForums = forumService.getAllForums();
         assertFalse(allForums.isEmpty());
         assertEquals(6, allForums.size());
 
-        Forum myForum = allForums.get(5);
+        ForumDto myForum = allForums.get(5);
         assertNotEquals(savedForum , myForum);
 
         //join user
@@ -102,7 +102,7 @@ public class ForumServiceTest {
         ForumDto editedForum = forumService.editForum(id, adminUserId ,editForumDto);
 
 
-        List<Forum> allForums1 = forumService.getAllForums();
+        List<ForumDto> allForums1 = forumService.getAllForums();
         List<Tag> allTags = tagService.getAllTags();
 
         assertEquals(1, allTags.size());
@@ -302,7 +302,7 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
         forumService.deleteForum(6L, 1L);
-        List<Forum> allForums = forumService.getAllForums();
+        List<ForumDto> allForums = forumService.getAllForums();
         assertEquals(5, allForums.size());
     }
 
@@ -326,7 +326,7 @@ public class ForumServiceTest {
 
         forumService.addTagToForum(6L, 1L, createTagDto);
         forumService.deleteForum(6L, 1L);
-        List<Forum> allForums = forumService.getAllForums();
+        List<ForumDto> allForums = forumService.getAllForums();
         assertEquals(5, allForums.size());
         assertEquals(0, allForums.get(4).getTags().size());
     }
@@ -340,8 +340,8 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
 
-        List<Forum> allForums = forumService.getAllForums();
-        Forum myForum = allForums.get(5);
+        List<ForumDto> allForums = forumService.getAllForums();
+        ForumDto myForum = allForums.get(5);
 
         UserDto user = UserDto.builder()
                 .id(10L)
@@ -362,8 +362,8 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
 
-        List<Forum> allForums = forumService.getAllForums();
-        Forum myForum = allForums.get(5);
+        List<ForumDto> allForums = forumService.getAllForums();
+        ForumDto myForum = allForums.get(5);
 
         UserDto loggedUser = UserDto.builder()
                 .id(10L)
