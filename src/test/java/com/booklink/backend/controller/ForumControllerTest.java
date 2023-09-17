@@ -49,6 +49,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         ResponseEntity<ForumDto> response = restTemplate.exchange(
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createForumDto), ForumDto.class
@@ -75,6 +76,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -103,6 +105,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -123,6 +126,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -139,6 +143,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -171,6 +176,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -209,6 +215,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -235,6 +242,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -290,6 +298,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -340,6 +349,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -357,6 +367,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -381,6 +392,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -409,6 +421,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -437,6 +450,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -454,6 +468,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -496,6 +511,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
 
         ResponseEntity<ForumDto> response = restTemplate.exchange(

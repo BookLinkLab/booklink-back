@@ -32,17 +32,14 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public ForumDto createForum(CreateForumDto createForumDto, Long userId) {
         UserProfileDto forumCreator = userService.getUserById(userId);
         Forum forumToSave = Forum.from(createForumDto, forumCreator.getId());
+
+        List<CreateTagDto> createTagDto = createForumDto.getTags();
+        List<Tag> tags = createTagDto.stream().map(tagService::findOrCreateTag).toList();
+
+        forumToSave.setTags(tags);
+
         Forum savedForum = forumRepository.save(forumToSave);
-
-        Optional<List<CreateTagDto>> optionalTags = Optional.ofNullable(createForumDto.getTags());
-        ForumDto lastModifiedForum = ForumDto.from(savedForum);
-
-        if (optionalTags.isPresent() && !optionalTags.get().isEmpty()) {
-            for (CreateTagDto tag : optionalTags.get()) {
-                lastModifiedForum = addTagToForum(savedForum.getId(), userId, tag);
-            }
-        }
-        return lastModifiedForum;
+        return ForumDto.from(savedForum);
     }
 
     @Override
