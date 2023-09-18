@@ -23,9 +23,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,6 +50,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         ResponseEntity<ForumDto> response = restTemplate.exchange(
                 baseUrl, HttpMethod.POST, new HttpEntity<>(createForumDto), ForumDto.class
@@ -75,6 +78,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -104,6 +108,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -124,6 +129,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -133,31 +139,6 @@ public class ForumControllerTest {
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
-    private UserDto createUserAndLogIn(String username, String email, String password) {
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .username(username)
-                .email(email)
-                .password(password)
-                .build();
-        ResponseEntity<LoginResponseDto> createUserResponse = restTemplate.postForEntity("/user", createUserDto, LoginResponseDto.class);
-
-        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
-                .email(email)
-                .password(password)
-                .build();
-        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
-                "/auth", loginRequestDto, LoginResponseDto.class
-        );
-        String token = Objects.requireNonNull(response.getBody()).getToken();
-        restTemplate.getRestTemplate().setInterceptors(
-                List.of((request, body, execution) -> {
-                    request.getHeaders().add("Authorization", "Bearer " + token);
-                    return execution.execute(request, body);
-                })
-        );
-        return Objects.requireNonNull(createUserResponse.getBody()).getUser();
-    }
-
 
     @Test
     void addTagToForum() {
@@ -165,6 +146,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -192,11 +174,12 @@ public class ForumControllerTest {
     }
 
     @Test
-    void userNotAdminException(){
+    void userNotAdminException() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -235,6 +218,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -255,12 +239,13 @@ public class ForumControllerTest {
     }
 
     @Test
-    void editForum(){
+    void editForum() {
 
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -316,6 +301,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -366,6 +352,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -383,6 +370,7 @@ public class ForumControllerTest {
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -402,11 +390,12 @@ public class ForumControllerTest {
 
 
     @Test
-    void getForumById(){
+    void getForumById() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
                 .img("img")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -429,13 +418,13 @@ public class ForumControllerTest {
     }
 
 
-
     @Test
     void leaveForum() {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -464,10 +453,11 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
-       createUserAndLogIn("member11", "member@mail.com", "password");
+        createUserAndLogIn("member11", "member@mail.com", "password");
 
         ResponseEntity<String> notExistentResponse = restTemplate.exchange(
                 baseUrl + "/-1/leave", HttpMethod.DELETE, new HttpEntity<>(null), String.class
@@ -481,6 +471,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
@@ -490,5 +481,71 @@ public class ForumControllerTest {
                 baseUrl + "/6/leave", HttpMethod.DELETE, new HttpEntity<>(null), String.class
         );
         assertEquals(HttpStatus.NOT_FOUND, notMemberResponse.getStatusCode());
+    }
+
+    @Test
+    void createForumWithTags() {
+        createUserAndLogIn("member11", "member@mail.com", "password");
+
+        List<String> tagsName = Arrays.asList("science", "space", "starship");
+        List<CreateTagDto> createTagsDto = tagsName.stream()
+                .map(tagName -> CreateTagDto.builder().name(tagName).build())
+                .toList();
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .tags(createTagsDto)
+                .build();
+
+        ResponseEntity<ForumDto> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createForumDto), ForumDto.class
+        );
+
+        assertEquals(3, Objects.requireNonNull(response.getBody()).getTags().size());
+    }
+
+    @Test
+    void createForumWithoutTags() {
+        createUserAndLogIn("member11", "member@mail.com", "password");
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
+                .build();
+
+        ResponseEntity<ForumDto> response = restTemplate.exchange(
+                baseUrl, HttpMethod.POST, new HttpEntity<>(createForumDto), ForumDto.class
+        );
+
+        assertEquals(0, Objects.requireNonNull(response.getBody()).getTags().size());
+    }
+
+    private UserDto createUserAndLogIn(String username, String email, String password) {
+        CreateUserDto createUserDto = CreateUserDto.builder()
+                .username(username)
+                .email(email)
+                .password(password)
+                .build();
+        ResponseEntity<LoginResponseDto> createUserResponse = restTemplate.postForEntity("/user", createUserDto, LoginResponseDto.class);
+
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
+                "/auth", loginRequestDto, LoginResponseDto.class
+        );
+        String token = Objects.requireNonNull(response.getBody()).getToken();
+        restTemplate.getRestTemplate().setInterceptors(
+                List.of((request, body, execution) -> {
+                    request.getHeaders().add("Authorization", "Bearer " + token);
+                    return execution.execute(request, body);
+                })
+        );
+        return Objects.requireNonNull(createUserResponse.getBody()).getUser();
     }
 }

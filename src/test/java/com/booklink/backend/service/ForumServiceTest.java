@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
         List<ForumDto> allForums = forumService.getAllForums();
@@ -99,7 +101,7 @@ public class ForumServiceTest {
         Long adminUserId = 1L;
 
 
-        ForumDto editedForum = forumService.editForum(id, adminUserId ,editForumDto);
+        ForumDto editedForum = forumService.editForum(id, adminUserId, editForumDto);
 
 
         List<ForumDto> allForums1 = forumService.getAllForums();
@@ -110,7 +112,7 @@ public class ForumServiceTest {
         assertEquals(1, editedForum.getTags().size());
 
         assertEquals(6, allForums1.size());
-        assertNotEquals(allForums,allForums1);
+        assertNotEquals(allForums, allForums1);
         assertNotEquals(allForums, allForums1);
         assertEquals(1, forumWithTag.getTags().size());
 
@@ -134,6 +136,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
 
         ForumDto myForum = forumService.createForum(createForumDto, userToJoin.getId());
@@ -165,6 +168,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 6L);
         CreateTagDto createTagDto = CreateTagDto.builder()
@@ -179,6 +183,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -201,6 +206,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
         CreateTagDto createTagDto = CreateTagDto.builder()
@@ -217,6 +223,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
         CreateTagDto createTagDto = CreateTagDto.builder()
@@ -242,6 +249,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
         CreateTagDto createTagDto = CreateTagDto.builder()
@@ -264,6 +272,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -282,6 +291,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -299,6 +309,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
         forumService.deleteForum(6L, 1L);
@@ -318,6 +329,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
         CreateTagDto createTagDto = CreateTagDto.builder()
@@ -337,6 +349,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -359,6 +372,7 @@ public class ForumServiceTest {
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
                 .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -388,13 +402,14 @@ public class ForumServiceTest {
     }
 
     @Test
-    void getForumById(){
+    void getForumById() {
 
         String forumName = "Lord of the Rings";
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -414,7 +429,7 @@ public class ForumServiceTest {
     }
 
     @Test
-    void getForumByWrongId(){
+    void getForumByWrongId() {
         Long forumId = 6L;
         assertThrows(NotFoundException.class, () -> forumService.getForumById(forumId,5L));
     }
@@ -426,6 +441,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -450,6 +466,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -487,6 +504,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
@@ -504,5 +522,36 @@ public class ForumServiceTest {
         assertEquals("Fans of LOTR", editedForum.getDescription());
         assertEquals("..", editedForum.getImg());
 
+    }
+    @Test
+    void createForumWithTagsTest() {
+        List<String> tagsName = Arrays.asList("science", "space", "starship");
+        List<CreateTagDto> createTagsDto = tagsName.stream()
+                .map(tagName -> CreateTagDto.builder().name(tagName).build())
+                .toList();
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .tags(createTagsDto)
+                .build();
+
+        ForumDto savedForum = forumService.createForum(createForumDto, 1L);
+
+        assertEquals(savedForum.getTags(), forumService.getAllForums().get(5).getTags());
+    }
+
+    @Test
+    void createForumWithoutTagsTest() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Science of Interstellar")
+                .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
+                .img("www.1085607313601204255.com")
+                .tags(new ArrayList<>())
+                .build();
+        ForumDto savedForum = forumService.createForum(createForumDto, 1L);
+
+        assertEquals(savedForum.getTags(), forumService.getAllForums().get(5).getTags());
     }
 }

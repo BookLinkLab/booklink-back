@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,6 +98,7 @@ public class UserServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 3L);
 
