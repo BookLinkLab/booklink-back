@@ -3,6 +3,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumDtoFactory;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.*;
@@ -52,30 +53,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileDto getUserById(Long id, Long userWhoSearchesId) {
         User user = getUserEntityById(id);
-        List<ForumDto> forumsCreated = allForumsDtoWithMemebers(user.getForumsCreated(), userWhoSearchesId);
-        List<ForumDto> forumsJoined = allForumsDtoWithMemebers(user.getForumsJoined(), userWhoSearchesId);
+        List<ForumDto> forumsCreated = ForumDtoFactory.createForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
+        List<ForumDto> forumsJoined = ForumDtoFactory.createForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
         return UserProfileDto.from(user, forumsCreated, forumsJoined);
 
     }
-
-    private List<ForumDto> allForumsDtoWithMemebers(List<Forum> forums, Long userId) {
-        List<ForumDto> forumsIsMembers = new ArrayList<>();
-        for (Forum forum : forums) {
-            if (isMember(forum, userId)) {
-                forumsIsMembers.add(ForumDto.from(forum, true));
-            }
-            else {
-                forumsIsMembers.add(ForumDto.from(forum, false));
-            }
-        }
-        return forumsIsMembers;
-    }
-
-    private Boolean isMember(Forum forum, Long userId) {
-        return forum.getMembers().stream().anyMatch(member -> member.getId().equals(userId)) || forum.getUserId().equals(userId);
-    }
-
-
 
     @Override
     public User getUserEntityById(Long id) {
