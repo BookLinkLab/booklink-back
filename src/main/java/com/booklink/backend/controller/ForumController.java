@@ -54,7 +54,7 @@ public class ForumController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchForums(@RequestParam(name = "forumName", required = false) String forumName,@RequestParam(name = "tagIds", required = false) List<Long> tagIds) {
-        return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(forumName, tagIds));
+        return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(forumName, tagIds,securityUtil.getLoggedUserId()));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteForum(@PathVariable Long id) {
@@ -64,7 +64,7 @@ public class ForumController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ForumGetDto> getForumById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(forumService.getForumById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(forumService.getForumById(id,securityUtil.getLoggedUserId()));
     }
 
 

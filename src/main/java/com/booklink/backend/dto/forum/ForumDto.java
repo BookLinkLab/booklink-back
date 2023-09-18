@@ -22,8 +22,9 @@ public class ForumDto {
     private String img;
     private List<UserDto> members;
     private List<TagDto> tags;
+    private boolean searcherIsMember;
 
-    public static ForumDto from(Forum forum) {
+    public static ForumDto from(Forum forum, boolean isForumMember) {
         return ForumDto.builder()
                 .id(forum.getId())
                 .name(forum.getName())
@@ -32,6 +33,7 @@ public class ForumDto {
                 .img(forum.getImg())
                 .members(forum.getMembers().stream().map(UserDto::from).toList())
                 .tags(forum.getTags().stream().map(TagDto::from).toList())
+                .searcherIsMember(isForumMember)
                 .build();
     }
 }

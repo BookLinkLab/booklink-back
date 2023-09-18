@@ -8,6 +8,7 @@ import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.service.UserService;
 import com.booklink.backend.utils.SecurityUtil;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class UserController {
     private final SecurityUtil securityUtil;
 
     public UserController(UserService userService, SecurityUtil securityUtil) {
-        this.userService = userService;
         this.securityUtil = securityUtil;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -38,7 +39,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserProfileDto getUserProfile(@PathVariable Long id) {
-        return this.userService.getUserById(id);
+        Long userWhoSearchesId = securityUtil.getLoggedUserId();
+        return this.userService.getUserById(id, userWhoSearchesId);
     }
 
 
