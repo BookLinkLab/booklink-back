@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 
 public class ForumDtoFactory {
 
-    public static <T> List<T> createForumViewDtoWithIsMember(List<Forum> forums, Long userId, BiFunction<Forum, Boolean, T> builder) {
+    public static <T> List<T> createForumDtoAndForumViewDtoWithIsMember(List<Forum> forums, Long userId, BiFunction<Forum, Boolean, T> builder) {
         List<T> forumDtos = new ArrayList<>();
         for (Forum forum : forums) {
             boolean isMember = isMember(forum, userId);

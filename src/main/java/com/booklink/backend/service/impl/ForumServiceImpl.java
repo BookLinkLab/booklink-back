@@ -112,16 +112,16 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId) {
         if (tagIds == null && forumName != null) {
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
-            return ForumDtoFactory.createForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else if (forumName == null && tagIds != null) {
             List<Forum> forums = forumRepository.findAllByTagsIdIn(tagIds);
-            return ForumDtoFactory.createForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else if (forumName == null) {
             List<Forum> forums = forumRepository.findAll();
-            return ForumDtoFactory.createForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
-            return ForumDtoFactory.createForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         }
     }
 

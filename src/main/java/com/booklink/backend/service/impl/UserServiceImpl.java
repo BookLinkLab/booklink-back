@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileDto getUserById(Long id, Long userWhoSearchesId) {
         User user = getUserEntityById(id);
-        List<ForumDto> forumsCreated = ForumDtoFactory.createForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
-        List<ForumDto> forumsJoined = ForumDtoFactory.createForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
+        List<ForumDto> forumsCreated = ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
+        List<ForumDto> forumsJoined = ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
         return UserProfileDto.from(user, forumsCreated, forumsJoined);
 
     }
