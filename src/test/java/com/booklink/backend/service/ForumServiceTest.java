@@ -480,4 +480,29 @@ public class ForumServiceTest {
 
 
 
+    @Test
+    void editForumWithSomeFields() {
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        EditForumDto editForumDto = EditForumDto.builder()
+                .name("Don Quijote")
+                .build();
+
+        Long id = 6L;
+        Long adminUserId = 1L;
+
+        ForumDto editedForum = forumService.editForum(id, adminUserId ,editForumDto);
+
+        assertEquals("Don Quijote", editedForum.getName());
+        assertEquals(0, editedForum.getTags().size());
+        assertEquals("Fans of LOTR", editedForum.getDescription());
+        assertEquals("..", editedForum.getImg());
+
+    }
 }

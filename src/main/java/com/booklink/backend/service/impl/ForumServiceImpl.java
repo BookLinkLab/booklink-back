@@ -11,7 +11,6 @@ import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,22 +39,17 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public List<ForumDto> getAllForums() {
         List<Forum> forums = forumRepository.findAll();
-        List<ForumDto> forumsDtos = new ArrayList<>();
-        for (Forum forum : forums) {
-            forumsDtos.add(ForumDto.from(forum, false));
-        }
-        return forumsDtos;
+        return forums.stream().map(forum -> ForumDto.from(forum, false)).toList();
     }
-
 
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
         Forum forum = getForumEntityById(forumId);
         if (!forum.getUserId().equals(userId))
-            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(getForumEntityById(forumId).getName()));
+            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(forum.getName()));
         Tag tag = tagService.findOrCreateTag(createTagDto);
         if (forumRepository.existsByIdAndTagsContaining(forumId, tag))
-            throw new AlreadyAssignedException("La etiqueta %s ya fue asignada al foro %s".formatted(tag.getName(), getForumEntityById(forumId).getName()));
+            throw new AlreadyAssignedException("La etiqueta %s ya fue asignada al foro %s".formatted(tag.getName(), forum.getName()));
         forum.getTags().add(tag);
         Forum savedForum = forumRepository.save(forum);
         return ForumDto.from(savedForum, true);
@@ -65,21 +59,24 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
         Forum forumToEdit = getForumEntityById(forumId);
         if (!forumToEdit.getUserId().equals(userId))
-            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(getForumEntityById(forumId).getName()));
-        forumToEdit.setName(editForumDto.getName());
-        forumToEdit.setDescription(editForumDto.getDescription());
+            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(forumToEdit.getName());
+        if (editForumDto.getName() != null) forumToEdit.setName(editForumDto.getName());
+        if (editForumDto.getDescription() != null) forumToEdit.setDescription(editForumDto.getDescription());
         List<Tag> oldTags = new ArrayList<>(forumToEdit.getTags());
-        List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
-        forumToEdit.getTags().clear();
-        forumToEdit.getTags().addAll(newTags);
+        if (editForumDto.getTags() != null) {
+            List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
+            forumToEdit.getTags().clear();
+            forumToEdit.getTags().addAll(newTags);
+        }
         Forum savedForum = forumRepository.save(forumToEdit);
         for (Tag tag: oldTags) {
             if (!forumRepository.existsByTagsContaining(tag)) {
                 tagService.deleteTag(tag.getId());
             }
         }
-        return ForumDto.from(savedForum, true);
+        return ForumDto.from(savedForum,true);
     }
+
 
     @Override
     public ForumDto joinForum(Long id, Long userId) {
@@ -108,7 +105,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         Optional<Forum> forumOptional = forumRepository.findById(id);
         return forumOptional.orElseThrow(() -> new NotFoundException("El foro %s no fue encontrado".formatted(id)));
     }
-
 
     @Override
     public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId) {
@@ -156,33 +152,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
         if (removed) forumRepository.save(forumToLeave);
         else
-            throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(getForumEntityById(id).getName()));
+            throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
     }
-
-    private List<ForumViewDto> allForumsWithMemebers(List<Forum> forums, Long userId) {
-        List<ForumViewDto> forumsIsMembers = new ArrayList<>();
-        for (Forum forum : forums) {
-            if (isMember(forum.getId(), userId)) {
-                forumsIsMembers.add(ForumViewDto.from(forum, true));
-            }
-            else {
-                forumsIsMembers.add(ForumViewDto.from(forum, false));
-            }
-        }
-        return forumsIsMembers;
-    }
-
-
-
-    private boolean isMember(Long forumId, Long userId) {
-        Forum forum = getForumEntityById(forumId);
-        return forum.getMembers().stream().anyMatch(member -> member.getId().equals(userId)) || forum.getUserId().equals(userId);
-    }
-
-
-
-
-
-
-
 }

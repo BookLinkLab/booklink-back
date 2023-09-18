@@ -46,6 +46,6 @@ public class UserController {
 
     @PatchMapping("{id}")
     public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDto updateUserDTO) {
-        return this.userService.updateUser(id, updateUserDTO);
+        return this.userService.updateUser(securityUtil.getLoggedUserId(), updateUserDTO);
     }
 }
