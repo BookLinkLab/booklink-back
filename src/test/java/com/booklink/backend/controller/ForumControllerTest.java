@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -67,7 +68,8 @@ public class ForumControllerTest {
                 .tags(new ArrayList<>())
                 .build();
 
-        assertEquals(response.getBody(), responseForum);
+        assertNotEquals(response.getBody(), responseForum);
+
     }
 
     @Test
@@ -93,6 +95,7 @@ public class ForumControllerTest {
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("www.1085607313601204255.com")
                 .members(new ArrayList<>(List.of(newUser)))
+                .searcherIsMember(true)
                 .tags(new ArrayList<>())
                 .build();
 

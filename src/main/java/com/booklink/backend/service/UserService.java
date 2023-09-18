@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserService {
     LoginResponseDto registerUser(CreateUserDto userDto);
-    UserProfileDto getUserById(Long id);
+    UserProfileDto getUserById(Long id, Long userWhoSearchesId);
     User getUserEntityById(Long id);
     List<UserDto> getAllUsers();
     UserDto updateUser(long id, UpdateUserDto updateUserDTO);

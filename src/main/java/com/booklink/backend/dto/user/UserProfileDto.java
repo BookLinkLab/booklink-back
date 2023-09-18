@@ -21,13 +21,13 @@ public class UserProfileDto {
     private List<ForumDto> forumsCreated;
     private List<ForumDto> forumsJoined;
 
-    public static UserProfileDto from(User user) {
+    public static UserProfileDto from(User user, List<ForumDto> forumCreated, List<ForumDto> forumJoined) {
         return UserProfileDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .forumsCreated(user.getForumsCreated().stream().map(ForumDto::from).toList())
-                .forumsJoined(user.getForumsJoined().stream().map(ForumDto::from).toList())
+                .forumsCreated(forumCreated)
+                .forumsJoined(forumJoined)
                 .build();
     }
 }

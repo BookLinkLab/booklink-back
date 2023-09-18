@@ -2,11 +2,14 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
+import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumDtoFactory;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.*;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.WrongCredentialsException;
+import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.UserRepository;
 import com.booklink.backend.service.UserService;
@@ -14,12 +17,15 @@ import com.booklink.backend.utils.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
+
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -45,10 +51,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileDto getUserById(Long id) {
-        Optional<User> userOptional = this.userRepository.findById(id);
-        User user = userOptional.orElseThrow(() -> new NotFoundException("El Usuario no fue encontrado"));
-        return UserProfileDto.from(user);
+    public UserProfileDto getUserById(Long id, Long userWhoSearchesId) {
+        User user = getUserEntityById(id);
+        List<ForumDto> forumsCreated = ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
+        List<ForumDto> forumsJoined = ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
+        return UserProfileDto.from(user, forumsCreated, forumsJoined);
+
     }
 
     @Override

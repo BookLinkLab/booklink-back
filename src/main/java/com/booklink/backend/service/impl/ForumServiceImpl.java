@@ -11,6 +11,7 @@ import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,34 +40,33 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToSave.setTags(tags);
 
         Forum savedForum = forumRepository.save(forumToSave);
-        return ForumDto.from(savedForum);
+        return ForumDto.from(savedForum, true);
     }
 
     @Override
     public List<ForumDto> getAllForums() {
         List<Forum> forums = forumRepository.findAll();
-        return forums.stream().map(ForumDto::from).toList();
+        return forums.stream().map(forum -> ForumDto.from(forum, false)).toList();
     }
 
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
-        Forum forum = forumRepository.findById(forumId).orElseThrow(() -> new NotFoundException("Foro %s no encontrado".formatted(getForumById(forumId).getTitle())));
+        Forum forum = getForumEntityById(forumId);
         if (!forum.getUserId().equals(userId))
-            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(getForumById(forumId).getTitle()));
+            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(forum.getName()));
         Tag tag = tagService.findOrCreateTag(createTagDto);
         if (forumRepository.existsByIdAndTagsContaining(forumId, tag))
-            throw new AlreadyAssignedException("La etiqueta %s ya fue asignada al foro %s".formatted(tag.getName(), getForumById(forumId).getTitle()));
+            throw new AlreadyAssignedException("La etiqueta %s ya fue asignada al foro %s".formatted(tag.getName(), forum.getName()));
         forum.getTags().add(tag);
         Forum savedForum = forumRepository.save(forum);
-        return ForumDto.from(savedForum);
+        return ForumDto.from(savedForum, true);
     }
 
     @Override
     public ForumDto editForum(Long forumId, Long userId, EditForumDto editForumDto) {
-        Optional<Forum> forumOptional = forumRepository.findById(forumId);
-        Forum forumToEdit = forumOptional.orElseThrow(() -> new NotFoundException("Foro %s no encontrado".formatted(getForumById(forumId).getTitle())));
+        Forum forumToEdit = getForumEntityById(forumId);
         if (!forumToEdit.getUserId().equals(userId))
-            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(getForumById(forumId).getTitle()));
+            throw new UserNotAdminException("El usuario no es el administrador del foro %s".formatted(forumToEdit.getName()));
         if (editForumDto.getName() != null) forumToEdit.setName(editForumDto.getName());
         if (editForumDto.getDescription() != null) forumToEdit.setDescription(editForumDto.getDescription());
         List<Tag> oldTags = new ArrayList<>(forumToEdit.getTags());
@@ -81,7 +81,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
                 tagService.deleteTag(tag.getId());
             }
         }
-        return ForumDto.from(savedForum);
+        return ForumDto.from(savedForum,true);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToJoin.getMembers().add(memberToJoin);
         forumRepository.save(forumToJoin);
 
-        return ForumDto.from(forumToJoin);
+        return ForumDto.from(forumToJoin,true);
     }
 
     @Override
@@ -113,19 +113,19 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds) {
+    public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId) {
         if (tagIds == null && forumName != null) {
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
-            return forums.stream().map(ForumViewDto::from).toList();
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else if (forumName == null && tagIds != null) {
             List<Forum> forums = forumRepository.findAllByTagsIdIn(tagIds);
-            return forums.stream().map(ForumViewDto::from).toList();
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else if (forumName == null) {
             List<Forum> forums = forumRepository.findAll();
-            return forums.stream().map(ForumViewDto::from).toList();
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
-            return forums.stream().map(ForumViewDto::from).toList();
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         }
     }
 
@@ -144,9 +144,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public ForumGetDto getForumById(Long id) {
+    public ForumGetDto getForumById(Long id, Long userId) {
         Forum forum = this.getForumEntityById(id);
-        return ForumGetDto.from(forum);
+        boolean isMember = ForumDtoFactory.isMember(forum, userId);
+        return ForumGetDto.from(forum, isMember);
     }
 
 
@@ -158,6 +159,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
         if (removed) forumRepository.save(forumToLeave);
         else
-            throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(getForumById(id).getTitle()));
+            throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
     }
 }
