@@ -2,10 +2,13 @@ package com.booklink.backend.controller;
 
 
 
+import com.booklink.backend.dto.tag.TagDto;
 import com.booklink.backend.service.TagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -18,8 +21,8 @@ public class TagController {
   }
 
     @GetMapping()
-    public ResponseEntity<?> getTags() {
-        return ResponseEntity.status(HttpStatus.OK).body(tagService.getAllTags());
+    public ResponseEntity<List<TagDto>> getTags() {
+        return ResponseEntity.status(HttpStatus.OK).body(tagService.getAllTagsDto());
     }
 
 
