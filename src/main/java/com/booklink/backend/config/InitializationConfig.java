@@ -2,8 +2,10 @@ package com.booklink.backend.config;
 
 
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
+import com.booklink.backend.repository.TagRepository;
 import com.booklink.backend.repository.UserRepository;
 import lombok.Generated;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component("InitializationConfig")
@@ -24,6 +27,9 @@ public class InitializationConfig implements CommandLineRunner {
     UserRepository userRepository;
     @Autowired
     ForumRepository forumRepository;
+    @Autowired
+    TagRepository tagRepository;
+
     final Logger logger = LoggerFactory.getLogger(InitializationConfig.class);
 
 
@@ -84,13 +90,23 @@ public class InitializationConfig implements CommandLineRunner {
             Forum forum3 = Forum.builder().name("1984").userId(user3.getId()).description("Nos remitimos a un clásico no solo para habar de él libro en si, sino tambien para reflexionar acerca del mundo en la actualidad").img("https://s1.eestatic.com/2022/03/30/porfolio/revision/661194017_223109283_1706x960.jpg").members(usuarios5).build();
             Forum forum4 = Forum.builder().name("simbolismos de Ana Frank").userId(user4.getId()).description("Nos adentramos un poco más en una de las famosas y erribles historias de nuestra humanidad y debatimos sobre ella").img("https://static.nationalgeographic.es/files/styles/image_3200/public/br0rfp.jpg?w=1600&h=1871").members(usuarios1).build();
             Forum forum5 = Forum.builder().name("los mejores libros de ciencia ficcion").userId(user5.getId()).description("En este foro somos apasionados de la ciencia ficción.Aca hablamos sobre sus mejores obras, novelas y autores.Todos son bienvenidos a opinar ").img("https://es.web.img3.acsta.net/medias/nmedia/18/72/16/76/20065616.jpg").members(usuarios5).build();
+
+            Tag tag1 = Tag.builder().name("Action").build();
+            Tag tag2 = Tag.builder().name("Fiction").build();
+            Tag tag3 = Tag.builder().name("Fantasy").build();
+
+            forum1.setTags(List.of(tag1));
+            forum2.setTags(List.of(tag1,tag2));
+            forum3.setTags(List.of(tag1,tag2,tag3));
+
+            tagRepository.save(tag1);
+            tagRepository.save(tag2);
+            tagRepository.save(tag3);
+
             forumRepository.save(forum1);
             forumRepository.save(forum2);
             forumRepository.save(forum3);
             forumRepository.save(forum4);
             forumRepository.save(forum5);
     }
-
-
-
 }

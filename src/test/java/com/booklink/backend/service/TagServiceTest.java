@@ -42,4 +42,11 @@ public class TagServiceTest {
         assertEquals(1, tags.size());
         assertEquals(savedTag, sameTag);
     }
+
+    @Test
+    void testGetAllTags() {
+        List<Tag> tags = tagService.getAllTags();
+        assertFalse(tags.isEmpty());
+        assertEquals(3, tags.size());
+    }
 }
