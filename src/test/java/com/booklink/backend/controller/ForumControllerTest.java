@@ -319,8 +319,8 @@ public class ForumControllerTest {
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        System.out.println(response.getBody().get(0));
+        assertEquals(0, response.getBody().size());
+
 
 
         ResponseEntity<List> response2 = restTemplate.exchange(
@@ -334,14 +334,14 @@ public class ForumControllerTest {
         );
 
         assertEquals(HttpStatus.OK, response3.getStatusCode());
-        assertEquals(1, response3.getBody().size());
+        assertEquals(3, response3.getBody().size());
 
         ResponseEntity<List> response4 = restTemplate.exchange(
                 baseUrl + "/search", HttpMethod.GET, null, List.class
         );
 
         assertEquals(HttpStatus.OK, response3.getStatusCode());
-        assertEquals(1, response3.getBody().size());
+        assertEquals(6, response4.getBody().size());
 
 
     }
