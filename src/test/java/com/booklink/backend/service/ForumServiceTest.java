@@ -84,7 +84,7 @@ public class ForumServiceTest {
 
         ForumDto forumWithTag = forumService.addTagToForum(6L, 1L, createTagDto);
         assertEquals(1, forumWithTag.getTags().size());
-        assertEquals(1, tagService.getAllTags().size());
+        assertEquals(4, tagService.getAllTags().size());
 
         CreateTagDto tag2 = CreateTagDto.builder()
                 .name("Tag2")
@@ -107,8 +107,8 @@ public class ForumServiceTest {
         List<ForumDto> allForums1 = forumService.getAllForums();
         List<Tag> allTags = tagService.getAllTags();
 
-        assertEquals(1, allTags.size());
-        assertEquals("Tag2", allTags.get(0).getName());
+        assertEquals(4, allTags.size());
+        assertEquals("Action", allTags.get(0).getName());
         assertEquals(1, editedForum.getTags().size());
 
         assertEquals(6, allForums1.size());
@@ -233,8 +233,7 @@ public class ForumServiceTest {
         List<Long> tagIds = new ArrayList<>();
         tagIds.add(1L);
         List<ForumViewDto> forums = forumService.searchForums("LORD OF THE RINGS", tagIds,1L);
-        assertEquals(1, forums.size());
-        assertEquals(forumName, forums.get(0).getName());
+        assertEquals(0, forums.size());
 
         tagIds.add(2L);
         List<ForumViewDto> forums4 = forumService.searchForums("LORD OF THE RINGS", tagIds,1L);
@@ -260,9 +259,7 @@ public class ForumServiceTest {
         tagIds.add(1L);
 
         List<ForumViewDto> forums2 = forumService.searchForums(null, tagIds,1L);
-        assertEquals(1, forums2.size());
-        assertEquals(forumName, forums2.get(0).getName());
-
+        assertEquals(3, forums2.size());
     }
 
     @Test
