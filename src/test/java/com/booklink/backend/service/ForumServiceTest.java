@@ -407,7 +407,7 @@ public class ForumServiceTest {
         assertEquals(forumName, forumGetDto.getTitle());
         assertEquals("Fans of LOTR", forumGetDto.getDescription());
         assertEquals(0, forumGetDto.getTags().size());
-        assertEquals(0, forumGetDto.getMembers());
+        assertEquals(1, forumGetDto.getMembers());
         assertEquals(user.getUsername(), forumGetDto.getOwner());
         assertEquals("..", forumGetDto.getImg());
 

@@ -39,6 +39,8 @@ public class Forum {
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<Tag> tags;
 
+    private int membersAmount;
+
     public static Forum from(CreateForumDto forumDto, Long userId) {
         return Forum.builder()
                 .name(forumDto.getName())
@@ -46,6 +48,7 @@ public class Forum {
                 .description(forumDto.getDescription())
                 .img(forumDto.getImg())
                 .members(new ArrayList<>())
+                .membersAmount(1) // creador del foro
                 .tags(new ArrayList<>())
                 .build();
     }

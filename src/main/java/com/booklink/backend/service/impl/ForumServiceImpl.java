@@ -96,6 +96,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
                 });
 
         forumToJoin.getMembers().add(memberToJoin);
+        forumToJoin.setMembersAmount(forumToJoin.getMembersAmount() + 1);
         forumRepository.save(forumToJoin);
 
         return ForumDto.from(forumToJoin,true);
@@ -152,7 +153,9 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         Forum forumToLeave = getForumEntityById(id);
 
         boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
-        if (removed) forumRepository.save(forumToLeave);
+        if (removed) {
+            forumToLeave.setMembersAmount(forumToLeave.getMembersAmount()-1);
+            forumRepository.save(forumToLeave);}
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
     }

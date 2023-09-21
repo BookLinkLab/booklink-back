@@ -31,7 +31,7 @@ public class ForumGetDto {
                 .description(forum.getDescription())
                 .owner(forum.getUser().getUsername())
                 .img(forum.getImg())
-                .members(forum.getMembers().size())
+                .members(forum.getMembersAmount())
                 .tags(forum.getTags().stream().map(TagDto::from).toList())
                 .searcherIsMember(isForumMember)
                 .build();
