@@ -153,6 +153,17 @@ public class ForumServiceTest {
         assertThrows(MemberAlreadyJoinedForumException.class, () -> forumService.joinForum(myForum.getId(), loginResponseDto.getUser().getId()));
     }
 
+    @Test
+    void invalidImage() {
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("invalid")
+                .tags(new ArrayList<>())
+                .build();
+        assertThrows(InvalidImageException.class, () -> forumService.createForum(createForumDto, 1L));
+    }
+
 
     @Test
     void forumNotFound() {
