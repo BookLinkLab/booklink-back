@@ -1,6 +1,7 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.tag.CreateTagDto;
+import com.booklink.backend.dto.tag.TagDto;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.repository.TagRepository;
 import com.booklink.backend.service.TagService;
@@ -31,6 +32,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> getAllTags() {
         return tagRepository.findAll();
+    }
+
+    @Override
+    public List<TagDto> getAllTagsDto() {
+        return tagRepository.findAll().stream().map(TagDto::from).toList();
     }
 
     @Override
