@@ -559,6 +559,7 @@ public class ForumServiceTest {
                 .name(forumName)
                 .description("Fans of LOTR")
                 .img("..")
+                .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
 
