@@ -315,33 +315,19 @@ public class ForumControllerTest {
         );
 
         ResponseEntity<List> response = restTemplate.exchange(
-                baseUrl + "/search?forumName=Forum&tagIds=1", HttpMethod.GET, null, List.class
+                baseUrl + "/search?searchTerm=Forum", HttpMethod.GET, null, List.class
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(0, response.getBody().size());
-
+        assertEquals(1, response.getBody().size());
 
 
         ResponseEntity<List> response2 = restTemplate.exchange(
-                baseUrl + "/search?forumName=Forum", HttpMethod.GET, null, List.class
-        );
-        assertEquals(HttpStatus.OK, response2.getStatusCode());
-        assertEquals(1, response2.getBody().size());
-
-        ResponseEntity<List> response3 = restTemplate.exchange(
-                baseUrl + "/search?tagIds=1", HttpMethod.GET, null, List.class
-        );
-
-        assertEquals(HttpStatus.OK, response3.getStatusCode());
-        assertEquals(3, response3.getBody().size());
-
-        ResponseEntity<List> response4 = restTemplate.exchange(
                 baseUrl + "/search", HttpMethod.GET, null, List.class
         );
 
-        assertEquals(HttpStatus.OK, response3.getStatusCode());
-        assertEquals(6, response4.getBody().size());
+        assertEquals(HttpStatus.OK, response2.getStatusCode());
+        assertEquals(6, response2.getBody().size());
 
 
     }
