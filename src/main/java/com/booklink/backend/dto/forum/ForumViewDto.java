@@ -26,7 +26,7 @@ public class ForumViewDto {
                 .id(forum.getId())
                 .name(forum.getName())
                 .img(forum.getImg())
-                .members(forum.getMembers().size())
+                .members(forum.getMembersAmount())
                 .tags(forum.getTags().stream().map(TagDto::from).toList())
                 .searcherIsMember(isForumMember)
                 .build();

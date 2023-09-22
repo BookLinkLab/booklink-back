@@ -377,7 +377,7 @@ public class ForumServiceTest {
         assertEquals(forumName, forumGetDto.getTitle());
         assertEquals("Fans of LOTR", forumGetDto.getDescription());
         assertEquals(0, forumGetDto.getTags().size());
-        assertEquals(0, forumGetDto.getMembers());
+        assertEquals(1, forumGetDto.getMembers());
         assertEquals(user.getId(), forumGetDto.getOwnerId());
         assertEquals("..", forumGetDto.getImg());
 
@@ -509,4 +509,49 @@ public class ForumServiceTest {
 
         assertEquals(savedForum.getTags(), forumService.getAllForums().get(5).getTags());
     }
+
+    @Test
+    void forumMembersAmountTest(){
+        String forumName = "Lord of the Rings";
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name(forumName)
+                .description("Fans of LOTR")
+                .img("..")
+                .tags(new ArrayList<>())
+                .build();
+        forumService.createForum(createForumDto, 1L);
+
+        Long forumId = 6L;
+        Forum forum = forumService.getForumEntityById(forumId);
+
+        //testeando que el creador del foro sea miembro
+        assertEquals(1, forum.getMembersAmount());
+
+        User user1 = userService.getUserEntityById(2L);
+        User user2 = userService.getUserEntityById(3L);
+        User user3 = userService.getUserEntityById(4L);
+
+        //testeando que se sumen los miembros
+        forumService.joinForum(forumId, user1.getId());
+        assertEquals(2, forumService.getForumEntityById(6L).getMembersAmount());
+        forumService.joinForum(forumId, user2.getId());
+        assertEquals(3, forumService.getForumEntityById(6L).getMembersAmount());
+        forumService.joinForum(forumId, user3.getId());
+        assertEquals(4, forumService.getForumEntityById(6L).getMembersAmount());
+
+        //testeando que se resten los miembros
+        forumService.leaveForum(forumId, user1.getId());
+        assertEquals(3, forumService.getForumEntityById(6L).getMembersAmount());
+        forumService.leaveForum(forumId, user2.getId());
+        assertEquals(2, forumService.getForumEntityById(6L).getMembersAmount());
+        forumService.leaveForum(forumId, user3.getId());
+        assertEquals(1, forumService.getForumEntityById(6L).getMembersAmount());
+
+
+
+    }
+
+
+
+
 }
