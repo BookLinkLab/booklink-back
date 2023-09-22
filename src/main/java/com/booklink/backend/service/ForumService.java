@@ -20,7 +20,7 @@ public interface ForumService {
 
     ForumDto editForum(Long id, Long userId, EditForumDto editForumDto);
 
-    List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId);
+    List<ForumViewDto> searchForums(String forumName, Long userId);
 
     ForumGetDto getForumById(Long id, Long userId);
 
