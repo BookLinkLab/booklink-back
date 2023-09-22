@@ -53,8 +53,8 @@ public class ForumController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchForums(@RequestParam(name = "forumName", required = false) String forumName) {
-        return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(forumName, securityUtil.getLoggedUserId()));
+    public ResponseEntity<?> searchForums(@RequestParam(name = "searchTerm", required = false) String searchTerm) {
+        return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(searchTerm, securityUtil.getLoggedUserId()));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteForum(@PathVariable Long id) {
