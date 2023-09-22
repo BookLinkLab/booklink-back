@@ -48,7 +48,7 @@ public class Forum {
                 .description(forumDto.getDescription())
                 .img(forumDto.getImg())
                 .members(new ArrayList<>())
-                .membersAmount(1) // creador del foro
+                .membersAmount(1)
                 .tags(new ArrayList<>())
                 .build();
     }
