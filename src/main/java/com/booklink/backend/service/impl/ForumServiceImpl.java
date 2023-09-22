@@ -30,9 +30,15 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public ForumDto createForum(CreateForumDto forumDto, Long userId) {
+    public ForumDto createForum(CreateForumDto createForumDto, Long userId) {
         User forumCreator = userService.getUserEntityById(userId);
-        Forum forumToSave = Forum.from(forumDto, forumCreator.getId());
+        Forum forumToSave = Forum.from(createForumDto, forumCreator.getId());
+
+        List<CreateTagDto> createTagDto = createForumDto.getTags();
+        List<Tag> tags = createTagDto.stream().map(tagService::findOrCreateTag).toList();
+
+        forumToSave.setTags(tags);
+
         Forum savedForum = forumRepository.save(forumToSave);
         return ForumDto.from(savedForum, true);
     }
@@ -42,7 +48,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         List<Forum> forums = forumRepository.findAll();
         return forums.stream().map(forum -> ForumDto.from(forum, false)).toList();
     }
-
 
     @Override
     public ForumDto addTagToForum(Long forumId, Long userId, CreateTagDto createTagDto) {
@@ -71,7 +76,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             forumToEdit.getTags().addAll(newTags);
         }
         Forum savedForum = forumRepository.save(forumToEdit);
-        for (Tag tag: oldTags) {
+        for (Tag tag : oldTags) {
             if (!forumRepository.existsByTagsContaining(tag)) {
                 tagService.deleteTag(tag.getId());
             }
@@ -109,7 +114,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         return forumOptional.orElseThrow(() -> new NotFoundException("El foro %s no fue encontrado".formatted(id)));
     }
 
-
     @Override
     public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId) {
         if (tagIds == null && forumName != null) {
@@ -140,6 +144,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             }
         }
     }
+
     @Override
     public ForumGetDto getForumById(Long id, Long userId) {
         Forum forum = this.getForumEntityById(id);
@@ -161,6 +166,4 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
     }
-
-
 }
