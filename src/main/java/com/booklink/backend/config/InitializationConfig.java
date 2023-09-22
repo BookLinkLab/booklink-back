@@ -43,9 +43,9 @@ public class InitializationConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         logger.info("Users initialization begin");
-        this.loadUsers();
+        //this.loadUsers();
         logger.info("Forums initialization begin");
-        this.loadForums();
+        //this.loadForums();
         logger.info("DB data intialized");
     }
 

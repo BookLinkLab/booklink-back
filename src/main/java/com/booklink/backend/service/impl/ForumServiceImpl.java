@@ -113,9 +113,9 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public List<ForumViewDto> searchForums(String forumName, Long userId) {
-        if (forumName != null) {
-            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
+    public List<ForumViewDto> searchForums(String searchTerm, Long userId) {
+        if (searchTerm != null) {
+            List<Forum> forums = forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm);
             return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
