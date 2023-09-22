@@ -315,7 +315,7 @@ public class ForumControllerTest {
         );
 
         ResponseEntity<List> response = restTemplate.exchange(
-                baseUrl + "/search?forumName=Forum", HttpMethod.GET, null, List.class
+                baseUrl + "/search?searchTerm=Forum", HttpMethod.GET, null, List.class
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
