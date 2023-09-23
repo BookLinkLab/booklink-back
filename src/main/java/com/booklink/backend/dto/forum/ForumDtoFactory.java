@@ -27,7 +27,7 @@ public class ForumDtoFactory {
         return forumsDto;
     }
 
-    public boolean isMember(ForumGetDto forum, Long userId) {
+    public boolean isMember(Forum forum, Long userId) {
         List<ForumGetDto> forumsJoined = forumService.getForumsJoined(userId);
         List<ForumGetDto> forumsCreated = forumService.getForumsCreated(userId);
 
