@@ -21,21 +21,21 @@ public class ForumDtoFactory {
     public <T> List<T> createForumDtoAndForumViewDtoWithIsMember(List<Forum> forums, Long userId, BiFunction<Forum, Boolean, T> builder) {
         List<T> forumsDto = new ArrayList<>();
         for (Forum forum : forums) {
-            boolean isMember = isMember(forum, userId);
+            boolean isMember = isMember(forum.getId(), userId);
             forumsDto.add(builder.apply(forum, isMember));
         }
         return forumsDto;
     }
 
-    public boolean isMember(Forum forum, Long userId) {
+    public boolean isMember(Long forumId, Long userId) {
         List<ForumGetDto> forumsJoined = forumService.getForumsJoined(userId);
         List<ForumGetDto> forumsCreated = forumService.getForumsCreated(userId);
 
         boolean isMemberOfJoined = forumsJoined.stream()
-                .anyMatch(joinedForum -> joinedForum.getId().equals(forum.getId()));
+                .anyMatch(joinedForum -> joinedForum.getId().equals(forumId));
 
         boolean isMemberOfCreated = forumsCreated.stream()
-                .anyMatch(createdForum -> createdForum.getId().equals(forum.getId()));
+                .anyMatch(createdForum -> createdForum.getId().equals(forumId));
 
         return isMemberOfJoined || isMemberOfCreated;
     }

@@ -143,7 +143,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumGetDto getForumById(Long id, Long userId) {
         Forum forum = this.getForumEntityById(id);
-        boolean isMember = forumDtoFactory.isMember(forum, userId);
+        boolean isMember = forumDtoFactory.isMember(forum.getId(), userId);
         return ForumGetDto.from(forum, isMember);
     }
 
