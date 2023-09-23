@@ -2,7 +2,6 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.*;
 import com.booklink.backend.dto.tag.CreateTagDto;
-import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
@@ -10,8 +9,8 @@ import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +21,13 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     private final ForumRepository forumRepository;
     private final UserService userService;
     private final TagService tagService;
+    private final ForumDtoFactory forumDtoFactory;
 
-    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService) {
+    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService, @Lazy ForumDtoFactory forumDtoFactory) {
         this.forumRepository = forumRepository;
         this.userService = userService;
         this.tagService = tagService;
+        this.forumDtoFactory = forumDtoFactory;
     }
 
     @Override
@@ -118,10 +119,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     public List<ForumViewDto> searchForums(String searchTerm, Long userId) {
         if (searchTerm != null) {
             List<Forum> forums = forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm);
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         }
     }
 
@@ -142,10 +143,27 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumGetDto getForumById(Long id, Long userId) {
         Forum forum = this.getForumEntityById(id);
-        boolean isMember = ForumDtoFactory.isMember(forum, userId);
+        boolean isMember = forumDtoFactory.isMember(forum, userId);
         return ForumGetDto.from(forum, isMember);
     }
 
+    @Override
+    public List<ForumGetDto> getForumsJoined(Long userId) {
+        List<Forum> joinedForums = userService.getUserEntityById(userId).getForumsJoined();
+
+        return joinedForums.stream()
+                .map(forum -> ForumGetDto.from(forum, true))
+                .toList();
+    }
+
+    @Override
+    public List<ForumGetDto> getForumsCreated(Long userId) {
+        List<Forum> createdForums = userService.getUserEntityById(userId).getForumsCreated();
+
+        return createdForums.stream()
+                .map(forum -> ForumGetDto.from(forum, true))
+                .toList();
+    }
 
     @Override
     public void leaveForum(Long id, Long userId) {
