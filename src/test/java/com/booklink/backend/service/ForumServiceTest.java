@@ -416,7 +416,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://images2.minutemediacdn.com/image/upload/c_crop,w_5211,h_2931,x_0,y_392/c_fill,w_720,ar_16:9,f_auto,q_auto,g_auto/images/GettyImages/mmsport/90min_es_international_web/01h7tmmpt0k2z8a5nnep.jpg")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -432,7 +432,7 @@ public class ForumServiceTest {
         assertEquals(0, forumGetDto.getTags().size());
         assertEquals(0, forumGetDto.getMembers());
         assertEquals(user.getUsername(), forumGetDto.getOwner());
-        assertEquals("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png", forumGetDto.getImg());
+        assertEquals("https://images2.minutemediacdn.com/image/upload/c_crop,w_5211,h_2931,x_0,y_392/c_fill,w_720,ar_16:9,f_auto,q_auto,g_auto/images/GettyImages/mmsport/90min_es_international_web/01h7tmmpt0k2z8a5nnep.jpg", forumGetDto.getImg());
 
     }
 
