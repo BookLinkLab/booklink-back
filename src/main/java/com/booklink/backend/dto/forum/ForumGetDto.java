@@ -18,7 +18,7 @@ public class ForumGetDto {
     private Long id;
     private String title;
     private String description;
-    private String owner;
+    private Long ownerId;
     private String img;
     private Integer members;
     private List<TagDto> tags;
@@ -29,9 +29,9 @@ public class ForumGetDto {
                 .id(forum.getId())
                 .title(forum.getName())
                 .description(forum.getDescription())
-                .owner(forum.getUser().getUsername())
+                .ownerId(forum.getUser().getId())
                 .img(forum.getImg())
-                .members(forum.getMembers().size())
+                .members(forum.getMembersAmount())
                 .tags(forum.getTags().stream().map(TagDto::from).toList())
                 .searcherIsMember(isForumMember)
                 .build();

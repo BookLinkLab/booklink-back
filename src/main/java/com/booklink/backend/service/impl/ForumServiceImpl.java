@@ -111,6 +111,8 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
                 });
 
         forumToJoin.getMembers().add(memberToJoin);
+        int newMembersAmount = forumToJoin.getMembersAmount() + 1;
+        forumToJoin.setMembersAmount(newMembersAmount);
         forumRepository.save(forumToJoin);
 
         return ForumDto.from(forumToJoin,true);
@@ -123,18 +125,12 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public List<ForumViewDto> searchForums(String forumName, List<Long> tagIds, Long userId) {
-        if (tagIds == null && forumName != null) {
-            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCase(forumName);
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
-        } else if (forumName == null && tagIds != null) {
-            List<Forum> forums = forumRepository.findAllByTagsIdIn(tagIds);
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
-        } else if (forumName == null) {
-            List<Forum> forums = forumRepository.findAll();
+    public List<ForumViewDto> searchForums(String searchTerm, Long userId) {
+        if (searchTerm != null) {
+            List<Forum> forums = forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm);
             return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         } else {
-            List<Forum> forums = forumRepository.findAllByNameContainingIgnoreCaseAndTagsIdIsIn(forumName, tagIds);
+            List<Forum> forums = forumRepository.findAll();
             return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         }
     }
@@ -167,7 +163,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         Forum forumToLeave = getForumEntityById(id);
 
         boolean removed = forumToLeave.getMembers().removeIf(member -> member.getId().equals(memberToLeave.getId()));
-        if (removed) forumRepository.save(forumToLeave);
+        if (removed) {
+            int newMembersAmount = forumToLeave.getMembersAmount() - 1;
+            forumToLeave.setMembersAmount(newMembersAmount);
+            forumRepository.save(forumToLeave);}
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
     }
