@@ -1,6 +1,7 @@
 package com.booklink.backend.service;
 
 import com.booklink.backend.dto.forum.*;
+import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.model.Forum;
 
@@ -27,4 +28,6 @@ public interface ForumService {
     void deleteForum(Long id, Long userId);
 
     void leaveForum(Long id, Long userId);
+
+    List<PostInfoDto> getPostsByForumId(Long forumId);
 }

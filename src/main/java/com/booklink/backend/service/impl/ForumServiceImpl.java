@@ -1,17 +1,17 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.*;
+import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
-import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
+import com.booklink.backend.service.PostService;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,13 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     private final ForumRepository forumRepository;
     private final UserService userService;
     private final TagService tagService;
+    private final PostService postService;
 
-    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService) {
+    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService, PostService postService) {
         this.forumRepository = forumRepository;
         this.userService = userService;
         this.tagService = tagService;
+        this.postService = postService;
     }
 
     @Override
@@ -159,5 +161,11 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             forumRepository.save(forumToLeave);}
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
+    }
+
+    @Override
+    public List<PostInfoDto> getPostsByForumId(Long forumId) {
+        this.getForumEntityById(forumId);
+        return postService.getPostsByForumId(forumId);
     }
 }

@@ -22,9 +22,15 @@ public class Post {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
 
     @Column(name = "forum_id", nullable = false)
     private Long forumId;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "forum_id", insertable = false, updatable = false)
+    private Forum forum;
 
     @Column(length = 512)
     private String content;
