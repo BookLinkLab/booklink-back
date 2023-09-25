@@ -67,10 +67,4 @@ public class ForumController {
         return ResponseEntity.status(HttpStatus.OK).body(forumService.getForumById(id,securityUtil.getLoggedUserId()));
     }
 
-    @GetMapping("/{id}/post")
-    public ResponseEntity<?> getPostsByForumId(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(forumService.getPostsByForumId(id));
-    }
-
-
 }

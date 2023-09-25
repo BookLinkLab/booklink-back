@@ -58,6 +58,25 @@ public class PostControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     }
 
+    @Test
+    public void getPostsByForumId() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+
+        restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class);
+
+        ResponseEntity<List> response = restTemplate.getForEntity(baseUrl + "/1", List.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+
+        ResponseEntity<String> response2 = restTemplate.getForEntity(baseUrl + "/24543", String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
+    }
+
+
+
 
 
     private UserDto createUserAndLogIn(String username, String email, String password) {

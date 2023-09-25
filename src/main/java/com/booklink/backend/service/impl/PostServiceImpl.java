@@ -34,6 +34,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostInfoDto> getPostsByForumId(Long forumId) {
+        forumService.getForumEntityById(forumId);
         List<Post> posts = postRepository.findAllByForumId(forumId);
         return posts.stream().map(PostInfoDto::from).toList();
     }

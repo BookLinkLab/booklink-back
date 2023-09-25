@@ -22,13 +22,11 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     private final ForumRepository forumRepository;
     private final UserService userService;
     private final TagService tagService;
-    private final PostService postService;
 
-    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService, PostService postService) {
+    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService) {
         this.forumRepository = forumRepository;
         this.userService = userService;
         this.tagService = tagService;
-        this.postService = postService;
     }
 
     @Override
@@ -148,7 +146,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         return ForumGetDto.from(forum, isMember);
     }
 
-
     @Override
     public void leaveForum(Long id, Long userId) {
         User memberToLeave = userService.getUserEntityById(userId);
@@ -161,11 +158,5 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             forumRepository.save(forumToLeave);}
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
-    }
-
-    @Override
-    public List<PostInfoDto> getPostsByForumId(Long forumId) {
-        this.getForumEntityById(forumId);
-        return postService.getPostsByForumId(forumId);
     }
 }

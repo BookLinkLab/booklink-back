@@ -29,5 +29,4 @@ public interface ForumService {
 
     void leaveForum(Long id, Long userId);
 
-    List<PostInfoDto> getPostsByForumId(Long forumId);
 }

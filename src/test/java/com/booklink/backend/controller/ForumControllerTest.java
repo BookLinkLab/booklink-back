@@ -534,12 +534,4 @@ public class ForumControllerTest {
         );
         return Objects.requireNonNull(createUserResponse.getBody()).getUser();
     }
-
-    @Test
-    void getForumPosts() {
-        ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/6/posts", HttpMethod.GET, null, String.class
-        );
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
 }

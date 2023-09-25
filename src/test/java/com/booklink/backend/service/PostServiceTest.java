@@ -32,5 +32,23 @@ public class PostServiceTest {
         assertEquals("This is a test post", postDto.getContent());
     }
 
+    @Test
+    public void getPostsByForumId() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+
+        postService.createPost(createPostDto, 1L);
+        assertEquals(1, postService.getPostsByForumId(1L).size());
+        CreatePostDto createPostDto2 = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+
+        postService.createPost(createPostDto2, 1L);
+        assertEquals(2, postService.getPostsByForumId(1L).size());
+    }
+
 
 }
