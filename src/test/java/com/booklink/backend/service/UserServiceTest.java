@@ -97,7 +97,7 @@ public class UserServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("..")
+                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 3L);

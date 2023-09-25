@@ -13,6 +13,11 @@ import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +37,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumDto createForum(CreateForumDto createForumDto, Long userId) {
         User forumCreator = userService.getUserEntityById(userId);
+        validateImage(createForumDto.getImg());
         Forum forumToSave = Forum.from(createForumDto, forumCreator.getId());
 
         List<CreateTagDto> createTagDto = createForumDto.getTags();
@@ -74,6 +80,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             List<Tag> newTags = editForumDto.getTags().stream().map(tagService::findOrCreateTag).toList();
             forumToEdit.getTags().clear();
             forumToEdit.getTags().addAll(newTags);
+        }
+        if (editForumDto.getImg() != null) {
+            validateImage(editForumDto.getImg());
+            forumToEdit.setImg(editForumDto.getImg());
         }
         Forum savedForum = forumRepository.save(forumToEdit);
         for (Tag tag : oldTags) {
@@ -159,5 +169,16 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             forumRepository.save(forumToLeave);}
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
+    }
+
+    private void validateImage(String img){
+        if (img != null) {
+            try {
+                BufferedImage image = ImageIO.read(new URL(img));
+                if (image == null) throw new IOException();
+            } catch (IOException e) {
+                throw new InvalidImageException("La imagen %s no es válida".formatted(img));
+            }
+        }
     }
 }

@@ -27,6 +27,8 @@ public class EditForumDto {
     @Size(max = 512, message = "La descripción no puede tener más de 512 caracteres")
     private String description;
 
+    private String img;
+
     private List<CreateTagDto> tags;
 
 }
