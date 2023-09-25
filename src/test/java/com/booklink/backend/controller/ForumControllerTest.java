@@ -49,7 +49,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         ResponseEntity<ForumDto> response = restTemplate.exchange(
@@ -63,7 +63,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .userId(10L)
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .members(new ArrayList<>())
                 .tags(new ArrayList<>())
                 .build();
@@ -77,7 +77,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -93,7 +93,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .userId(10L)
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .members(new ArrayList<>(List.of(newUser)))
                 .searcherIsMember(true)
                 .tags(new ArrayList<>())
@@ -107,7 +107,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -128,7 +128,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -145,7 +145,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -178,7 +178,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -217,7 +217,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -244,7 +244,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -300,7 +300,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -337,7 +337,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -355,7 +355,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -380,7 +380,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -409,7 +409,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -438,7 +438,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -456,7 +456,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -481,7 +481,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(createTagsDto)
                 .build();
 
@@ -499,7 +499,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 

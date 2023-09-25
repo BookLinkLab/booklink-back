@@ -56,7 +56,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
@@ -135,7 +135,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -178,7 +178,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 6L);
@@ -193,7 +193,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -216,7 +216,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -233,7 +233,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -256,7 +256,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -274,7 +274,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -294,7 +294,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -314,7 +314,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -337,7 +337,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Interstellar")
                 .description("Welcome to the subreddit dedicated to the movie Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -374,7 +374,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://images2.minutemediacdn.com/image/upload/c_crop,w_5211,h_2931,x_0,y_392/c_fill,w_720,ar_16:9,f_auto,q_auto,g_auto/images/GettyImages/mmsport/90min_es_international_web/01h7tmmpt0k2z8a5nnep.jpg")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -390,7 +390,7 @@ public class ForumServiceTest {
         assertEquals(0, forumGetDto.getTags().size());
         assertEquals(1, forumGetDto.getMembers());
         assertEquals(user.getId(), forumGetDto.getOwnerId());
-        assertEquals("https://images2.minutemediacdn.com/image/upload/c_crop,w_5211,h_2931,x_0,y_392/c_fill,w_720,ar_16:9,f_auto,q_auto,g_auto/images/GettyImages/mmsport/90min_es_international_web/01h7tmmpt0k2z8a5nnep.jpg", forumGetDto.getImg());
+        assertEquals("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200", forumGetDto.getImg());
 
     }
 
@@ -406,7 +406,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -431,7 +431,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -469,7 +469,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
@@ -486,7 +486,7 @@ public class ForumServiceTest {
         assertEquals("Don Quijote", editedForum.getName());
         assertEquals(0, editedForum.getTags().size());
         assertEquals("Fans of LOTR", editedForum.getDescription());
-        assertEquals("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png", editedForum.getImg());
+        assertEquals("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200", editedForum.getImg());
 
     }
     @Test
@@ -499,7 +499,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(createTagsDto)
                 .build();
 
@@ -513,7 +513,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
@@ -527,7 +527,7 @@ public class ForumServiceTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name(forumName)
                 .description("Fans of LOTR")
-                .img("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/1200px-Escudo_del_C_A_River_Plate.svg.png")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
