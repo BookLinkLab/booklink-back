@@ -79,25 +79,33 @@ public class InitializationConfig implements CommandLineRunner {
             User user4 = userRepository.findByUsername("Rubenbarra").get();
             User user5 = userRepository.findByUsername("darioPereira").get();
 
-            ArrayList<User> usuarios1 = new ArrayList<>();
-            usuarios1.add(user1);
-            usuarios1.add(user2);
-            usuarios1.add(user4);
-            int usuarios1Size = usuarios1.size();
+            ArrayList<User> users1 = new ArrayList<>();
+            users1.add(user2);
+            users1.add(user4);
 
-            ArrayList<User> usuarios5 = new ArrayList<>();
-            usuarios5.add(user5);
-            usuarios5.add(user3);
-            usuarios5.add(user4);
-            int usuarios5Size = usuarios5.size();
+            ArrayList<User> users2 = new ArrayList<>();
+            users2.add(user1);
+            users2.add(user4);
+
+            ArrayList<User> users3 = new ArrayList<>();
+            users3.add(user5);
+            users3.add(user4);
+
+            ArrayList<User> users4 = new ArrayList<>();
+            users4.add(user1);
+            users4.add(user2);
+
+            ArrayList<User> users5 = new ArrayList<>();
+            users5.add(user3);
+            users5.add(user4);
 
 
 
-            Forum forum1 = Forum.builder().name("Harry Potter").userId(user1.getId()).description("foro acerca de la mejor saga de libros jamas escrita: Harry Potter").img("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg").members(usuarios1).membersAmount(usuarios1Size).build();
-            Forum forum2 = Forum.builder().name("Narnia").userId(user2.getId()).description("foro sobre Narnia, tocamos todo tipo de temas acerca de este libro, desde debate acerca de los reyes, teorias conspirativas y mas").img("https://e00-elmundo.uecdn.es/assets/multimedia/imagenes/2018/10/08/15390123619440.jpg").members(usuarios1).membersAmount(usuarios1Size).build();
-            Forum forum3 = Forum.builder().name("1984").userId(user3.getId()).description("Nos remitimos a un clásico no solo para habar de él libro en si, sino tambien para reflexionar acerca del mundo en la actualidad").img("https://www.storytel.com/images/640x640/0002933941.jpg").members(usuarios5).membersAmount(usuarios5Size).build();
-            Forum forum4 = Forum.builder().name("simbolismos de Ana Frank").userId(user4.getId()).description("Nos adentramos un poco más en una de las famosas y erribles historias de nuestra humanidad y debatimos sobre ella").img("https://sbslibreria.vteximg.com.br/arquivos/ids/215579-1000-1000/9789878354194.jpg").members(usuarios1).membersAmount(usuarios1Size).build();
-            Forum forum5 = Forum.builder().name("los mejores libros de ciencia ficcion").userId(user5.getId()).description("En este foro somos apasionados de la ciencia ficción.Aca hablamos sobre sus mejores obras, novelas y autores.Todos son bienvenidos a opinar ").img("https://elcomercio.pe/resizer/bVeNT1Ip-SoSlOMX0DQHGUPDZ90=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/DRCLWNKIDZCANB2WUFFEGPJ3V4.jpg").members(usuarios5).membersAmount(usuarios5Size).build();
+            Forum forum1 = Forum.builder().name("Harry Potter").userId(user1.getId()).description("foro acerca de la mejor saga de libros jamas escrita: Harry Potter").img("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg").members(users1).membersAmount(3).build();
+            Forum forum2 = Forum.builder().name("Narnia").userId(user2.getId()).description("foro sobre Narnia, tocamos todo tipo de temas acerca de este libro, desde debate acerca de los reyes, teorias conspirativas y mas").img("https://e00-elmundo.uecdn.es/assets/multimedia/imagenes/2018/10/08/15390123619440.jpg").members(users2).membersAmount(3).build();
+            Forum forum3 = Forum.builder().name("1984").userId(user3.getId()).description("Nos remitimos a un clásico no solo para habar de él libro en si, sino tambien para reflexionar acerca del mundo en la actualidad").img("https://www.storytel.com/images/640x640/0002933941.jpg").members(users3).membersAmount(3).build();
+            Forum forum4 = Forum.builder().name("simbolismos de Ana Frank").userId(user4.getId()).description("Nos adentramos un poco más en una de las famosas y erribles historias de nuestra humanidad y debatimos sobre ella").img("https://sbslibreria.vteximg.com.br/arquivos/ids/215579-1000-1000/9789878354194.jpg").members(users4).membersAmount(3).build();
+            Forum forum5 = Forum.builder().name("los mejores libros de ciencia ficcion").userId(user5.getId()).description("En este foro somos apasionados de la ciencia ficción.Aca hablamos sobre sus mejores obras, novelas y autores.Todos son bienvenidos a opinar ").img("https://elcomercio.pe/resizer/bVeNT1Ip-SoSlOMX0DQHGUPDZ90=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/DRCLWNKIDZCANB2WUFFEGPJ3V4.jpg").members(users5).membersAmount(3).build();
 
             Tag tag1 = Tag.builder().name("Action").build();
             Tag tag2 = Tag.builder().name("Fiction").build();
