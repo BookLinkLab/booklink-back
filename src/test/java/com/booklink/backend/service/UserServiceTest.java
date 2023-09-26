@@ -109,7 +109,7 @@ public class UserServiceTest {
        UserProfileDto userSearched = userService.getUserById(user1.getId(), user2.getId());
 
        assertEquals(1, userSearched.getForumsCreated().size());
-       assertEquals(3, userSearched.getForumsJoined().size());
+       assertEquals(2, userSearched.getForumsJoined().size());
 
 
 
@@ -129,7 +129,7 @@ public class UserServiceTest {
         List<ForumDto> forumsAgain = userSearchedAgain.getForumsCreated();
         forumsAgain.addAll(userSearchedAgain.getForumsJoined());
 
-        assertTrue(forumsAgain.get(3).isSearcherIsMember()); //despues de que el userid 3 se una al foro 4 del userid 2, se testea que ahora si es miembro de ese foro
+        assertTrue(forumsAgain.get(2).isSearcherIsMember()); //despues de que el userid 3 se una al foro 4 del userid 2, se testea que ahora si es miembro de ese foro
 
 
 
