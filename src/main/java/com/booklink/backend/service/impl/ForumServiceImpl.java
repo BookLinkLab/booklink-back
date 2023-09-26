@@ -11,12 +11,14 @@ import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
     private final ForumRepository forumRepository;
     private final UserService userService;
@@ -148,21 +150,13 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     }
 
     @Override
-    public List<ForumGetDto> getForumsJoined(Long userId) {
-        List<Forum> joinedForums = userService.getUserEntityById(userId).getForumsJoined();
-
-        return joinedForums.stream()
-                .map(forum -> ForumGetDto.from(forum, true))
-                .toList();
+    public List<Forum> getForumsJoined(Long userId) {
+        return userService.getUserEntityById(userId).getForumsJoined();
     }
 
     @Override
-    public List<ForumGetDto> getForumsCreated(Long userId) {
-        List<Forum> createdForums = userService.getUserEntityById(userId).getForumsCreated();
-
-        return createdForums.stream()
-                .map(forum -> ForumGetDto.from(forum, true))
-                .toList();
+    public List<Forum> getForumsCreated(Long userId) {
+        return userService.getUserEntityById(userId).getForumsCreated();
     }
 
     @Override

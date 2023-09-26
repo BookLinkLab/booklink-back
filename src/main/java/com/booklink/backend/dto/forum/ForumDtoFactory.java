@@ -28,8 +28,8 @@ public class ForumDtoFactory {
     }
 
     public boolean isMember(Long forumId, Long userId) {
-        List<ForumGetDto> forumsJoined = forumService.getForumsJoined(userId);
-        List<ForumGetDto> forumsCreated = forumService.getForumsCreated(userId);
+        List<Forum> forumsJoined = forumService.getForumsJoined(userId);
+        List<Forum> forumsCreated = forumService.getForumsCreated(userId);
 
         boolean isMemberOfJoined = forumsJoined.stream()
                 .anyMatch(joinedForum -> joinedForum.getId().equals(forumId));
