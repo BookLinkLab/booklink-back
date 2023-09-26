@@ -25,7 +25,7 @@ public class Forum {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 

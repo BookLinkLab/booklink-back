@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,11 +114,12 @@ public class UserServiceTest {
 
 
 
-        List<ForumDto> forums1 = userSearched.getForumsCreated();
-        forums1.addAll(userSearched.getForumsJoined());
+        List<ForumDto> forumsCreated = userSearched.getForumsCreated();
+        List<ForumDto> forumsJoined = userSearched.getForumsJoined();
+        List<ForumDto> joinedAndCreated = Stream.concat(forumsCreated.stream(), forumsJoined.stream()).toList();
 
         //testeando la primera busqueda
-        for (ForumDto forum : forums1) {
+        for (ForumDto forum : joinedAndCreated) {
             assertFalse(forum.isSearcherIsMember()); // testeando que el userId 3 no es miembro de ningun foro del userId 2
         }
 
@@ -126,10 +128,11 @@ public class UserServiceTest {
         forumService.joinForum(4L, user2.getId());
         UserProfileDto userSearchedAgain = userService.getUserById(user1.getId(), user2.getId());
 
-        List<ForumDto> forumsAgain = userSearchedAgain.getForumsCreated();
-        forumsAgain.addAll(userSearchedAgain.getForumsJoined());
+        List<ForumDto> forumsCreatedAgain = userSearchedAgain.getForumsCreated();
+        List<ForumDto> forumsJoinedAgain = userSearchedAgain.getForumsJoined();
+        List<ForumDto> forumsCreatedAndJoinedAgain = Stream.concat(forumsCreatedAgain.stream(), forumsJoinedAgain.stream()).toList();
 
-        assertTrue(forumsAgain.get(3).isSearcherIsMember()); //despues de que el userid 3 se una al foro 4 del userid 2, se testea que ahora si es miembro de ese foro
+        assertTrue(forumsCreatedAndJoinedAgain.get(3).isSearcherIsMember()); //despues de que el userid 3 se una al foro 4 del userid 2, se testea que ahora si es miembro de ese foro
 
 
 
@@ -147,8 +150,9 @@ public class UserServiceTest {
         //tercera busqueda (usuario 8 busca al 3)
         UserProfileDto userSearched3 = userService.getUserById(3L, 8L);
 
-        List<ForumDto> forums3 = userSearched3.getForumsCreated();
-        forums3.addAll(userSearched3.getForumsJoined());
+        List<ForumDto> forumsCreated3 = userSearched3.getForumsCreated();
+        List<ForumDto> forumsJoined3 = userSearched3.getForumsJoined();
+        List<ForumDto> forumsJoinedAndCreated3 = Stream.concat(forumsCreated3.stream(), forumsJoined3.stream()).toList();
 
         //testeando que el user 8 no es miembro del foro 5 del que el user 3 creo (hecho mas arriba en el test) y si del resto de los foros del user 3
         for (ForumDto forum : forums2) {
