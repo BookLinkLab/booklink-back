@@ -2,10 +2,9 @@ package com.booklink.backend.model;
 
 import com.booklink.backend.dto.user.CreateUserDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -26,6 +25,14 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Forum> forumsCreated;
+
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER)
+    private List<Forum> forumsJoined;
 
     public static User from(CreateUserDto userDto, String encryptedPassword) {
         return User.builder()

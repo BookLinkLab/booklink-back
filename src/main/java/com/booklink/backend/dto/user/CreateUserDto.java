@@ -12,17 +12,17 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateUserDto {
 
-    @NotBlank(message = "Username must not be blank")
-    @Size(min = 3, max = 24, message = "Username must be between 3 and 24 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only letters and numbers")
+    @NotBlank(message = "El nombre de usuario no puede estar vacío")
+    @Size(min = 3, max = 24, message = "El nombre de usuario debe tener entre 3 y 24 caracteres")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "El nombre de usuario solo debe contener letras y números")
     private String username;
 
-    @NotBlank(message = "Email must not be blank")
-    @Email(message = "Email should be valid")
+    @NotBlank(message = "El correo no puede estar vacío")
+    @Email(message = "El correo ingresado es inválido")
     private String email;
 
-    @NotBlank(message = "Password must not be blank")
-    @Size(min = 8, max = 24, message = "Password must be between 8 and 24 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Password must contain only letters and numbers")
+    @NotBlank(message = "La contraseña no puede estar vacía")
+    @Size(min = 8, max = 24, message = "La contraseña debe tener entre 8 y 24 caracteres")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "La contraseña solo debe contener letras y números")
     private String password;
 }
