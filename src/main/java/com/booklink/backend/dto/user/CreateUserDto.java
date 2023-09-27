@@ -18,7 +18,7 @@ public class CreateUserDto {
     private String username;
 
     @NotBlank(message = "El correo no puede estar vacío")
-    @Email(message = "El correo debe seguir el formato correcto")
+    @Email(message = "El correo ingresado es inválido")
     private String email;
 
     @NotBlank(message = "La contraseña no puede estar vacía")

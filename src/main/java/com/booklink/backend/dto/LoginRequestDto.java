@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class LoginRequestDto {
 
-    @Email
+    @Email(message = "El correo ingresado es inválido")
     @NotNull
     private String email;
     @NotBlank

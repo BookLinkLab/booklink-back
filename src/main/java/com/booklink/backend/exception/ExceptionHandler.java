@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -29,13 +30,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<?> handleInvalidArguments(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(DataIntegrityViolationException.class)
@@ -44,7 +39,18 @@ public class ExceptionHandler {
         this.logger.info(e.getMessage());
         Matcher matcher = Pattern.compile("Detail: Key \\((.*)\\)").matcher(e.getMostSpecificCause().getMessage());
         if (matcher.find()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Valor duplicado: \"" + matcher.group(1).replaceAll("[)(]", " ") + "\"");
+            String key = matcher.group(1).replaceAll("[)(]", " ");
+            String[] keyParts = key.split(" ");
+            String value = String.join(" ", Arrays.copyOfRange(keyParts, 2, keyParts.length));
+            if (key.contains("username")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario " + value + " ya existe");
+            } else if (key.contains("email")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("El email " + value + " ya existe");
+            } else if (key.contains("name")){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre " + value + " ya existe");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            }
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
@@ -83,5 +89,12 @@ public class ExceptionHandler {
     protected ResponseEntity<?> handleMemberDoesntBelongToForum(MemberDoesntBelongForumException e) {
         this.logger.info(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(InvalidImageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<?> handleInvalidImage(InvalidImageException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
