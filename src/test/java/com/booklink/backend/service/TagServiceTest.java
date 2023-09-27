@@ -31,20 +31,20 @@ public class TagServiceTest {
         TagDto savedTag = TagDto.from(tagService.findOrCreateTag(createTagDto));
         List<Tag> tags = tagService.getAllTags();
         assertFalse(tags.isEmpty());
-        assertEquals(4, tags.size());
+        assertEquals(7, tags.size());
 
-        TagDto myTag = TagDto.from(tags.get(3));
+        TagDto myTag = TagDto.from(tags.get(6));
         assertEquals(savedTag, myTag);
 
         TagDto sameTag = TagDto.from(tagService.findOrCreateTag(createTagDto));
         tags = tagService.getAllTags();
-        assertEquals(4, tags.size());
+        assertEquals(7, tags.size());
     }
 
     @Test
     void testGetAllTags() {
         List<Tag> tags = tagService.getAllTags();
         assertFalse(tags.isEmpty());
-        assertEquals(3, tags.size());
+        assertEquals(6, tags.size());
     }
 }
