@@ -245,7 +245,10 @@ public class ForumServiceTest {
         assertEquals(1, forums.size());
 
         List<ForumViewDto> forums2 = forumService.searchForums("fiction",1L);
-        assertEquals(10, forums2.size());
+        assertEquals(20, forums2.size());
+
+        List<ForumViewDto> forums3 = forumService.searchForums("Fiction, romance horror",1L);
+        assertEquals(20, forums2.size());
 
     }
 
