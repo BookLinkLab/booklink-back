@@ -62,13 +62,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserEntityById(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        return userOptional.orElseThrow(() -> new NotFoundException("El usuario %s no fue encontrado".formatted(id)));
+        return userOptional.orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
     }
 
     @Override
     public UserDto updateUser(long id, UpdateUserDto updateUserDTO) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        User user = userOptional.orElseThrow(() -> new NotFoundException("El Usuario %s no fue encontrado".formatted(id)));
+        User user = userOptional.orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
         if (updateUserDTO.getEmail() != null) {
             user.setEmail(updateUserDTO.getEmail());
         }
