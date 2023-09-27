@@ -18,9 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
@@ -127,8 +125,13 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public List<ForumViewDto> searchForums(String searchTerm, Long userId) {
         if (searchTerm != null) {
-            List<Forum> forums = forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm);
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            Set<Forum> forums = new HashSet<>(forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm));
+            List<String> words = List.of(searchTerm.split("[ ,]"));
+
+            for (String word : words) {
+                forums.addAll(forumRepository.findAllByTagsNameContainingIgnoreCase(word));
+            }
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(new ArrayList<>(forums), userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
             return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);

@@ -1,6 +1,7 @@
 package com.booklink.backend.dto.forum;
 
 import com.booklink.backend.dto.tag.CreateTagDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -27,5 +28,6 @@ public class CreateForumDto {
     private String img;
 
     @NotNull
+    @Valid
     private List<CreateTagDto> tags;
 }
