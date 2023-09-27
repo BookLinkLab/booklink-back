@@ -279,13 +279,13 @@ public class ForumControllerTest {
         ResponseEntity<ForumDto> response = restTemplate.exchange(
                 baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
         );
-        ResponseEntity<ForumDto> response1 = restTemplate.exchange(
-                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
+        ResponseEntity<String> response1 = restTemplate.exchange(
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), String.class
         );
 
 
-        ResponseEntity<ForumDto> response2 = restTemplate.exchange(
-                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
+        ResponseEntity<String> response2 = restTemplate.exchange(
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), String.class
         );
 
 
