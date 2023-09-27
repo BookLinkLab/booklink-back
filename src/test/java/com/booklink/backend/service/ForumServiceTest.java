@@ -62,9 +62,9 @@ public class ForumServiceTest {
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
         List<ForumDto> allForums = forumService.getAllForums();
         assertFalse(allForums.isEmpty());
-        assertEquals(6, allForums.size());
+        assertEquals(11, allForums.size());
 
-        ForumDto myForum = allForums.get(5);
+        ForumDto myForum = allForums.get(10);
         assertNotEquals(savedForum , myForum);
 
         //join user
@@ -76,15 +76,15 @@ public class ForumServiceTest {
 
         assertTrue(myForum.getMembers().isEmpty());
         forumService.joinForum(myForum.getId(), userToJoin.getId());
-        assertFalse(forumService.getAllForums().get(5).getMembers().isEmpty());
+        assertFalse(forumService.getAllForums().get(10).getMembers().isEmpty());
 
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
 
-        ForumDto forumWithTag = forumService.addTagToForum(6L, 1L, createTagDto);
+        ForumDto forumWithTag = forumService.addTagToForum(11L, 1L, createTagDto);
         assertEquals(1, forumWithTag.getTags().size());
-        assertEquals(4, tagService.getAllTags().size());
+        assertEquals(7, tagService.getAllTags().size());
 
         CreateTagDto tag2 = CreateTagDto.builder()
                 .name("Tag2")
@@ -97,7 +97,7 @@ public class ForumServiceTest {
                 .build();
 
 
-        Long id = 6L;
+        Long id = 11L;
         Long adminUserId = 1L;
 
 
@@ -107,11 +107,11 @@ public class ForumServiceTest {
         List<ForumDto> allForums1 = forumService.getAllForums();
         List<Tag> allTags = tagService.getAllTags();
 
-        assertEquals(4, allTags.size());
+        assertEquals(7, allTags.size());
         assertEquals("Action", allTags.get(0).getName());
         assertEquals(1, editedForum.getTags().size());
 
-        assertEquals(6, allForums1.size());
+        assertEquals(11, allForums1.size());
         assertNotEquals(allForums, allForums1);
         assertNotEquals(allForums, allForums1);
         assertEquals(1, forumWithTag.getTags().size());
@@ -170,7 +170,7 @@ public class ForumServiceTest {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
-        assertThrows(NotFoundException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
+        assertThrows(NotFoundException.class, () -> forumService.addTagToForum(11L, 1L, createTagDto));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class ForumServiceTest {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
-        assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(6L, 2L, createTagDto));
+        assertThrows(UserNotAdminException.class, () -> forumService.addTagToForum(11L, 2L, createTagDto));
     }
 
     @Test
@@ -223,8 +223,8 @@ public class ForumServiceTest {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Tag")
                 .build();
-        forumService.addTagToForum(6L, 1L, createTagDto);
-        assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(6L, 1L, createTagDto));
+        forumService.addTagToForum(11L, 1L, createTagDto);
+        assertThrows(AlreadyAssignedException.class, () -> forumService.addTagToForum(11L, 1L, createTagDto));
     }
 
     @Test
@@ -240,12 +240,12 @@ public class ForumServiceTest {
         CreateTagDto createTagDto = CreateTagDto.builder()
                 .name("Fiction")
                 .build();
-        forumService.addTagToForum(6L, 1L, createTagDto);
+        forumService.addTagToForum(11L, 1L, createTagDto);
         List<ForumViewDto> forums = forumService.searchForums("LORD OF THE RINGS",1L);
         assertEquals(1, forums.size());
 
         List<ForumViewDto> forums2 = forumService.searchForums("fiction",1L);
-        assertEquals(3, forums2.size());
+        assertEquals(10, forums2.size());
 
     }
 
@@ -262,8 +262,8 @@ public class ForumServiceTest {
         forumService.createForum(createForumDto, 1L);
 
         List<ForumViewDto> forums3 = forumService.searchForums(null, 1L);
-        assertEquals(6, forums3.size());
-        assertEquals(forumName, forums3.get(5).getName());
+        assertEquals(11, forums3.size());
+        assertEquals(forumName, forums3.get(10).getName());
 
     }
 
@@ -278,14 +278,14 @@ public class ForumServiceTest {
                 .tags(new ArrayList<>())
                 .build();
         forumService.createForum(createForumDto, 1L);
-        forumService.deleteForum(6L, 1L);
+        forumService.deleteForum(11L, 1L);
         List<ForumDto> allForums = forumService.getAllForums();
-        assertEquals(5, allForums.size());
+        assertEquals(10, allForums.size());
     }
 
     @Test
     void deleteForumNotFound() {
-        assertThrows(NotFoundException.class, () -> forumService.deleteForum(6L, 1L));
+        assertThrows(NotFoundException.class, () -> forumService.deleteForum(11L, 1L));
     }
 
     @Test
@@ -302,11 +302,11 @@ public class ForumServiceTest {
                 .name("Fiction")
                 .build();
 
-        forumService.addTagToForum(6L, 1L, createTagDto);
-        forumService.deleteForum(6L, 1L);
+        forumService.addTagToForum(11L, 1L, createTagDto);
+        forumService.deleteForum(11L, 1L);
         List<ForumDto> allForums = forumService.getAllForums();
-        assertEquals(5, allForums.size());
-        assertEquals(0, allForums.get(4).getTags().size());
+        assertEquals(10, allForums.size());
+        assertEquals(2, allForums.get(9).getTags().size());
     }
 
     @Test
@@ -379,7 +379,7 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
 
-        Long forumId = 6L;
+        Long forumId = 11L;
 
         User user = userService.getUserEntityById(1L);
 
@@ -396,7 +396,7 @@ public class ForumServiceTest {
 
     @Test
     void getForumByWrongId() {
-        Long forumId = 6L;
+        Long forumId = 11L;
         assertThrows(NotFoundException.class, () -> forumService.getForumById(forumId,5L));
     }
 
@@ -411,7 +411,7 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
 
-        Long forumId = 6L;
+        Long forumId = 11L;
 
         User user = userService.getUserEntityById(2L);
         forumService.joinForum(forumId, user.getId());
@@ -436,7 +436,7 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
 
-        Long forumId = 6L;
+        Long forumId = 11L;
 
         User user = userService.getUserEntityById(2L);
         forumService.joinForum(forumId, user.getId());
@@ -445,12 +445,13 @@ public class ForumServiceTest {
         List<ForumViewDto> forumViewDtos = forumService.searchForums(null, 2L);
         List<ForumViewDto> forumViewDtos1 = forumService.searchForums("Lord of the Rings", 2L);
 
-        assertEquals(6, forumViewDtos.size());
+        assertEquals(11, forumViewDtos.size());
+        List<Long> ids = new ArrayList<>(List.of(1L, 2L, 4L, 6L, 7L, 9L, 11L));
         for (ForumViewDto forumViewDto : forumViewDtos) {
-            if(forumViewDto.getId() == 3L || forumViewDto.getId() == 5L){
-            assertFalse(forumViewDto.isSearcherIsMember());}
+            if(ids.contains(forumViewDto.getId())){
+                assertTrue(forumViewDto.isSearcherIsMember());}
             else{
-                assertTrue(forumViewDto.isSearcherIsMember());
+                assertFalse(forumViewDto.isSearcherIsMember());
             }
         }
 
@@ -478,7 +479,7 @@ public class ForumServiceTest {
                 .name("Don Quijote")
                 .build();
 
-        Long id = 6L;
+        Long id = 11L;
         Long adminUserId = 1L;
 
         ForumDto editedForum = forumService.editForum(id, adminUserId ,editForumDto);
@@ -505,7 +506,7 @@ public class ForumServiceTest {
 
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
 
-        assertEquals(savedForum.getTags(), forumService.getAllForums().get(5).getTags());
+        assertEquals(savedForum.getTags(), forumService.getAllForums().get(10).getTags());
     }
 
     @Test
@@ -518,7 +519,7 @@ public class ForumServiceTest {
                 .build();
         ForumDto savedForum = forumService.createForum(createForumDto, 1L);
 
-        assertEquals(savedForum.getTags(), forumService.getAllForums().get(5).getTags());
+        assertEquals(savedForum.getTags(), forumService.getAllForums().get(10).getTags());
     }
 
     @Test
@@ -532,7 +533,7 @@ public class ForumServiceTest {
                 .build();
         forumService.createForum(createForumDto, 1L);
 
-        Long forumId = 6L;
+        Long forumId = 11L;
         Forum forum = forumService.getForumEntityById(forumId);
 
         //testeando que el creador del foro sea miembro
@@ -544,19 +545,19 @@ public class ForumServiceTest {
 
         //testeando que se sumen los miembros
         forumService.joinForum(forumId, user1.getId());
-        assertEquals(2, forumService.getForumEntityById(6L).getMembersAmount());
+        assertEquals(2, forumService.getForumEntityById(11L).getMembersAmount());
         forumService.joinForum(forumId, user2.getId());
-        assertEquals(3, forumService.getForumEntityById(6L).getMembersAmount());
+        assertEquals(3, forumService.getForumEntityById(11L).getMembersAmount());
         forumService.joinForum(forumId, user3.getId());
-        assertEquals(4, forumService.getForumEntityById(6L).getMembersAmount());
+        assertEquals(4, forumService.getForumEntityById(11L).getMembersAmount());
 
         //testeando que se resten los miembros
         forumService.leaveForum(forumId, user1.getId());
-        assertEquals(3, forumService.getForumEntityById(6L).getMembersAmount());
+        assertEquals(3, forumService.getForumEntityById(11L).getMembersAmount());
         forumService.leaveForum(forumId, user2.getId());
-        assertEquals(2, forumService.getForumEntityById(6L).getMembersAmount());
+        assertEquals(2, forumService.getForumEntityById(11L).getMembersAmount());
         forumService.leaveForum(forumId, user3.getId());
-        assertEquals(1, forumService.getForumEntityById(6L).getMembersAmount());
+        assertEquals(1, forumService.getForumEntityById(11L).getMembersAmount());
 
 
 
