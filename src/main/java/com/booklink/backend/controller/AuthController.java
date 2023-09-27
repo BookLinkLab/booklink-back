@@ -27,10 +27,7 @@ public class AuthController {
     try {
       return ResponseEntity.status(HttpStatus.OK).body(this.authService.login(loginRequestDto));
     }
-    catch (WrongCredentialsException e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-    }
-    catch (NotFoundException e) {
+    catch (WrongCredentialsException | NotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
     catch (Exception e) {
