@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
                 return PostDto.from(savedPost);
             }
         }
-        throw new UserNotMemberException("User is not a member of the forum");
+        throw new UserNotMemberException("No sos miembro de este foro");
     }
 
     @Override
