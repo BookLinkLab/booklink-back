@@ -29,6 +29,7 @@ public class EditForumDto {
 
     private String img;
 
+    @Valid
     private List<CreateTagDto> tags;
 
 }

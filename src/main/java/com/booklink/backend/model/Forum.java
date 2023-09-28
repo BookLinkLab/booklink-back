@@ -53,4 +53,5 @@ public class Forum {
                 .tags(new ArrayList<>())
                 .build();
     }
+
 }
