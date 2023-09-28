@@ -160,7 +160,7 @@ public class UserServiceTest {
         List<ForumDto> forumsJoinedAndCreated3 = Stream.concat(forumsCreated3.stream(), forumsJoined3.stream()).toList();
 
         //testeando que el user 8 no es miembro del foro 5 del que el user 3 creo (hecho mas arriba en el test) y si del resto de los foros del user 3
-        for (ForumDto forum : forums3) {
+        for (ForumDto forum : forumsJoinedAndCreated3) {
             if(forum.getId() == 2L || forum.getId() == 11L){assertFalse(forum.isSearcherIsMember());}
             else{
                 assertTrue(forum.isSearcherIsMember());

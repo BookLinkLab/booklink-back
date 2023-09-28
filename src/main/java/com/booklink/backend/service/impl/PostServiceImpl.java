@@ -12,10 +12,12 @@ import com.booklink.backend.repository.PostRepository;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.service.PostService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
