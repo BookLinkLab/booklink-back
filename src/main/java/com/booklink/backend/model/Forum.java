@@ -29,6 +29,7 @@ public class Forum {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
+    @Column(length = 512)
     private String description;
 
     private String img;

@@ -1,18 +1,24 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.*;
+import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
+import com.booklink.backend.service.PostService;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +41,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumDto createForum(CreateForumDto createForumDto, Long userId) {
         User forumCreator = userService.getUserEntityById(userId);
+        validateImage(createForumDto.getImg());
         Forum forumToSave = Forum.from(createForumDto, forumCreator.getId());
 
         List<CreateTagDto> createTagDto = createForumDto.getTags();
@@ -78,6 +85,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             forumToEdit.getTags().clear();
             forumToEdit.getTags().addAll(newTags);
         }
+        if (editForumDto.getImg() != null) {
+            validateImage(editForumDto.getImg());
+            forumToEdit.setImg(editForumDto.getImg());
+        }
         Forum savedForum = forumRepository.save(forumToEdit);
         for (Tag tag : oldTags) {
             if (!forumRepository.existsByTagsContaining(tag)) {
@@ -114,7 +125,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public Forum getForumEntityById(Long id) {
         Optional<Forum> forumOptional = forumRepository.findById(id);
-        return forumOptional.orElseThrow(() -> new NotFoundException("El foro %s no fue encontrado".formatted(id)));
+        return forumOptional.orElseThrow(() -> new NotFoundException("El foro no fue encontrado"));
     }
 
     @Override
@@ -171,5 +182,16 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             forumRepository.save(forumToLeave);}
         else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
+    }
+
+    private void validateImage(String img){
+        if (img != null) {
+            try {
+                BufferedImage image = ImageIO.read(new URL(img));
+                if (image == null) throw new IOException();
+            } catch (IOException e) {
+                throw new InvalidImageException("La imagen no es válida");
+            }
+        }
     }
 }

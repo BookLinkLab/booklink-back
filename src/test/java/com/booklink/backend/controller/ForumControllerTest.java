@@ -49,7 +49,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         ResponseEntity<ForumDto> response = restTemplate.exchange(
@@ -63,7 +63,7 @@ public class ForumControllerTest {
                 .name("Science of Interstellar")
                 .userId(10L)
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .members(new ArrayList<>())
                 .tags(new ArrayList<>())
                 .build();
@@ -77,23 +77,23 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
         UserDto newUser = createUserAndLogIn("member11", "member@mail.com", "password");
         ResponseEntity<ForumDto> response = restTemplate.exchange(
-                baseUrl + "/6/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
+                baseUrl + "/11/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         ForumDto responseForum = ForumDto.builder()
-                .id(6L)
+                .id(11L)
                 .name("Science of Interstellar")
                 .userId(10L)
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .members(new ArrayList<>(List.of(newUser)))
                 .searcherIsMember(true)
                 .tags(new ArrayList<>())
@@ -107,7 +107,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -128,13 +128,13 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/6/join", HttpMethod.POST, new HttpEntity<>(null), String.class);
+                baseUrl + "/11/join", HttpMethod.POST, new HttpEntity<>(null), String.class);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
@@ -145,7 +145,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -156,7 +156,7 @@ public class ForumControllerTest {
                 .build();
 
         ResponseEntity<ForumDto> response = restTemplate.exchange(
-                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
+                baseUrl + "/11/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -168,7 +168,7 @@ public class ForumControllerTest {
                 .build();
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
+                baseUrl + "/11/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
         );
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -178,7 +178,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -217,7 +217,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -228,11 +228,11 @@ public class ForumControllerTest {
                 .build();
 
         restTemplate.exchange(
-                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
+                baseUrl + "/11/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
         );
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
+                baseUrl + "/11/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), String.class
         );
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -244,7 +244,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -274,18 +274,18 @@ public class ForumControllerTest {
                 .build();
 
 
-        Long forumId = 6L;
+        Long forumId = 11L;
 
         ResponseEntity<ForumDto> response = restTemplate.exchange(
                 baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto), ForumDto.class
         );
-        ResponseEntity<ForumDto> response1 = restTemplate.exchange(
-                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), ForumDto.class
+        ResponseEntity<String> response1 = restTemplate.exchange(
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto1), String.class
         );
 
 
-        ResponseEntity<ForumDto> response2 = restTemplate.exchange(
-                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), ForumDto.class
+        ResponseEntity<String> response2 = restTemplate.exchange(
+                baseUrl + "/" + forumId, HttpMethod.PATCH, new HttpEntity<>(editForumDto2), String.class
         );
 
 
@@ -300,7 +300,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -311,7 +311,7 @@ public class ForumControllerTest {
                 .build();
 
         restTemplate.exchange(
-                baseUrl + "/6/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
+                baseUrl + "/11/tag", HttpMethod.POST, new HttpEntity<>(createTagDto), ForumDto.class
         );
 
         ResponseEntity<List> response = restTemplate.exchange(
@@ -327,7 +327,7 @@ public class ForumControllerTest {
         );
 
         assertEquals(HttpStatus.OK, response2.getStatusCode());
-        assertEquals(6, response2.getBody().size());
+        assertEquals(11, response2.getBody().size());
 
 
     }
@@ -337,14 +337,14 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+                baseUrl + "/11", HttpMethod.DELETE, null, String.class
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -355,20 +355,20 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+                baseUrl + "/11", HttpMethod.DELETE, null, String.class
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         ResponseEntity<String> response1 = restTemplate.exchange(
-                baseUrl + "/6", HttpMethod.DELETE, null, String.class
+                baseUrl + "/11", HttpMethod.DELETE, null, String.class
         );
 
         assertEquals(HttpStatus.NOT_FOUND, response1.getStatusCode());
@@ -380,7 +380,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Forum")
                 .description("description")
-                .img("img")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -409,7 +409,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 
@@ -438,7 +438,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -456,7 +456,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
         restTemplate.postForEntity(baseUrl, createForumDto, ForumDto.class);
@@ -481,7 +481,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(createTagsDto)
                 .build();
 
@@ -499,7 +499,7 @@ public class ForumControllerTest {
         CreateForumDto createForumDto = CreateForumDto.builder()
                 .name("Science of Interstellar")
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
-                .img("www.1085607313601204255.com")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .tags(new ArrayList<>())
                 .build();
 

@@ -17,8 +17,10 @@ public class UpdateUserDto {
     @Size(min = 3, max = 24, message = "El nombre de usuario debe tener entre 3 y 24 caracteres")
     private String username;
 
-    @Email
+    @Email(message = "El correo ingresado es inválido")
     private String email;
 
+    @Size(min = 8, max = 24, message = "La contraseña debe tener entre 8 y 24 caracteres")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "La contraseña solo debe contener letras y números")
     private String password;
 }
