@@ -28,6 +28,7 @@ public class PostServiceTest {
                 .content("This is a test post")
                 .build();
 
+        forumService.joinForum(1L, 1L);
         PostDto postDto = postService.createPost(createPostDto, 1L);
         assertEquals("This is a test post", postDto.getContent());
     }
@@ -38,6 +39,7 @@ public class PostServiceTest {
                 .forumId(1L)
                 .content("This is a test post")
                 .build();
+        forumService.joinForum(1L, 1L);
 
         postService.createPost(createPostDto, 1L);
         assertEquals(1, postService.getPostsByForumId(1L).size());

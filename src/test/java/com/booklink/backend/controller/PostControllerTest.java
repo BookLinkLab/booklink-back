@@ -46,6 +46,8 @@ public class PostControllerTest {
                 .content("This is a test post")
                 .build();
 
+        restTemplate.exchange("/forum/1/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
+
         ResponseEntity<PostDto> response = restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -64,7 +66,7 @@ public class PostControllerTest {
                 .forumId(1L)
                 .content("This is a test post")
                 .build();
-
+        restTemplate.exchange("/forum/1/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
         restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class);
 
         ResponseEntity<List> response = restTemplate.getForEntity(baseUrl + "/1", List.class);
