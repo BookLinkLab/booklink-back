@@ -1,6 +1,7 @@
 package com.booklink.backend.dto.forum;
 
 import com.booklink.backend.dto.tag.CreateTagDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,11 +22,12 @@ public class CreateForumDto {
     private String name;
 
     @NotBlank(message = "La descripción no puede estar vacía")
-    @Size(max = 512)
+    @Size(max = 512, message = "La descripción no puede tener más de 512 caracteres")
     private String description;
 
     private String img;
 
     @NotNull
+    @Valid
     private List<CreateTagDto> tags;
 }

@@ -27,11 +27,11 @@ public class User {
     private String password;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Forum> forumsCreated;
 
     @ToString.Exclude
-    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
     private List<Forum> forumsJoined;
 
     public static User from(CreateUserDto userDto, String encryptedPassword) {
