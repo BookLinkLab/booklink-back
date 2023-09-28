@@ -121,7 +121,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public Forum getForumEntityById(Long id) {
         Optional<Forum> forumOptional = forumRepository.findById(id);
-        return forumOptional.orElseThrow(() -> new NotFoundException("El foro %s no fue encontrado".formatted(id)));
+        return forumOptional.orElseThrow(() -> new NotFoundException("El foro no fue encontrado"));
     }
 
     @Override
@@ -176,7 +176,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
                 BufferedImage image = ImageIO.read(new URL(img));
                 if (image == null) throw new IOException();
             } catch (IOException e) {
-                throw new InvalidImageException("La imagen %s no es válida".formatted(img));
+                throw new InvalidImageException("La imagen no es válida");
             }
         }
     }

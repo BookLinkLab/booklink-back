@@ -62,17 +62,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserEntityById(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        return userOptional.orElseThrow(() -> new NotFoundException("El usuario %s no fue encontrado".formatted(id)));
+        return userOptional.orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
     }
 
     @Override
     public UserDto updateUser(long id, UpdateUserDto updateUserDTO) {
         Optional<User> userOptional = this.userRepository.findById(id);
-        User user = userOptional.orElseThrow(() -> new NotFoundException("El Usuario %s no fue encontrado".formatted(id)));
-        user.setEmail(updateUserDTO.getEmail());
-        user.setUsername(updateUserDTO.getUsername());
-        String encryptedPassword = this.passwordEncoder.encode(updateUserDTO.getPassword());
-        user.setPassword(encryptedPassword);
+        User user = userOptional.orElseThrow(() -> new NotFoundException("El usuario no fue encontrado"));
+        if (updateUserDTO.getEmail() != null) {
+            user.setEmail(updateUserDTO.getEmail());
+        }
+        if (updateUserDTO.getUsername() != null) {
+            user.setUsername(updateUserDTO.getUsername());
+        }
+        if (updateUserDTO.getPassword() != null) {
+            String encryptedPassword = this.passwordEncoder.encode(updateUserDTO.getPassword());
+            user.setPassword(encryptedPassword);
+        }
         return UserDto.from(userRepository.save(user));
 
     }

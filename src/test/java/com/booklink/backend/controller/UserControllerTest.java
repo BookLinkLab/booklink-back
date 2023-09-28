@@ -181,7 +181,7 @@ public class UserControllerTest {
         UpdateUserDto updateUserDTO = UpdateUserDto.builder()
                 .username("Joaquin")
                 .email("joaquin@gmail.com")
-                .password("abc")
+                .password("Password123")
                 .build();
 
 
