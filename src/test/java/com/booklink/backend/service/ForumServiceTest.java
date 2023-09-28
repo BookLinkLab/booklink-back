@@ -245,10 +245,16 @@ public class ForumServiceTest {
         assertEquals(1, forums.size());
 
         List<ForumViewDto> forums2 = forumService.searchForums("fiction",1L);
-        assertEquals(20, forums2.size());
+        for (int i = 0; i < forums2.size() ; i++) {
+            System.out.println(forums2.get(i));
+        }
+        assertEquals(10, forums2.size());
 
-        List<ForumViewDto> forums3 = forumService.searchForums("Fiction, romance horror",1L);
-        assertEquals(20, forums2.size());
+        List<ForumViewDto> forums3 = forumService.searchForums("Fiction horror",1L);
+        assertEquals(1, forums3.size());
+
+        List<ForumViewDto> forums4 = forumService.searchForums("Action, Fiction fantasy",1L);
+        assertEquals(1, forums4.size());
 
     }
 

@@ -127,10 +127,23 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         if (searchTerm != null) {
             Set<Forum> forums = new HashSet<>(forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm));
             List<String> words = List.of(searchTerm.split("[ ,]"));
+            Set<Forum> forumsByTagName = new HashSet<>();
 
-            for (String word : words) {
-                forums.addAll(forumRepository.findAllByTagsNameContainingIgnoreCase(word));
+            int index = 0;
+            for (int i = 0; i < words.size(); i++) {
+                if(!words.get(i).trim().isEmpty()) {
+                    forumsByTagName.addAll(forumRepository.findAllByTagsNameContainingIgnoreCase(words.get(i)));
+                    index = i + 1;
+                    break;
+                }
             }
+            for (int i = index; i < words.size(); i++) {
+                if (!words.get(i).trim().isEmpty()) {
+                        forumsByTagName.retainAll(forumRepository.findAllByTagsNameContainingIgnoreCase(words.get(i)));
+                }
+            }
+
+            forums.addAll(forumsByTagName);
             return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(new ArrayList<>(forums), userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
