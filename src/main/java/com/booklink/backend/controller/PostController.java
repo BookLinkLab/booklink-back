@@ -30,4 +30,11 @@ public class PostController {
     public ResponseEntity<?> getPostsByForumId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByForumId(id));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        postService.deletePost(id,securityUtil.getLoggedUserId());
+        return ResponseEntity.status(HttpStatus.OK).body("Post deleted");
+    }
+
 }
