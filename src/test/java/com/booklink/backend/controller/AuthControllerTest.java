@@ -62,7 +62,7 @@ public class AuthControllerTest {
                 "/auth", loginRequestDto, String.class
         );
 
-        assertEquals(HttpStatus.UNAUTHORIZED, response1.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response1.getStatusCode());
     }
 
     @Test

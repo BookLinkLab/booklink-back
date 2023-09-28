@@ -19,9 +19,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
 
 @Service
 @Transactional
@@ -133,6 +135,32 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         if (searchTerm != null) {
             List<Forum> forums = forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm);
             return forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+        if (searchTerm != null && !searchTerm.isBlank()) {
+            List<String> words = Arrays.stream(searchTerm.split("\\s+"))
+                    .filter(s -> !s.trim().isEmpty())
+                    .toList();
+            List<Forum> nameSearchResults = forumRepository.findAllByNameContainingIgnoreCase(searchTerm);
+            List<Forum> tagSearchResults = new ArrayList<>();
+            for (int i = 0; i < words.size(); i++) {
+                String word = words.get(i);
+                if(i == 0) {
+                    tagSearchResults.addAll(forumRepository.findAllByTagsNameIsIgnoreCase(word));
+                    continue;
+                }
+                List<Forum> forumsToKeep = new ArrayList<>();
+                List<Forum> newForumsToAdd = forumRepository.findAllByTagsNameIsIgnoreCase(word);
+                tagSearchResults.forEach(forum -> {
+                    if(newForumsToAdd.stream().anyMatch(newForum -> newForum.getId().equals(forum.getId())))
+                        forumsToKeep.add(forum);
+                });
+                tagSearchResults = forumsToKeep;
+            }
+            nameSearchResults.addAll(tagSearchResults);
+            // Remove duplicates
+            List<Forum> result = nameSearchResults.stream()
+                    .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(Forum::getId))),
+                            ArrayList::new));
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(result, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
             return forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
