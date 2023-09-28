@@ -1,17 +1,17 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.*;
+import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
-import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
+import com.booklink.backend.service.PostService;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -155,7 +155,6 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         boolean isMember = ForumDtoFactory.isMember(forum, userId);
         return ForumGetDto.from(forum, isMember);
     }
-
 
     @Override
     public void leaveForum(Long id, Long userId) {

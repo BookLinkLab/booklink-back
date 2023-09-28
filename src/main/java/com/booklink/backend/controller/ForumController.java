@@ -67,5 +67,4 @@ public class ForumController {
         return ResponseEntity.status(HttpStatus.OK).body(forumService.getForumById(id,securityUtil.getLoggedUserId()));
     }
 
-
 }
