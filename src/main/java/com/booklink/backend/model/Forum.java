@@ -54,20 +54,4 @@ public class Forum {
                 .build();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Forum other = (Forum) o;
-
-        return id != null ? id.equals(other.id) : other.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-
 }

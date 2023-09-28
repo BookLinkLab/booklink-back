@@ -20,6 +20,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
 @Service
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
     private final ForumRepository forumRepository;
@@ -124,27 +128,32 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
 
     @Override
     public List<ForumViewDto> searchForums(String searchTerm, Long userId) {
-        if (searchTerm != null) {
-            Set<Forum> forums = new HashSet<>(forumRepository.findDistinctByNameContainingIgnoreCaseOrTagsNameContainingIgnoreCase(searchTerm, searchTerm));
-            List<String> words = List.of(searchTerm.split("[ ,]"));
-            Set<Forum> forumsByTagName = new HashSet<>();
-
-            int index = 0;
+        if (searchTerm != null && !searchTerm.isBlank()) {
+            List<String> words = Arrays.stream(searchTerm.split("\\s+"))
+                    .filter(s -> !s.trim().isEmpty())
+                    .toList();
+            List<Forum> nameSearchResults = forumRepository.findAllByNameContainingIgnoreCase(searchTerm);
+            List<Forum> tagSearchResults = new ArrayList<>();
             for (int i = 0; i < words.size(); i++) {
-                if(!words.get(i).trim().isEmpty()) {
-                    forumsByTagName.addAll(forumRepository.findAllByTagsNameContainingIgnoreCase(words.get(i)));
-                    index = i + 1;
-                    break;
+                String word = words.get(i);
+                if(i == 0) {
+                    tagSearchResults.addAll(forumRepository.findAllByTagsNameIsIgnoreCase(word));
+                    continue;
                 }
+                List<Forum> forumsToKeep = new ArrayList<>();
+                List<Forum> newForumsToAdd = forumRepository.findAllByTagsNameIsIgnoreCase(word);
+                tagSearchResults.forEach(forum -> {
+                    if(newForumsToAdd.stream().anyMatch(newForum -> newForum.getId().equals(forum.getId())))
+                        forumsToKeep.add(forum);
+                });
+                tagSearchResults = forumsToKeep;
             }
-            for (int i = index; i < words.size(); i++) {
-                if (!words.get(i).trim().isEmpty()) {
-                        forumsByTagName.retainAll(forumRepository.findAllByTagsNameContainingIgnoreCase(words.get(i)));
-                }
-            }
-
-            forums.addAll(forumsByTagName);
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(new ArrayList<>(forums), userId, ForumViewDto::from);
+            nameSearchResults.addAll(tagSearchResults);
+            // Remove duplicates
+            List<Forum> result = nameSearchResults.stream()
+                    .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(Forum::getId))),
+                            ArrayList::new));
+            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(result, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
             return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
