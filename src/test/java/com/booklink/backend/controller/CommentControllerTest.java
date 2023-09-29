@@ -33,9 +33,9 @@ public class CommentControllerTest {
 
     @BeforeEach
     void setup() {
-        UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password");
-        ForumDto forumJoined = utils.joinUserToForum(1L);
-        PostDto post = utils.createPost(1L, "This is a test post");
+        UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password", restTemplate);
+        ForumDto forumJoined = utils.joinUserToForum(1L, restTemplate);
+        PostDto post = utils.createPost(1L, "This is a test post", restTemplate);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class CommentControllerTest {
 
     @Test
     void createCommentWhenNotMemberTest() {
-        utils.createUserAndLogIn("notForumMember", "notForumMember@email.com", "password");
+        utils.createUserAndLogIn("notForumMember", "notForumMember@email.com", "password", restTemplate);
         CreateCommentDto createCommentDto = CreateCommentDto.builder()
                 .postId(1L)
                 .content("The creator of this comment is not member of the forum")

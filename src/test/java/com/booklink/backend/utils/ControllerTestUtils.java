@@ -20,15 +20,12 @@ import java.util.Objects;
 
 @Service
 public class ControllerTestUtils {
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     public static void setOutputStreamingFalse(TestRestTemplate restTemplate) {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         restTemplate.getRestTemplate().setRequestFactory(requestFactory);
     }
 
-    public UserDto createUserAndLogIn(String username, String email, String password) {
+    public UserDto createUserAndLogIn(String username, String email, String password, TestRestTemplate restTemplate) {
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .username(username)
                 .email(email)
@@ -53,7 +50,7 @@ public class ControllerTestUtils {
         return Objects.requireNonNull(createUserResponse.getBody()).getUser();
     }
 
-    public PostDto createPost(Long forumId, String content) {
+    public PostDto createPost(Long forumId, String content, TestRestTemplate restTemplate) {
         CreatePostDto createPostDto = CreatePostDto.builder()
                 .forumId(forumId)
                 .content(content)
@@ -63,7 +60,7 @@ public class ControllerTestUtils {
         return response.getBody();
     }
 
-    public ForumDto joinUserToForum(Long forumId) {
+    public ForumDto joinUserToForum(Long forumId, TestRestTemplate restTemplate) {
         ResponseEntity<ForumDto> response = restTemplate.exchange("/forum/%s/join".formatted(forumId), HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
         return response.getBody();
     }
