@@ -72,6 +72,7 @@ public class PostServiceTest {
         PostDto editedPost = postService.editPost(postDto.getId(), editPostDto, 1L);
         assertEquals("This is an edited post", editedPost.getContent());
         assertEquals(postDto.getId(), editedPost.getId());
+        assertEquals(editedPost.isEdited(),true);
     }
 
     @Test
