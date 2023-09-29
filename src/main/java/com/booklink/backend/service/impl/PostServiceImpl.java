@@ -56,9 +56,9 @@ public class PostServiceImpl implements PostService {
     public PostDto editPost(Long postId, EditPostDto editPostDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("No se ha encontrado el posteo"));
         if(!Objects.equals(post.getUserId(), userId)) throw new UserNotOwnerException("Debes ser el dueño del posteo");
-        if(editPostDto.getContent() != null && !editPostDto.getContent().isEmpty()) {
-            if(!Objects.equals(post.getContent(), editPostDto.getContent())) post.setContent(editPostDto.getContent());
+        if(editPostDto.getContent() != null && !editPostDto.getContent().isEmpty() && !Objects.equals(post.getContent(), editPostDto.getContent()) ) {
             if(!post.isEdited()) post.setEdited(true);
+            post.setContent(editPostDto.getContent());
             post.setUpdatedDate(new Date());
             Post savedPost = postRepository.save(post);
             return PostDto.from(savedPost);
