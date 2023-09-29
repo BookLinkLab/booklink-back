@@ -37,12 +37,18 @@ public class Post {
 
     private Date createdDate;
 
+    private Date updatedDate;
+
+    private boolean isEdited;
+
     public static Post from(CreatePostDto postDto, Long userId) {
         return Post.builder()
                 .userId(userId)
                 .forumId(postDto.getForumId())
                 .content(postDto.getContent())
                 .createdDate(new Date())
+                .updatedDate(new Date())
+                .isEdited(false)
                 .build();
     }
 }
