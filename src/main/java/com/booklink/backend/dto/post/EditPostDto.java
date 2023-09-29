@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EditPostDto {
 
-    @NotBlank(message = "La descripción no puede estar vacía")
     @Size(max = 512)
     private String content;
 
