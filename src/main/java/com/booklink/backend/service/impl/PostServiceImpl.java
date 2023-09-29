@@ -4,6 +4,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.post.PostInfoDto;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotMemberException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Post;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,7 +34,7 @@ public class PostServiceImpl implements PostService {
     public PostDto createPost(CreatePostDto createPostDto, Long userId) {
         Post post = Post.from(createPostDto, userId);
         Forum forum = forumService.getForumEntityById(createPostDto.getForumId());
-        for (User user: forum.getMembers()) {
+        for (User user : forum.getMembers()) {
             if (user.getId().equals(userId) || forum.getUser().getId().equals(userId)) {
                 Post savedPost = postRepository.save(post);
                 return PostDto.from(savedPost);
@@ -48,5 +50,10 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map(PostInfoDto::from).toList();
     }
 
-
+    @Override
+    public PostDto getPostById(Long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+        Post post = postOptional.orElseThrow(() -> new NotFoundException("El posteo no fue encontrado"));
+        return PostDto.from(post);
+    }
 }
