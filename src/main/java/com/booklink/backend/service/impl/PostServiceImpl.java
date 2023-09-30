@@ -4,6 +4,7 @@ package com.booklink.backend.service.impl;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.post.PostInfoDto;
+import com.booklink.backend.dto.post.PostViewDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotMemberException;
 import com.booklink.backend.model.Forum;
@@ -52,8 +53,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(Long id) {
-        Optional<Post> postOptional = postRepository.findById(id);
-        Post post = postOptional.orElseThrow(() -> new NotFoundException("El posteo no fue encontrado"));
+        Post post = getPostEntity(id);
         return PostDto.from(post);
+    }
+
+    @Override
+    public Post getPostEntity(Long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+        return postOptional.orElseThrow(() -> new NotFoundException("El posteo no fue encontrado"));
+    }
+
+    @Override
+    public PostViewDto getPostViewById(Long id) {
+        Post post = getPostEntity(id);
+        return PostViewDto.from(post);
     }
 }
