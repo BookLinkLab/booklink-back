@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,12 +38,16 @@ public class Post {
 
     private Date createdDate;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
     public static Post from(CreatePostDto postDto, Long userId) {
         return Post.builder()
                 .userId(userId)
                 .forumId(postDto.getForumId())
                 .content(postDto.getContent())
                 .createdDate(new Date())
+                .comments(new ArrayList<>())
                 .build();
     }
 }
