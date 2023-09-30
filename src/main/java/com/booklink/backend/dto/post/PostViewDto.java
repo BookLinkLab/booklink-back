@@ -20,7 +20,9 @@ public class PostViewDto {
     Long forumId;
     String forumName;
     String content;
-    Date date;
+    Date createdDate;
+    boolean isEdited;
+    Date updatedDate;
     List<CommentDto> comments;
 
     public static PostViewDto from(Post post) {
@@ -30,7 +32,9 @@ public class PostViewDto {
                 .forumId(post.getForumId())
                 .forumName(post.getForum().getName())
                 .content(post.getContent())
-                .date(post.getCreatedDate())
+                .createdDate(post.getCreatedDate())
+                .isEdited(post.isEdited())
+                .updatedDate(post.getUpdatedDate())
                 .comments(post.getComments().stream().map(CommentDto::from).toList())
                 .build();
     }
