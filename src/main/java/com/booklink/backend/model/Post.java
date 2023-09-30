@@ -38,6 +38,10 @@ public class Post {
 
     private Date createdDate;
 
+    private Date updatedDate;
+
+    private boolean isEdited;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
@@ -47,6 +51,8 @@ public class Post {
                 .forumId(postDto.getForumId())
                 .content(postDto.getContent())
                 .createdDate(new Date())
+                .updatedDate(new Date())
+                .isEdited(false)
                 .comments(new ArrayList<>())
                 .build();
     }

@@ -2,11 +2,13 @@ package com.booklink.backend.service.impl;
 
 
 import com.booklink.backend.dto.post.CreatePostDto;
+import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.post.PostViewDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotMemberException;
+import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Post;
 import com.booklink.backend.model.User;
@@ -16,8 +18,10 @@ import com.booklink.backend.service.PostService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -55,6 +59,21 @@ public class PostServiceImpl implements PostService {
     public PostDto getPostById(Long id) {
         Post post = getPostEntity(id);
         return PostDto.from(post);
+    }
+    @Override
+    public PostDto editPost(Long postId, EditPostDto editPostDto, Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("No se ha encontrado el posteo"));
+        if(!Objects.equals(post.getUserId(), userId)) throw new UserNotOwnerException("Debes ser el dueño del posteo");
+        if(editPostDto.getContent() != null && !editPostDto.getContent().isEmpty() && !Objects.equals(post.getContent(), editPostDto.getContent()) ) {
+            if(!post.isEdited()) post.setEdited(true);
+            post.setContent(editPostDto.getContent());
+            post.setUpdatedDate(new Date());
+            Post savedPost = postRepository.save(post);
+            return PostDto.from(savedPost);
+        }
+        else {
+            return PostDto.from(post);
+        }
     }
 
     @Override

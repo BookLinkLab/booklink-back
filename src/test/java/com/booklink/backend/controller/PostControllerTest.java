@@ -94,9 +94,38 @@ public class PostControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     }
 
+    @Test
+    public void editPost() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        restTemplate.exchange("/forum/1/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
 
+        PostDto postDto = restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class).getBody();
+        assertEquals("This is a test post", postDto.getContent());
 
+        CreatePostDto createPostDto2 = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is an edited test post")
+                .build();
 
+        ResponseEntity<PostDto> postDto1 = restTemplate.exchange(baseUrl + "/" + postDto.getId(), HttpMethod.PATCH, new HttpEntity<>(createPostDto2), PostDto.class);
+        assertEquals(HttpStatus.OK, postDto1.getStatusCode());
+        assertEquals("This is an edited test post", Objects.requireNonNull(postDto1.getBody()).getContent());
+
+        ResponseEntity<String> response2 = restTemplate.exchange(baseUrl + "/24543", HttpMethod.PATCH, new HttpEntity<>(createPostDto2), String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
+
+        CreatePostDto createPostDto3 = CreatePostDto.builder()
+                .forumId(1L)
+                .build();
+
+        ResponseEntity<PostDto> response3 = restTemplate.exchange(baseUrl + "/" + postDto.getId(), HttpMethod.PATCH, new HttpEntity<>(createPostDto3), PostDto.class);
+        assertEquals(HttpStatus.OK, response3.getStatusCode());
+        assertEquals("This is an edited test post", Objects.requireNonNull(response3.getBody().getContent()));
+
+    }
 
     private UserDto createUserAndLogIn(String username, String email, String password) {
         CreateUserDto createUserDto = CreateUserDto.builder()
