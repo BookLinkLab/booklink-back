@@ -17,5 +17,5 @@ public interface PostService {
 
     PostDto getPostById(Long id);
     Post getPostEntity(Long id);
-    PostViewDto getPostViewById(Long id);
+    PostViewDto getPostViewById(Long userId, Long postId);
 }

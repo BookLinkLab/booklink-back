@@ -34,7 +34,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostViewById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostViewById(securityUtil.getLoggedUserId(), id));
     }
 
     @PatchMapping("/{id}")
