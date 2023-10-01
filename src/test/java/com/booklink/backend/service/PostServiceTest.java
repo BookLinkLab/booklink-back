@@ -67,7 +67,7 @@ public class PostServiceTest {
 
         PostDto postDto = postService.createPost(createPostDto, 1L);
 
-        PostViewDto postViewDto = postService.getPostViewById(postDto.getId());
+        PostViewDto postViewDto = postService.getPostViewById(1L, postDto.getId());
         assertEquals("This is a test post", postViewDto.getContent());
         assertTrue(postViewDto.getComments().isEmpty());
     }
