@@ -27,9 +27,14 @@ public class PostController {
         PostDto postDto = postService.createPost(createPostDto, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/forum/{id}")
     public ResponseEntity<?> getPostsByForumId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByForumId(id));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPostById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostViewById(securityUtil.getLoggedUserId(), id));
     }
 
     @PatchMapping("/{id}")

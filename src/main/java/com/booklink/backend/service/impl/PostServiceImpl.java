@@ -5,6 +5,7 @@ import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.post.PostInfoDto;
+import com.booklink.backend.dto.post.PostViewDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotMemberException;
 import com.booklink.backend.exception.UserNotOwnerException;
@@ -38,13 +39,10 @@ public class PostServiceImpl implements PostService {
     public PostDto createPost(CreatePostDto createPostDto, Long userId) {
         Post post = Post.from(createPostDto, userId);
         Forum forum = forumService.getForumEntityById(createPostDto.getForumId());
-        for (User user : forum.getMembers()) {
-            if (user.getId().equals(userId) || forum.getUser().getId().equals(userId)) {
-                Post savedPost = postRepository.save(post);
-                return PostDto.from(savedPost);
-            }
-        }
-        throw new UserNotMemberException("No sos miembro de este foro");
+        if(isMember(userId, forum)) {
+            Post savedPost = postRepository.save(post);
+            return PostDto.from(savedPost);
+        } else throw new UserNotMemberException("No sos miembro de este foro");
     }
 
     @Override
@@ -56,8 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(Long id) {
-        Optional<Post> postOptional = postRepository.findById(id);
-        Post post = postOptional.orElseThrow(() -> new NotFoundException("El posteo no fue encontrado"));
+        Post post = getPostEntity(id);
         return PostDto.from(post);
     }
     @Override
@@ -74,5 +71,29 @@ public class PostServiceImpl implements PostService {
         else {
             return PostDto.from(post);
         }
+    }
+
+    @Override
+    public Post getPostEntity(Long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+        return postOptional.orElseThrow(() -> new NotFoundException("El posteo no fue encontrado"));
+    }
+
+    @Override
+    public PostViewDto getPostViewById(Long userId, Long postId) {
+        Post post = getPostEntity(postId);
+        if (isMember(userId, post.getForum())) {
+            return PostViewDto.from(post);
+        } else throw new UserNotMemberException("No sos miembro de este foro");
+    }
+
+    private boolean isMember(Long userId, Forum forum) {
+        if (forum.getUser().getId().equals(userId)) return true;
+        for (User user : forum.getMembers()) {
+            if (user.getId().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

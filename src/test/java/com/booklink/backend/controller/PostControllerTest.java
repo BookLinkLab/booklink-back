@@ -69,9 +69,26 @@ public class PostControllerTest {
         restTemplate.exchange("/forum/1/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
         restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class);
 
-        ResponseEntity<List> response = restTemplate.getForEntity(baseUrl + "/1", List.class);
+        ResponseEntity<List> response = restTemplate.getForEntity(baseUrl + "/forum/1", List.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+
+        ResponseEntity<String> response2 = restTemplate.getForEntity(baseUrl + "/24543", String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
+    }
+
+    @Test
+    public void getPostById() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        restTemplate.exchange("/forum/1/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
+        PostDto postDto = restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class).getBody();
+
+        ResponseEntity<PostDto> response = restTemplate.getForEntity(baseUrl + "/" + postDto.getId(), PostDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("This is a test post", Objects.requireNonNull(response.getBody()).getContent());
 
         ResponseEntity<String> response2 = restTemplate.getForEntity(baseUrl + "/24543", String.class);
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());

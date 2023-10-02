@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class Post {
 
     private boolean isEdited;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
     public static Post from(CreatePostDto postDto, Long userId) {
         return Post.builder()
                 .userId(userId)
@@ -49,6 +53,7 @@ public class Post {
                 .createdDate(new Date())
                 .updatedDate(new Date())
                 .isEdited(false)
+                .comments(new ArrayList<>())
                 .build();
     }
 }
