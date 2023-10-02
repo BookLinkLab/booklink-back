@@ -18,6 +18,8 @@ public class PostDto {
     private Long userId;
     private Long forumId;
     private Date createdDate;
+    private boolean isEdited;
+    private Date updatedDate;
 
     public static PostDto from(Post post) {
         return PostDto.builder()
@@ -26,6 +28,8 @@ public class PostDto {
                 .userId(post.getUserId())
                 .forumId(post.getForumId())
                 .createdDate(post.getCreatedDate())
+                .updatedDate(post.getUpdatedDate())
+                .isEdited(post.isEdited())
                 .build();
     }
 }

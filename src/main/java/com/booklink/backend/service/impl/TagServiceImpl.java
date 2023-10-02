@@ -6,11 +6,13 @@ import com.booklink.backend.model.Tag;
 import com.booklink.backend.repository.TagRepository;
 import com.booklink.backend.service.TagService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;

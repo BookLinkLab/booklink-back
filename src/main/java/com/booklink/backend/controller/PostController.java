@@ -1,6 +1,7 @@
 package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.post.CreatePostDto;
+import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.service.PostService;
 import com.booklink.backend.utils.SecurityUtil;
@@ -26,9 +27,19 @@ public class PostController {
         PostDto postDto = postService.createPost(createPostDto, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/forum/{id}")
     public ResponseEntity<?> getPostsByForumId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByForumId(id));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPostById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostViewById(securityUtil.getLoggedUserId(), id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> editPost(@PathVariable Long id, @Valid @RequestBody EditPostDto editPostDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(id, editPostDto, securityUtil.getLoggedUserId()));
     }
 
     @DeleteMapping("/{id}")

@@ -25,6 +25,10 @@ public interface ForumService {
 
     ForumGetDto getForumById(Long id, Long userId);
 
+    List<Forum> getForumsJoined(Long userId);
+
+    List<Forum> getForumsCreated(Long userId);
+
     void deleteForum(Long id, Long userId);
 
     void leaveForum(Long id, Long userId);
