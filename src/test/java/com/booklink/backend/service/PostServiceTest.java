@@ -1,10 +1,14 @@
 package com.booklink.backend.service;
 
 
+import com.booklink.backend.dto.comment.CommentDto;
+import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.post.PostViewDto;
+import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
+import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -25,6 +27,8 @@ public class PostServiceTest {
 
     @Autowired
     private ForumService forumService;
+    @Autowired
+    private CommentService commentService;
 
     @Test
     public void createPost() {
@@ -126,6 +130,32 @@ public class PostServiceTest {
                 .build();
 
         assertThrows(UserNotOwnerException.class,() -> postService.editPost(postDto.getId(), editPostDto, 2L));
+    }
+
+    @Test
+    public void deltePost(){
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        forumService.joinForum(1L, 1L);
+
+
+        PostDto postDto = postService.createPost(createPostDto, 1L);
+
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(1L)
+                .content("This is a test comment")
+                .build();
+        commentService.createComment(createCommentDto, 1L);
+
+
+
+
+        postService.deletePost(postDto.getId(), 1L);
+        assertEquals(0, postService.getPostsByForumId(1L).size());
+        assertThrows(NotFoundException.class, () -> commentService.getCommentById(1L));
+
     }
 
 }
