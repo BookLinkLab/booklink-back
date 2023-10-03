@@ -41,7 +41,7 @@ public class CommentControllerTest {
     @Test
     void createCommentTest() {
         CreateCommentDto createCommentDto = CreateCommentDto.builder()
-                .postId(1L)
+                .postId(26L)
                 .content("This is a test comment")
                 .build();
 

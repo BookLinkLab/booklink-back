@@ -144,7 +144,7 @@ public class PostServiceTest {
         PostDto postDto = postService.createPost(createPostDto, 1L);
 
         CreateCommentDto createCommentDto = CreateCommentDto.builder()
-                .postId(1L)
+                .postId(26L)
                 .content("This is a test comment")
                 .build();
         commentService.createComment(createCommentDto, 1L);
@@ -154,7 +154,7 @@ public class PostServiceTest {
 
         postService.deletePost(postDto.getId(), 1L);
         assertEquals(0, postService.getPostsByForumId(1L).size());
-        assertThrows(NotFoundException.class, () -> commentService.getCommentById(1L));
+        assertThrows(NotFoundException.class, () -> commentService.getCommentById(17L));
 
     }
 

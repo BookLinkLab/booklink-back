@@ -1,15 +1,11 @@
 package com.booklink.backend.config;
 
 
+import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.user.CreateUserDto;
-import com.booklink.backend.model.Forum;
-import com.booklink.backend.model.Tag;
-import com.booklink.backend.model.User;
-import com.booklink.backend.model.Post;
-import com.booklink.backend.repository.ForumRepository;
-import com.booklink.backend.repository.TagRepository;
-import com.booklink.backend.repository.PostRepository;
-import com.booklink.backend.repository.UserRepository;
+import com.booklink.backend.model.*;
+import com.booklink.backend.repository.*;
+import com.booklink.backend.service.CommentService;
 import com.booklink.backend.service.UserService;
 import lombok.Generated;
 import org.slf4j.Logger;
@@ -35,6 +31,8 @@ public class InitializationConfig implements CommandLineRunner {
     PostRepository postRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    CommentRepository commentRepository;
 
 
     final Logger logger = LoggerFactory.getLogger(InitializationConfig.class);
@@ -256,7 +254,78 @@ public class InitializationConfig implements CommandLineRunner {
                             .build();
                     postRepository.save(post);
 
+                  // el primer miembro hace más de un post
+                  if(i == 0)  {
+                      //los foros 2,3,4 son los que van a tener un miembro que hace 2 post
+                      if(forumId == 2){
+                          Post post1 = Post.builder()
+                                  .userId(memberId)
+                                  .forumId(forumId)
+                                  .content("Narnia es una de mis sagas favoritas. Me encanta el mundo mágico y los personajes.")
+                                  .createdDate(new Date())
+                                  .build();
+                          postRepository.save(post1);
 
+                          Comment comment1  = Comment.builder()
+                                  .userId(memberId)
+                                  .postId(post1.getId())
+                                  .content("sobre todo el primer libro")
+                                  .createdDate(new Date())
+                                  .build();
+                          commentRepository.save(comment1);
+                      }
+                      if(forumId == 3){
+                          Post post2 = Post.builder()
+                                  .userId(memberId)
+                                  .forumId(forumId)
+                                  .content("1984 es una de las mejores novelas que he leído. Me encanta la crítica social y política que hace.")
+                                  .createdDate(new Date())
+                                  .build();
+                          postRepository.save(post2);
+
+                          Comment comment2  = Comment.builder()
+                                  .userId(memberId)
+                                  .postId(post2.getId())
+                                  .content("es junto a Un Mundo Feliz una de las mejores distopías que he leído")
+                                  .createdDate(new Date())
+                                  .build();
+                          commentRepository.save(comment2);
+                      }
+                      if(forumId == 4){
+                          Post post3 = Post.builder()
+                                  .userId(memberId)
+                                  .forumId(forumId)
+                                  .content("El diario de Ana Frank es una obra que todos deberían leer. Es el relato de una cruel realidad en durante uno de los momentos mas viles de la humanidad.")
+                                  .createdDate(new Date())
+                                  .build();
+                          postRepository.save(post3);
+
+                          Comment comment3  = Comment.builder()
+                                  .userId(memberId)
+                                  .postId(post3.getId())
+                                  .content("es un libro que me ha marcado para siempre")
+                                  .createdDate(new Date())
+                                  .build();
+                          commentRepository.save(comment3);
+                      }
+                  }
+
+
+                    //el primer post no se comenta
+                   if (i != 0) {
+
+                    Random random = new Random();
+                    User member = members.get(random.nextInt(members.size()));
+                    Long commentUserId = member.getId();
+
+                  Comment comment  = Comment.builder()
+                          .userId(commentUserId)
+                          .postId(post.getId())
+                          .content(comentariosGenericos.get(random.nextInt(comentariosGenericos.size())))
+                          .createdDate(new Date())
+                          .build();
+
+                  commentRepository.save(comment);}
                 }
             }
         }
@@ -296,7 +365,7 @@ public class InitializationConfig implements CommandLineRunner {
             List<String> opinionesCienciaFiccion = new ArrayList<>();
             opinionesCienciaFiccion.add("Me encanta la ciencia ficción y siempre estoy buscando nuevas recomendaciones de libros.");
             opinionesCienciaFiccion.add("La ciencia ficción nos permite explorar mundos y conceptos fascinantes. ¿Cuál es tu libro favorito del género?");
-            opiniones.put("Los mejores libros de ciencia ficción", opinionesCienciaFiccion);
+            opiniones.put("SciFi Geeks", opinionesCienciaFiccion);
 
             // Opinion para el foro "Los secretos de la fantasía"
             List<String> opinionesFantasia = new ArrayList<>();
@@ -315,7 +384,7 @@ public class InitializationConfig implements CommandLineRunner {
             opinionesHistorica.add("La novela histórica nos transporta a épocas pasadas. Poder situarse en un contexto tan aleajdo y distinto es uno de los mayores desafios para lograr un relato verosimil en este género.");
             opinionesHistorica.add("La investigación y la ambientación en las novelas históricas son impresionantes. ¡Admiro a los autores que pueden hacerlo tan bien!");
             opinionesHistorica.add("La novela histórica es un género que me encanta. El mejor romance histórico que he leído es Orgullo y prejuicio.");
-            opiniones.put("Los desafíos de la novela histórica", opinionesHistorica);
+            opiniones.put("La novela histórica", opinionesHistorica);
 
             // Opinion para el foro "Los encantos de la novela romántica"
             List<String> opinionesRomantica = new ArrayList<>();
@@ -323,7 +392,7 @@ public class InitializationConfig implements CommandLineRunner {
             opinionesRomantica.add("Las novelas románticas son una de mis formas favoritas de escapar de la realidad.");
             opinionesRomantica.add("Las novelas románticas son una de mis formas favoritas de escapar de la realidad.");
             opinionesRomantica.add("El romance es el género más infravalorado de la literatura.");
-            opiniones.put("Los encantos de la novela romántica", opinionesRomantica);
+            opiniones.put("Los encantos del romance", opinionesRomantica);
 
             List<String> opinionesMazeRunner = new ArrayList<>();
             opinionesMazeRunner.add("Maze Runner es una de mis series favoritas de ciencia ficción. Me encanta el misterio que rodea al laberinto.");
@@ -334,5 +403,36 @@ public class InitializationConfig implements CommandLineRunner {
 
         }
 
-    }
+
+        List<String> comentariosGenericos = Arrays.asList(
+                "Estoy de acuerdo contigo.",
+                "¡Qué interesante! Gracias por compartir.",
+                "No puedo esperar para leer más sobre este tema.",
+                "¿Puedes proporcionar más detalles?",
+                "Este es un gran post. Me ha ayudado mucho.",
+                "Estoy emocionado por lo que vendrá a continuación.",
+                "Tienes razón. Esto es muy importante.",
+                "Me encanta este foro. Siempre aprendo algo nuevo.",
+                "¿Alguien más tiene alguna opinión sobre esto?",
+                "Gracias por mantenernos informados.",
+                "¡Excelente trabajo!",
+                "Nunca me había dado cuenta de esto antes. ¡Qué revelador!",
+                "Completamente de acuerdo contigo.",
+                "Me hizo pensar mucho en este tema.",
+                "Espero ver más publicaciones tuyas pronto.",
+                "No puedo evitar sonreír después de leer esto.",
+                "Este foro siempre tiene contenido interesante.",
+                "Eres un autor talentoso. Sigue así.",
+                "¡Bravo! Me has dejado sin palabras.",
+                "No puedo dejar de leer una y otra vez este post.",
+                "¡Muy bien dicho!",
+                "Mis respetos por compartir tus conocimientos.",
+                "Me inspiras a aprender más sobre este tema.",
+                "Tus palabras son muy motivadoras.",
+                "Este post merece más atención.",
+                "Esto es realmente valioso. Gracias por compartirlo."
+        );
+
+
+}
 
