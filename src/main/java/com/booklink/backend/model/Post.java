@@ -42,7 +42,7 @@ public class Post {
 
     private boolean isEdited;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     public static Post from(CreatePostDto postDto, Long userId) {

@@ -41,4 +41,11 @@ public class PostController {
     public ResponseEntity<?> editPost(@PathVariable Long id, @Valid @RequestBody EditPostDto editPostDto) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(id, editPostDto, securityUtil.getLoggedUserId()));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        postService.deletePost(id,securityUtil.getLoggedUserId());
+        return ResponseEntity.status(HttpStatus.OK).body("La publicación fue eliminada con éxito");
+    }
+
 }

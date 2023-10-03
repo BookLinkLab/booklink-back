@@ -52,6 +52,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map(PostInfoDto::from).toList();
     }
 
+
     @Override
     public PostDto getPostById(Long id) {
         Post post = getPostEntity(id);
@@ -96,4 +97,17 @@ public class PostServiceImpl implements PostService {
         }
         return false;
     }
+
+
+    @Override
+    public void deletePost(Long id, Long userId) {
+        Post post = postRepository.findById(id).orElseThrow();
+        Forum forum = forumService.getForumEntityById(post.getForum().getId());
+        if (post.getUser().getId().equals(userId) || forum.getUser().getId().equals(userId)) {
+            postRepository.deleteById(id);
+        } else {
+            throw new UserNotOwnerException("Solo el creador de la publicacion o el creador del foro pueden eliminarla");
+        }
+    }
+
 }
