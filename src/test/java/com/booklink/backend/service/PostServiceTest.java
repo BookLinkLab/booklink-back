@@ -158,4 +158,18 @@ public class PostServiceTest {
 
     }
 
+    @Test
+    public void deletePostByUnauthorizedPerson(){
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        forumService.joinForum(1L, 1L);
+        postService.createPost(createPostDto, 1L);
+        forumService.joinForum(1L, 9L);
+
+    assertThrows(UserNotOwnerException.class, () -> postService.deletePost(1L, 9L));
+
+    }
+
 }

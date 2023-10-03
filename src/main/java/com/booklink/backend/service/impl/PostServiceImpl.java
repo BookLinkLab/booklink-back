@@ -106,7 +106,7 @@ public class PostServiceImpl implements PostService {
         if (post.getUser().getId().equals(userId) || forum.getUser().getId().equals(userId)) {
             postRepository.deleteById(id);
         } else {
-            throw new UserNotMemberException("No sos miembro de este foro");
+            throw new UserNotOwnerException("Solo el creador de la publicacion o el creador del foro pueden eliminarla");
         }
     }
 
