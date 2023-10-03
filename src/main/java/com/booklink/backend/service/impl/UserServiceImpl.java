@@ -9,28 +9,29 @@ import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.dto.user.*;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.WrongCredentialsException;
-import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.UserRepository;
 import com.booklink.backend.service.UserService;
 import com.booklink.backend.utils.JwtUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-
-
+    private final ForumDtoFactory forumDtoFactory;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepository userRepository, @Lazy ForumDtoFactory forumDtoFactory, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.forumDtoFactory = forumDtoFactory;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
@@ -53,8 +54,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileDto getUserById(Long id, Long userWhoSearchesId) {
         User user = getUserEntityById(id);
-        List<ForumDto> forumsCreated = ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
-        List<ForumDto> forumsJoined = ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
+        List<ForumDto> forumsCreated = forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
+        List<ForumDto> forumsJoined = forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
         return UserProfileDto.from(user, forumsCreated, forumsJoined);
 
     }

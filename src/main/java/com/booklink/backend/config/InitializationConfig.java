@@ -135,7 +135,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .membersAmount(3)
                 .build();
         Forum forum5 = Forum.builder()
-                .name("Los mejores libros de ciencia ficción")
+                .name("SciFi Geeks")
                 .userId(user5.getId())
                 .description("Si te gusta la ciencia ficción y quieres compartir con otros lectores, este foro es para ti. Aquí podrás hablar sobre las obras, novelas y autores del género, desde los clásicos hasta los actuales. También podrás recomendar y encontrar nuevos libros, unirte a clubes de lectura, elegir tus favoritos y más. Este foro es un lugar de intercambio y diversión para los que aman la ciencia ficción y sus posibilidades. ¡Únete al foro y viaja a otros mundos!")
                 .img("https://elcomercio.pe/resizer/bVeNT1Ip-SoSlOMX0DQHGUPDZ90=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/DRCLWNKIDZCANB2WUFFEGPJ3V4.jpg")
@@ -161,7 +161,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .build();
 
         Forum forum8 = Forum.builder()
-                .name("Los desafíos de la novela histórica")
+                .name("La novela histórica")
                 .userId(user3.getId())
                 .description("Si te apasiona la novela histórica y quieres compartir tu interés con otros lectores, este foro es para ti. Aquí podrás hablar sobre las obras, novelas y autores del género, desde los clásicos como Dumas, Pérez-Reverte y Follett, hasta los contemporáneos como Harris, Sepúlveda y Mantel. También podrás recomendar y conocer nuevos libros, participar en clubes de lectura, votar por tus favoritos y más. ¡Únete al foro y viaja al pasado!")
                 .img("https://celadonbooks.com/wp-content/uploads/2020/03/Historical-Fiction-scaled.jpg")
@@ -170,7 +170,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .build();
 
         Forum forum9 = Forum.builder()
-                .name("Los encantos de la novela romántica")
+                .name("Los encantos del romance")
                 .userId(user4.getId())
                 .description("Si te gusta la novela romántica y quieres compartir tu emoción con otros lectores, este foro es para ti. Aquí podrás hablar sobre las obras, novelas y autores del género, desde los clásicos como Austen, Brontë y García Márquez, hasta los contemporáneos como Sparks, Moyes y Roberts. También podrás recomendar y descubrir nuevos libros, unirte a clubes de lectura, elegir tus favoritos y más. ¡Únete al foro y enamórate!")
                 .img("https://escapetoromance.com/wp-content/uploads/sites/172/2017/05/iStock-503130452.jpg")
@@ -190,13 +190,15 @@ public class InitializationConfig implements CommandLineRunner {
         Tag tag1 = Tag.builder().name("Action").build();
         Tag tag2 = Tag.builder().name("Fiction").build();
         Tag tag3 = Tag.builder().name("Fantasy").build();
-        Tag tag4 = Tag.builder().name("Non-fiction").build();
+        Tag tag4 = Tag.builder().name("NonFiction").build();
         Tag tag5 = Tag.builder().name("Horror").build();
         Tag tag6 = Tag.builder().name("Romance").build();
+        Tag tag7 = Tag.builder().name("J.K.Rowling").build();
+        Tag tag8 = Tag.builder().name("GeorgeOrwell").build();
 
-        forum1.setTags(List.of(tag1));
-        forum2.setTags(List.of(tag1, tag2));
-        forum3.setTags(List.of(tag1, tag2, tag3));
+        forum1.setTags(List.of(tag1, tag7));
+        forum2.setTags(List.of(tag1,tag2));
+        forum3.setTags(List.of(tag1,tag2,tag3, tag8));
         forum4.setTags(List.of(tag4));
         forum5.setTags(List.of(tag4));
         forum6.setTags(List.of(tag2, tag3));
@@ -211,6 +213,8 @@ public class InitializationConfig implements CommandLineRunner {
         tagRepository.save(tag4);
         tagRepository.save(tag5);
         tagRepository.save(tag6);
+        tagRepository.save(tag7);
+        tagRepository.save(tag8);
 
         forumRepository.save(forum1);
         forumRepository.save(forum2);
