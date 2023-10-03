@@ -230,17 +230,17 @@ public class InitializationConfig implements CommandLineRunner {
 
     private void generatePostsAndComments() {
 
-        Map<String, List<String>> opiniones = generarOpinion();
+        Map<String, List<String>> opiniones = generateOpinions();
 
-        Random random = new Random();
 
         List<Forum> forums = forumRepository.findAll();
 
-        Forum forumWithNoPost = forums.get(random.nextInt(forums.size()));
+
 
         for (Forum forum : forums) {
             Long forumId = forum.getId();
-            if (!forumId.equals(forumWithNoPost.getId())) {
+            //el foro 1 no se le agregan posts
+            if (forumId != 1) {
 
                 List<User> members = forum.getMembers();
                 for (int i = 0; i < members.size(); i++) {
@@ -262,7 +262,7 @@ public class InitializationConfig implements CommandLineRunner {
         }
     }
 
-        private Map<String, List<String>> generarOpinion() {
+        private Map<String, List<String>> generateOpinions() {
             Map<String, List<String>> opiniones = new HashMap<>();
 
             // Opinion para el foro "Harry Potter"
