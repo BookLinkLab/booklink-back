@@ -18,4 +18,8 @@ public interface PostService {
     PostDto getPostById(Long id);
     Post getPostEntity(Long id);
     PostViewDto getPostViewById(Long userId, Long postId);
+
+    void deletePost(Long id, Long userId);
+
+
 }

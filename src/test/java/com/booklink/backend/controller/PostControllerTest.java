@@ -94,6 +94,24 @@ public class PostControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     }
 
+
+    @Test
+    public void deletePost() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+
+        restTemplate.exchange("/forum/1/join", HttpMethod.POST, new HttpEntity<>(null), ForumDto.class);
+        PostDto postDto = restTemplate.postForEntity(baseUrl, createPostDto, PostDto.class).getBody();
+
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl + "/" + postDto.getId(), HttpMethod.DELETE, new HttpEntity<>(null), String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("La publicación fue eliminada con éxito", response.getBody());
+
+    }
+
+
     @Test
     public void editPost() {
         CreatePostDto createPostDto = CreatePostDto.builder()
@@ -151,4 +169,9 @@ public class PostControllerTest {
         );
         return Objects.requireNonNull(createUserResponse.getBody()).getUser();
     }
+
+
+
+
+
 }
