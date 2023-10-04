@@ -39,7 +39,7 @@ public class CommentServiceTest {
     @Test
     void createCommentTest() {
         Long userIdWhoComments = 1L;
-        Long postIdToComment = 1L;
+        Long postIdToComment = 26L;
 
         CreateCommentDto createCommentDto = CreateCommentDto.builder()
                 .postId(postIdToComment)
@@ -48,7 +48,7 @@ public class CommentServiceTest {
 
         commentService.createComment(createCommentDto, userIdWhoComments);
 
-        CommentDto savedComment = commentService.getCommentById(userIdWhoComments);
+        CommentDto savedComment = commentService.getCommentById(17L);
         assertEquals(createCommentDto.getContent(), savedComment.getContent());
     }
 
