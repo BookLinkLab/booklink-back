@@ -44,8 +44,8 @@ public class InitializationConfig implements CommandLineRunner {
         this.loadUsers();
         logger.info("Forums initialization begin");
         this.loadForums();
-        logger.info("DB data intialized");
         this.generatePostsAndComments();
+        logger.info("DB data intialized");
     }
 
     private void loadUsers() {
@@ -228,7 +228,7 @@ public class InitializationConfig implements CommandLineRunner {
 
     private void generatePostsAndComments() {
 
-        Map<String, List<String>> opiniones = generateOpinions();
+        Map<String, List<String>> opinions = generateOpinions();
 
 
         List<Forum> forums = forumRepository.findAll();
@@ -245,7 +245,7 @@ public class InitializationConfig implements CommandLineRunner {
 
                     Long memberId = members.get(i).getId();
 
-                    String postContent = opiniones.get(forum.getName()).get(i);
+                    String postContent = opinions.get(forum.getName()).get(i);
                     Post post = Post.builder()
                             .userId(memberId)
                             .forumId(forumId)
@@ -321,7 +321,7 @@ public class InitializationConfig implements CommandLineRunner {
                   Comment comment  = Comment.builder()
                           .userId(commentUserId)
                           .postId(post.getId())
-                          .content(comentariosGenericos.get(random.nextInt(comentariosGenericos.size())))
+                          .content(genericComments.get(random.nextInt(genericComments.size())))
                           .createdDate(new Date())
                           .build();
 
@@ -404,7 +404,7 @@ public class InitializationConfig implements CommandLineRunner {
         }
 
 
-        List<String> comentariosGenericos = Arrays.asList(
+        List<String> genericComments = Arrays.asList(
                 "Estoy de acuerdo contigo.",
                 "¡Qué interesante! Gracias por compartir.",
                 "No puedo esperar para leer más sobre este tema.",
