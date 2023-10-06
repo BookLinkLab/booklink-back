@@ -49,15 +49,19 @@ public class CommentServiceImpl implements CommentService {
         return CommentDto.from(comment);
     }
 
+    public Comment getCommentEntityById(Long id) {
+        Optional<Comment> commentOptional = commentRepository.findById(id);
+        return commentOptional.orElseThrow(() -> new NotFoundException("El comentario no fue encontrado"));
+    }
     @Override
     public void deleteComment(Long id, Long userId) {
-        CommentDto commentDto = getCommentById(id);
-        Long forumid = postService.getPostById(commentDto.getPostId()).getForumId();
+        Comment comment = getCommentEntityById(id);
+        Long forumid = comment.getPost().getForumId();
 
-        boolean isCommentCreator = commentDto.getUserId().equals(userId);
+        boolean isCommentCreator = comment.getUserId().equals(userId);
         boolean isForumOwner = forumDtoFactory.isForumOwner(forumid, userId);
 
-        if (!isCommentCreator && !isForumOwner) throw new UserNotOwnerException("Solo el dueño del foro o el creador del comentario tienen permiso para eliminar este comentario");
+        if (!isCommentCreator && !isForumOwner) throw new UserNotOwnerException("No tienes permiso para eliminar este comentario");
 
         commentRepository.deleteById(id);
     }
