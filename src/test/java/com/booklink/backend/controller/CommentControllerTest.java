@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -61,4 +63,19 @@ public class CommentControllerTest {
         ResponseEntity<String> response = restTemplate.postForEntity(baseUrl, createCommentDto, String.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+
+    @Test
+    void deleteCommentTest() {
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+
+        ResponseEntity<CommentDto> response = restTemplate.postForEntity(baseUrl, createCommentDto, CommentDto.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        ResponseEntity<String> deleteResponse = restTemplate.exchange(baseUrl + "/" + response.getBody().getId(), HttpMethod.DELETE,new HttpEntity<>(null), String.class);
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+    }
+
 }

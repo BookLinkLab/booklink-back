@@ -31,6 +31,11 @@ public class ForumDtoFactory {
         return isMember(forumId, forumsCreated, forumsJoined);
     }
 
+    public boolean isForumOwner(Long forumId, Long userId) {
+        Forum forum = forumService.getForumEntityById(forumId);
+        return forum.getUserId().equals(userId);
+    }
+
     private boolean isMember(Long forumId, List<Forum> forumsCreated, List<Forum> forumsJoined) {
         boolean isMemberOfJoined = forumsJoined.stream()
                 .anyMatch(joinedForum -> joinedForum.getId().equals(forumId));

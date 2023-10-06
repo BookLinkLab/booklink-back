@@ -4,6 +4,8 @@ import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
+import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.UserNotOwnerException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,4 +66,49 @@ public class CommentServiceTest {
 
         assertThrows(MemberDoesntBelongForumException.class, () -> commentService.createComment(createCommentDto, userIdWhoComments));
     }
+
+    @Test
+    void delteCommenteTest(){
+        Long userIdWhoComments = 1L;
+        Long postIdToComment = 26L;
+
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(postIdToComment)
+                .content("This is a test comment")
+                .build();
+
+        CreateCommentDto createCommentDto1 = CreateCommentDto.builder()
+                .postId(postIdToComment)
+                .content("This is a second test comment")
+                .build();
+
+        commentService.createComment(createCommentDto, userIdWhoComments);
+        commentService.createComment(createCommentDto1, userIdWhoComments);
+        commentService.deleteComment(17L, userIdWhoComments);
+
+        assertThrows(NotFoundException.class, () -> commentService.getCommentById(17L));
+
+        commentService.createComment(createCommentDto, userIdWhoComments);
+        //ahora probando que lo elimine el dueño del foro
+        commentService.deleteComment(18L, 2L);
+        commentService.createComment(createCommentDto1, userIdWhoComments);
+        assertThrows(NotFoundException.class, () -> commentService.getCommentById(18L));
+
+    }
+
+    @Test
+    void unauthorizedUserDeltesComment(){
+        Long userIdWhoComments = 1L;
+        Long postIdToComment = 26L;
+
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(postIdToComment)
+                .content("This is a test comment")
+                .build();
+
+        commentService.createComment(createCommentDto, userIdWhoComments);
+        assertThrows(UserNotOwnerException.class, () -> commentService.deleteComment(17L, 8L));
+    }
+
+
 }
