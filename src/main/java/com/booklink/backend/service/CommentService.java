@@ -7,4 +7,6 @@ public interface CommentService {
     CommentDto createComment(CreateCommentDto createCommentDto, Long userId);
 
     CommentDto getCommentById(Long id);
+
+    void deleteComment(Long id, Long userId);
 }
