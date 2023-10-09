@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class PostDto {
     private Date createdDate;
     private boolean isEdited;
     private Date updatedDate;
+    private List<Long> likes;
 
     public static PostDto from(Post post) {
         return PostDto.builder()
@@ -28,8 +30,9 @@ public class PostDto {
                 .userId(post.getUserId())
                 .forumId(post.getForumId())
                 .createdDate(post.getCreatedDate())
-                .updatedDate(post.getUpdatedDate())
                 .isEdited(post.isEdited())
+                .updatedDate(post.getUpdatedDate())
+                .likes(post.getLikes())
                 .build();
     }
 }

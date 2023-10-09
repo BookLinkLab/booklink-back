@@ -11,15 +11,11 @@ import java.util.List;
 
 public interface PostService {
     PostDto createPost(CreatePostDto createPostDto, Long userId);
-
     List<PostInfoDto> getPostsByForumId(Long forumId);
     PostDto editPost(Long postId, EditPostDto editPostDto, Long userId);
-
     PostDto getPostById(Long id);
     Post getPostEntity(Long id);
     PostViewDto getPostViewById(Long userId, Long postId);
-
     void deletePost(Long id, Long userId);
-
-
+    PostDto toggleLike(Long id, Long userId);
 }

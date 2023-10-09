@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
     public PostDto createPost(CreatePostDto createPostDto, Long userId) {
         Post post = Post.from(createPostDto, userId);
         Forum forum = forumService.getForumEntityById(createPostDto.getForumId());
-        if(isMember(userId, forum)) {
+        if (isMember(userId, forum)) {
             Post savedPost = postRepository.save(post);
             return PostDto.from(savedPost);
         } else throw new UserNotMemberException("No sos miembro de este foro");
@@ -58,18 +58,18 @@ public class PostServiceImpl implements PostService {
         Post post = getPostEntity(id);
         return PostDto.from(post);
     }
+
     @Override
     public PostDto editPost(Long postId, EditPostDto editPostDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("No se ha encontrado el posteo"));
-        if(!Objects.equals(post.getUserId(), userId)) throw new UserNotOwnerException("Debes ser el dueño del posteo");
-        if(editPostDto.getContent() != null && !editPostDto.getContent().isEmpty() && !Objects.equals(post.getContent(), editPostDto.getContent()) ) {
-            if(!post.isEdited()) post.setEdited(true);
+        if (!Objects.equals(post.getUserId(), userId)) throw new UserNotOwnerException("Debes ser el dueño del posteo");
+        if (editPostDto.getContent() != null && !editPostDto.getContent().isEmpty() && !Objects.equals(post.getContent(), editPostDto.getContent())) {
+            if (!post.isEdited()) post.setEdited(true);
             post.setContent(editPostDto.getContent());
             post.setUpdatedDate(new Date());
             Post savedPost = postRepository.save(post);
             return PostDto.from(savedPost);
-        }
-        else {
+        } else {
             return PostDto.from(post);
         }
     }
@@ -110,4 +110,15 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    public PostDto toggleLike(Long id, Long userId) {
+        Post post = getPostEntity(id);
+        if (post.getLikes().contains(userId)) {
+            post.getLikes().remove(userId);
+        } else {
+            post.getLikes().add(userId);
+        }
+        Post savedPost = postRepository.save(post);
+        return PostDto.from(savedPost);
+    }
 }

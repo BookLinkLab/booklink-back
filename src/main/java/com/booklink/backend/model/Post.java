@@ -45,6 +45,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    @ElementCollection
+    private List<Long> likes;
+
     public static Post from(CreatePostDto postDto, Long userId) {
         return Post.builder()
                 .userId(userId)
@@ -54,6 +57,7 @@ public class Post {
                 .updatedDate(new Date())
                 .isEdited(false)
                 .comments(new ArrayList<>())
+                .likes(new ArrayList<>())
                 .build();
     }
 }
