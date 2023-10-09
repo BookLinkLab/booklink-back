@@ -1,6 +1,5 @@
 package com.booklink.backend.service.impl;
 
-
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
@@ -117,6 +116,19 @@ public class PostServiceImpl implements PostService {
             post.getLikes().remove(userId);
         } else {
             post.getLikes().add(userId);
+        }
+        Post savedPost = postRepository.save(post);
+        return PostDto.from(savedPost);
+    }
+
+    @Override
+    public PostDto toggleDislike(Long id, Long userId) {
+        Post post = getPostEntity(id);
+        post.getLikes().remove(userId);
+        if (post.getDislikes().contains(userId)) {
+            post.getDislikes().remove(userId);
+        } else {
+            post.getDislikes().add(userId);
         }
         Post savedPost = postRepository.save(post);
         return PostDto.from(savedPost);

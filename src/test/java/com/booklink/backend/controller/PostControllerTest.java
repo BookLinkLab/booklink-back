@@ -149,4 +149,13 @@ public class PostControllerTest {
         assertEquals(1, Objects.requireNonNull(response.getBody()).getLikes().size());
         assertEquals(10L, Objects.requireNonNull(response.getBody()).getLikes().get(0));
     }
+
+    @Test
+    public void toggleDislike() {
+        utils.createPost(1L, "This is a test post", restTemplate);
+        ResponseEntity<PostDto> response = restTemplate.exchange(baseUrl + "/1/toggle-dislike", HttpMethod.POST, new HttpEntity<>(null), PostDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).getDislikes().size());
+        assertEquals(10L, Objects.requireNonNull(response.getBody()).getDislikes().get(0));
+    }
 }

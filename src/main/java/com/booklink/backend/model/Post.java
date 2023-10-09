@@ -48,6 +48,9 @@ public class Post {
     @ElementCollection
     private List<Long> likes;
 
+    @ElementCollection
+    private List<Long> dislikes;
+
     public static Post from(CreatePostDto postDto, Long userId) {
         return Post.builder()
                 .userId(userId)
@@ -58,6 +61,7 @@ public class Post {
                 .isEdited(false)
                 .comments(new ArrayList<>())
                 .likes(new ArrayList<>())
+                .dislikes(new ArrayList<>())
                 .build();
     }
 }

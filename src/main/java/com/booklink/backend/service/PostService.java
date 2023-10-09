@@ -18,4 +18,5 @@ public interface PostService {
     PostViewDto getPostViewById(Long userId, Long postId);
     void deletePost(Long id, Long userId);
     PostDto toggleLike(Long id, Long userId);
+    PostDto toggleDislike(Long id, Long userId);
 }

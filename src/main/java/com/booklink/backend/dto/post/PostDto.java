@@ -22,6 +22,7 @@ public class PostDto {
     private boolean isEdited;
     private Date updatedDate;
     private List<Long> likes;
+    private List<Long> dislikes;
 
     public static PostDto from(Post post) {
         return PostDto.builder()
@@ -33,6 +34,7 @@ public class PostDto {
                 .isEdited(post.isEdited())
                 .updatedDate(post.getUpdatedDate())
                 .likes(post.getLikes())
+                .dislikes(post.getDislikes())
                 .build();
     }
 }

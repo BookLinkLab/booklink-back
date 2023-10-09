@@ -53,4 +53,9 @@ public class PostController {
     public ResponseEntity<PostDto> toggleLike(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.toggleLike(id, securityUtil.getLoggedUserId()));
     }
+
+    @PostMapping("/{id}/toggle-dislike")
+    public ResponseEntity<PostDto> toggleDislike(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.toggleDislike(id, securityUtil.getLoggedUserId()));
+    }
 }

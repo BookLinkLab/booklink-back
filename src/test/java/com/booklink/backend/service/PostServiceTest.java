@@ -181,4 +181,22 @@ public class PostServiceTest {
         postDto = postService.toggleLike(postDto.getId(), 1L);
         assertEquals(0, postDto.getLikes().size());
     }
+
+    @Test
+    public void toggleDislike() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        forumService.joinForum(1L, 1L);
+
+        PostDto postDto = postService.createPost(createPostDto, 1L);
+        assertEquals(0, postDto.getDislikes().size());
+
+        postDto = postService.toggleDislike(postDto.getId(), 1L);
+        assertEquals(1, postDto.getDislikes().size());
+        //toggle dislike when previously disliked
+        postDto = postService.toggleDislike(postDto.getId(), 1L);
+        assertEquals(0, postDto.getDislikes().size());
+    }
 }
