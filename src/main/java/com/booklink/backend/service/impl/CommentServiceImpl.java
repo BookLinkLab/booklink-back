@@ -74,7 +74,7 @@ public class CommentServiceImpl implements CommentService {
         if (!isCommentCreator) throw new UserNotOwnerException("No tienes permiso para editar este comentario");
 
 
-        boolean isEdited = !comment.getContent().equals(editCommentDto.getContent())  || !editCommentDto.getContent().isEmpty();
+        boolean isEdited = !comment.getContent().equals(editCommentDto.getContent()) && !editCommentDto.getContent().isEmpty();
 
         if (isEdited) {
             comment.setEdited(true);
