@@ -36,12 +36,18 @@ public class Comment {
 
     private Date createdDate;
 
+    private Date updatedDate;
+
+    private boolean isEdited;
+
     public static Comment from(CreateCommentDto createCommentDto, Long userId) {
         return Comment.builder()
                 .userId(userId)
                 .postId(createCommentDto.getPostId())
                 .content(createCommentDto.getContent())
                 .createdDate(new Date())
+                .updatedDate(new Date())
+                .isEdited(false)
                 .build();
     }
 }

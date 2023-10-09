@@ -2,19 +2,18 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
+import com.booklink.backend.dto.comment.EditCommentDto;
 import com.booklink.backend.dto.forum.ForumDtoFactory;
 import com.booklink.backend.dto.post.PostDto;
-import com.booklink.backend.exception.MemberDoesntBelongForumException;
-import com.booklink.backend.exception.NotFoundException;
-import com.booklink.backend.exception.UserNotOwnerException;
+import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Comment;
 import com.booklink.backend.repository.CommentRepository;
 import com.booklink.backend.service.CommentService;
-import com.booklink.backend.service.ForumService;
 import com.booklink.backend.service.PostService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -64,5 +63,26 @@ public class CommentServiceImpl implements CommentService {
         if (!isCommentCreator && !isForumOwner) throw new UserNotOwnerException("No tienes permiso para eliminar este comentario");
 
         commentRepository.deleteById(id);
+    }
+
+    @Override
+    public CommentDto editComment(Long id, EditCommentDto editCommentDto, Long userId) {
+        Comment comment = getCommentEntityById(id);
+
+        boolean isCommentCreator = comment.getUserId().equals(userId);
+
+        if (!isCommentCreator) throw new UserNotOwnerException("No tienes permiso para editar este comentario");
+
+
+        boolean isEdited = !comment.getContent().equals(editCommentDto.getContent())  || !editCommentDto.getContent().isEmpty();
+
+        if (isEdited) {
+            comment.setEdited(true);
+            comment.setUpdatedDate(new Date());
+            comment.setContent(editCommentDto.getContent());
+            Comment savedComment = commentRepository.save(comment);
+            return CommentDto.from(savedComment);
+        }
+        return CommentDto.from(comment);
     }
 }

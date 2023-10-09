@@ -5,14 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,4 +94,25 @@ public class ExceptionHandler {
         this.logger.info(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserNotOwnerException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<?> handleUserNotOwner(UserNotOwnerException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserNotMemberException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<?> handleUserNotMember(UserNotMemberException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(WrongCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ResponseEntity<?> handleWrongCredentials(WrongCredentialsException e) {
+        this.logger.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
 }
