@@ -18,6 +18,8 @@ public class CommentDto {
     private Long postId;
     private String content;
     private Date createdDate;
+    private Date updatedDate;
+    private boolean isEdited;
 
     public static CommentDto from(Comment comment) {
         return CommentDto.builder()
@@ -26,6 +28,8 @@ public class CommentDto {
                 .postId(comment.getPostId())
                 .content(comment.getContent())
                 .createdDate(comment.getCreatedDate())
+                .updatedDate(comment.getUpdatedDate())
+                .isEdited(comment.isEdited())
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
+import com.booklink.backend.dto.comment.EditCommentDto;
 import com.booklink.backend.service.CommentService;
 import com.booklink.backend.utils.SecurityUtil;
 import jakarta.validation.Valid;
@@ -30,6 +31,11 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("Comentario eliminado correctamente");
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> editComment(@PathVariable Long id, @Valid @RequestBody EditCommentDto editCommentDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.editComment(id, editCommentDto, securityUtil.getLoggedUserId()));
     }
 
 }
