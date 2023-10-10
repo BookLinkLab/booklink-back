@@ -192,7 +192,7 @@ public class PostServiceTest {
 
         PostDto postDto = postService.createPost(createPostDto, 1L);
         assertEquals(0, postDto.getDislikes().size());
-
+        //toggle dislike
         postDto = postService.toggleDislike(postDto.getId(), 1L);
         assertEquals(1, postDto.getDislikes().size());
         //toggle dislike when previously disliked
