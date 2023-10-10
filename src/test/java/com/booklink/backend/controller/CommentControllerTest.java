@@ -2,6 +2,7 @@ package com.booklink.backend.controller;
 
 import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
+import com.booklink.backend.dto.comment.EditCommentDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.user.UserDto;
@@ -21,6 +22,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -76,6 +78,29 @@ public class CommentControllerTest {
 
         ResponseEntity<String> deleteResponse = restTemplate.exchange(baseUrl + "/" + response.getBody().getId(), HttpMethod.DELETE,new HttpEntity<>(null), String.class);
         assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+    }
+
+    @Test
+    void editCommentTest() {
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+
+        ResponseEntity<CommentDto> response = restTemplate.postForEntity(baseUrl, createCommentDto, CommentDto.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        ResponseEntity<CommentDto> editResponse = restTemplate.exchange(baseUrl + "/" + response.getBody().getId(), HttpMethod.PATCH, new HttpEntity<>(new EditCommentDto("This is an edited comment")), CommentDto.class);
+        assertEquals(HttpStatus.OK, editResponse.getStatusCode());
+        assertEquals(Objects.requireNonNull(editResponse.getBody()).getContent(), "This is an edited comment");
+    }
+
+    @Test
+    void editCommentWhenNotOwnerTest() {
+        EditCommentDto editCommentDto = new EditCommentDto("This is an edited comment");
+        ResponseEntity<?> editResponse = restTemplate.exchange(baseUrl + "/" + 1L, HttpMethod.PATCH, new HttpEntity<>(editCommentDto), String.class);
+        assertEquals("No tienes permiso para editar este comentario", editResponse.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, editResponse.getStatusCode());
     }
 
 }

@@ -2,6 +2,7 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
+import com.booklink.backend.dto.comment.EditCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
@@ -109,6 +110,30 @@ public class CommentServiceTest {
         commentService.createComment(createCommentDto, userIdWhoComments);
         assertThrows(UserNotOwnerException.class, () -> commentService.deleteComment(17L, 8L));
     }
+
+    @Test
+    void editCommentTest(){
+        Long userIdWhoComments = 1L;
+        Long postIdToComment = 26L;
+
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(postIdToComment)
+                .content("This is a test comment")
+                .build();
+
+        commentService.createComment(createCommentDto, userIdWhoComments);
+        CommentDto commentDto = commentService.getCommentById(17L);
+        assertEquals(createCommentDto.getContent(), commentDto.getContent());
+        EditCommentDto editCommentDto = new EditCommentDto("This is an edited comment");
+
+        CommentDto editedComment = commentService.editComment(17L, editCommentDto, userIdWhoComments);
+        assertEquals(editCommentDto.getContent(), editedComment.getContent());
+
+        assertThrows(UserNotOwnerException.class, () -> commentService.editComment(17L, editCommentDto, 8L));
+    }
+
+
+
 
 
 }
