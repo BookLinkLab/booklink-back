@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,7 @@ public class CommentDto {
     private Long postId;
     private String content;
     private Date createdDate;
+    private List<Long> likes;
 
     public static CommentDto from(Comment comment) {
         return CommentDto.builder()
@@ -26,6 +28,7 @@ public class CommentDto {
                 .postId(comment.getPostId())
                 .content(comment.getContent())
                 .createdDate(comment.getCreatedDate())
+                .likes(comment.getLikes())
                 .build();
     }
 }

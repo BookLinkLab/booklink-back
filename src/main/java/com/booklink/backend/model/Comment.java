@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -36,12 +38,17 @@ public class Comment {
 
     private Date createdDate;
 
+    @ElementCollection
+    private List<Long> likes;
+
+
     public static Comment from(CreateCommentDto createCommentDto, Long userId) {
         return Comment.builder()
                 .userId(userId)
                 .postId(createCommentDto.getPostId())
                 .content(createCommentDto.getContent())
                 .createdDate(new Date())
+                .likes(new ArrayList<>())
                 .build();
     }
 }
