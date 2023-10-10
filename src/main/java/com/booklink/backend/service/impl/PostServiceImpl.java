@@ -14,6 +14,7 @@ import com.booklink.backend.model.User;
 import com.booklink.backend.repository.PostRepository;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.service.PostService;
+import com.booklink.backend.service.ReactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +27,13 @@ import java.util.Objects;
 @Transactional
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-
     private final ForumService forumService;
+    private final ReactionService<Post> reactionService;
 
-    public PostServiceImpl(PostRepository postRepository, ForumService forumService) {
+    public PostServiceImpl(PostRepository postRepository, ForumService forumService, ReactionService<Post> reactionService) {
         this.postRepository = postRepository;
         this.forumService = forumService;
+        this.reactionService = reactionService;
     }
 
     @Override
@@ -50,7 +52,6 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findAllByForumId(forumId);
         return posts.stream().map(PostInfoDto::from).toList();
     }
-
 
     @Override
     public PostDto getPostById(Long id) {
@@ -112,25 +113,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto toggleLike(Long id, Long userId) {
         Post post = getPostEntity(id);
-        if (post.getLikes().contains(userId)) {
-            post.getLikes().remove(userId);
-        } else {
-            post.getLikes().add(userId);
-        }
-        Post savedPost = postRepository.save(post);
+        Post likedPost = reactionService.toggleLike(post, userId);
+        Post savedPost = postRepository.save(likedPost);
         return PostDto.from(savedPost);
     }
 
     @Override
     public PostDto toggleDislike(Long id, Long userId) {
         Post post = getPostEntity(id);
-        post.getLikes().remove(userId);
-        if (post.getDislikes().contains(userId)) {
-            post.getDislikes().remove(userId);
-        } else {
-            post.getDislikes().add(userId);
-        }
-        Post savedPost = postRepository.save(post);
+        Post dislikedPost = reactionService.toggleDislike(post, userId);
+        Post savedPost = postRepository.save(dislikedPost);
         return PostDto.from(savedPost);
     }
 }

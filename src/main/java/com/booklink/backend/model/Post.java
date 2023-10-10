@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
+public class Post implements Reactable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
