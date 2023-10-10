@@ -1,6 +1,5 @@
 package com.booklink.backend.service.impl;
 
-
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
@@ -15,6 +14,7 @@ import com.booklink.backend.model.User;
 import com.booklink.backend.repository.PostRepository;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.service.PostService;
+import com.booklink.backend.service.ReactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +27,20 @@ import java.util.Objects;
 @Transactional
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-
     private final ForumService forumService;
+    private final ReactionService<Post> reactionService;
 
-    public PostServiceImpl(PostRepository postRepository, ForumService forumService) {
+    public PostServiceImpl(PostRepository postRepository, ForumService forumService, ReactionService<Post> reactionService) {
         this.postRepository = postRepository;
         this.forumService = forumService;
+        this.reactionService = reactionService;
     }
 
     @Override
     public PostDto createPost(CreatePostDto createPostDto, Long userId) {
         Post post = Post.from(createPostDto, userId);
         Forum forum = forumService.getForumEntityById(createPostDto.getForumId());
-        if(isMember(userId, forum)) {
+        if (isMember(userId, forum)) {
             Post savedPost = postRepository.save(post);
             return PostDto.from(savedPost);
         } else throw new UserNotMemberException("No sos miembro de este foro");
@@ -52,24 +53,23 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map(PostInfoDto::from).toList();
     }
 
-
     @Override
     public PostDto getPostById(Long id) {
         Post post = getPostEntity(id);
         return PostDto.from(post);
     }
+
     @Override
     public PostDto editPost(Long postId, EditPostDto editPostDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("No se ha encontrado el posteo"));
-        if(!Objects.equals(post.getUserId(), userId)) throw new UserNotOwnerException("Debes ser el dueño del posteo");
-        if(editPostDto.getContent() != null && !editPostDto.getContent().isEmpty() && !Objects.equals(post.getContent(), editPostDto.getContent()) ) {
-            if(!post.isEdited()) post.setEdited(true);
+        if (!Objects.equals(post.getUserId(), userId)) throw new UserNotOwnerException("Debes ser el dueño del posteo");
+        if (editPostDto.getContent() != null && !editPostDto.getContent().isEmpty() && !Objects.equals(post.getContent(), editPostDto.getContent())) {
+            if (!post.isEdited()) post.setEdited(true);
             post.setContent(editPostDto.getContent());
             post.setUpdatedDate(new Date());
             Post savedPost = postRepository.save(post);
             return PostDto.from(savedPost);
-        }
-        else {
+        } else {
             return PostDto.from(post);
         }
     }
@@ -110,4 +110,19 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    public PostDto toggleLike(Long id, Long userId) {
+        Post post = getPostEntity(id);
+        Post likedPost = reactionService.toggleLike(post, userId);
+        Post savedPost = postRepository.save(likedPost);
+        return PostDto.from(savedPost);
+    }
+
+    @Override
+    public PostDto toggleDislike(Long id, Long userId) {
+        Post post = getPostEntity(id);
+        Post dislikedPost = reactionService.toggleDislike(post, userId);
+        Post savedPost = postRepository.save(dislikedPost);
+        return PostDto.from(savedPost);
+    }
 }

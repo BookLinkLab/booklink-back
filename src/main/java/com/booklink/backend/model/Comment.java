@@ -38,6 +38,10 @@ public class Comment {
 
     private Date createdDate;
 
+    private Date updatedDate;
+
+    private boolean isEdited;
+
     @ElementCollection
     private List<Long> likes;
 
@@ -49,6 +53,8 @@ public class Comment {
                 .content(createCommentDto.getContent())
                 .createdDate(new Date())
                 .likes(new ArrayList<>())
+                .updatedDate(new Date())
+                .isEdited(false)
                 .build();
     }
 }

@@ -19,6 +19,8 @@ public class CommentDto {
     private Long postId;
     private String content;
     private Date createdDate;
+    private Date updatedDate;
+    private boolean isEdited;
     private List<Long> likes;
 
     public static CommentDto from(Comment comment) {
@@ -28,6 +30,8 @@ public class CommentDto {
                 .postId(comment.getPostId())
                 .content(comment.getContent())
                 .createdDate(comment.getCreatedDate())
+                .updatedDate(comment.getUpdatedDate())
+                .isEdited(comment.isEdited())
                 .likes(comment.getLikes())
                 .build();
     }

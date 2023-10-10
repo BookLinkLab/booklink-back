@@ -1,12 +1,10 @@
 package com.booklink.backend.controller;
 
-import com.booklink.backend.dto.LoginRequestDto;
-import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
-import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.utils.ControllerTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +29,14 @@ public class PostControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+    @Autowired
+    private ControllerTestUtils utils;
 
     private final String baseUrl = "/post";
 
     @BeforeEach
     void setup() {
-        createUserAndLogIn("user", "user@email.com", "password");
+        UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password", restTemplate);
     }
 
     @Test
@@ -94,7 +94,6 @@ public class PostControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     }
 
-
     @Test
     public void deletePost() {
         CreatePostDto createPostDto = CreatePostDto.builder()
@@ -108,9 +107,7 @@ public class PostControllerTest {
         ResponseEntity<String> response = restTemplate.exchange(baseUrl + "/" + postDto.getId(), HttpMethod.DELETE, new HttpEntity<>(null), String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("La publicación fue eliminada con éxito", response.getBody());
-
     }
-
 
     @Test
     public void editPost() {
@@ -142,36 +139,23 @@ public class PostControllerTest {
         ResponseEntity<PostDto> response3 = restTemplate.exchange(baseUrl + "/" + postDto.getId(), HttpMethod.PATCH, new HttpEntity<>(createPostDto3), PostDto.class);
         assertEquals(HttpStatus.OK, response3.getStatusCode());
         assertEquals("This is an edited test post", Objects.requireNonNull(response3.getBody().getContent()));
-
     }
 
-    private UserDto createUserAndLogIn(String username, String email, String password) {
-        CreateUserDto createUserDto = CreateUserDto.builder()
-                .username(username)
-                .email(email)
-                .password(password)
-                .build();
-        ResponseEntity<LoginResponseDto> createUserResponse = restTemplate.postForEntity("/user", createUserDto, LoginResponseDto.class);
-
-        LoginRequestDto loginRequestDto = LoginRequestDto.builder()
-                .email(email)
-                .password(password)
-                .build();
-        ResponseEntity<LoginResponseDto> response = restTemplate.postForEntity(
-                "/auth", loginRequestDto, LoginResponseDto.class
-        );
-        String token = Objects.requireNonNull(response.getBody()).getToken();
-        restTemplate.getRestTemplate().setInterceptors(
-                List.of((request, body, execution) -> {
-                    request.getHeaders().add("Authorization", "Bearer " + token);
-                    return execution.execute(request, body);
-                })
-        );
-        return Objects.requireNonNull(createUserResponse.getBody()).getUser();
+    @Test
+    public void toggleLike() {
+        utils.createPost(1L, "This is a test post", restTemplate);
+        ResponseEntity<PostDto> response = restTemplate.exchange(baseUrl + "/1/toggle-like", HttpMethod.POST, new HttpEntity<>(null), PostDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).getLikes().size());
+        assertEquals(10L, Objects.requireNonNull(response.getBody()).getLikes().get(0));
     }
 
-
-
-
-
+    @Test
+    public void toggleDislike() {
+        utils.createPost(1L, "This is a test post", restTemplate);
+        ResponseEntity<PostDto> response = restTemplate.exchange(baseUrl + "/1/toggle-dislike", HttpMethod.POST, new HttpEntity<>(null), PostDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).getDislikes().size());
+        assertEquals(10L, Objects.requireNonNull(response.getBody()).getDislikes().get(0));
+    }
 }

@@ -1,13 +1,10 @@
 package com.booklink.backend.service;
 
-
-import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.EditPostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.dto.post.PostViewDto;
-import com.booklink.backend.exception.MemberAlreadyJoinedForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import org.junit.jupiter.api.Test;
@@ -24,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PostServiceTest {
     @Autowired
     private PostService postService;
-
     @Autowired
     private ForumService forumService;
     @Autowired
@@ -93,11 +89,11 @@ public class PostServiceTest {
         PostDto editedPost = postService.editPost(postDto.getId(), editPostDto, 1L);
         assertEquals("This is an edited post", editedPost.getContent());
         assertEquals(postDto.getId(), editedPost.getId());
-        assertEquals(editedPost.isEdited(),true);
+        assertEquals(editedPost.isEdited(), true);
     }
 
     @Test
-    public void editPostWithNullContent(){
+    public void editPostWithNullContent() {
         CreatePostDto createPostDto = CreatePostDto.builder()
                 .forumId(1L)
                 .content("This is a test post")
@@ -129,11 +125,11 @@ public class PostServiceTest {
                 .content("This is an edited post")
                 .build();
 
-        assertThrows(UserNotOwnerException.class,() -> postService.editPost(postDto.getId(), editPostDto, 2L));
+        assertThrows(UserNotOwnerException.class, () -> postService.editPost(postDto.getId(), editPostDto, 2L));
     }
 
     @Test
-    public void deltePost(){
+    public void deletePost() {
         CreatePostDto createPostDto = CreatePostDto.builder()
                 .forumId(1L)
                 .content("This is a test post")
@@ -150,16 +146,13 @@ public class PostServiceTest {
         commentService.createComment(createCommentDto, 1L);
 
 
-
-
         postService.deletePost(postDto.getId(), 1L);
         assertEquals(0, postService.getPostsByForumId(1L).size());
         assertThrows(NotFoundException.class, () -> commentService.getCommentById(17L));
-
     }
 
     @Test
-    public void deletePostByUnauthorizedPerson(){
+    public void deletePostByUnauthorizedPerson() {
         CreatePostDto createPostDto = CreatePostDto.builder()
                 .forumId(1L)
                 .content("This is a test post")
@@ -168,8 +161,42 @@ public class PostServiceTest {
         postService.createPost(createPostDto, 1L);
         forumService.joinForum(1L, 9L);
 
-    assertThrows(UserNotOwnerException.class, () -> postService.deletePost(1L, 9L));
-
+        assertThrows(UserNotOwnerException.class, () -> postService.deletePost(1L, 9L));
     }
 
+    @Test
+    public void toggleLike() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        forumService.joinForum(1L, 1L);
+
+        PostDto postDto = postService.createPost(createPostDto, 1L);
+        assertEquals(0, postDto.getLikes().size());
+        //toggle like
+        postDto = postService.toggleLike(postDto.getId(), 1L);
+        assertEquals(1, postDto.getLikes().size());
+        //toggle like when previously liked
+        postDto = postService.toggleLike(postDto.getId(), 1L);
+        assertEquals(0, postDto.getLikes().size());
+    }
+
+    @Test
+    public void toggleDislike() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        forumService.joinForum(1L, 1L);
+
+        PostDto postDto = postService.createPost(createPostDto, 1L);
+        assertEquals(0, postDto.getDislikes().size());
+        //toggle dislike
+        postDto = postService.toggleDislike(postDto.getId(), 1L);
+        assertEquals(1, postDto.getDislikes().size());
+        //toggle dislike when previously disliked
+        postDto = postService.toggleDislike(postDto.getId(), 1L);
+        assertEquals(0, postDto.getDislikes().size());
+    }
 }

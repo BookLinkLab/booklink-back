@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
+public class Post implements Reactable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -45,6 +45,12 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    @ElementCollection
+    private List<Long> likes;
+
+    @ElementCollection
+    private List<Long> dislikes;
+
     public static Post from(CreatePostDto postDto, Long userId) {
         return Post.builder()
                 .userId(userId)
@@ -54,6 +60,8 @@ public class Post {
                 .updatedDate(new Date())
                 .isEdited(false)
                 .comments(new ArrayList<>())
+                .likes(new ArrayList<>())
+                .dislikes(new ArrayList<>())
                 .build();
     }
 }
