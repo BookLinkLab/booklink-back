@@ -151,5 +151,29 @@ public class CommentServiceTest {
         assertEquals(0, likedComment.getLikes().size());
     }
 
+    @Test
+    public void toggleDislike() {
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+        CommentDto commentDto = commentService.createComment(createCommentDto, 1L);
+
+        assertEquals(0, commentDto.getDislikes().size());
+
+        CommentDto dislikedComment = commentService.toggleDislike(commentDto.getId(), 1L);
+        assertEquals(1, dislikedComment.getDislikes().size());
+
+        dislikedComment = commentService.toggleDislike(commentDto.getId(), 1L);
+        assertEquals(0, dislikedComment.getDislikes().size());
+
+        CommentDto likedComment = commentService.toggleLike(commentDto.getId(), 1L);
+        assertEquals(1, likedComment.getLikes().size());
+
+        dislikedComment = commentService.toggleDislike(commentDto.getId(), 1L);
+        assertEquals(1, dislikedComment.getDislikes().size());
+        assertEquals(0, dislikedComment.getLikes().size());
+    }
+
 
 }

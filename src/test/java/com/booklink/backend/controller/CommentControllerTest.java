@@ -117,4 +117,18 @@ public class CommentControllerTest {
         assertEquals(10L, response.getBody().getLikes().get(0));
     }
 
+    @Test
+    void toggleDislike(){
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+        ResponseEntity<CommentDto> commentDto = restTemplate.postForEntity(baseUrl, createCommentDto, CommentDto.class);
+
+        ResponseEntity<CommentDto> response = restTemplate.exchange(baseUrl + "/" + commentDto.getBody().getId() + "/toggle-dislike", HttpMethod.POST, new HttpEntity<>(null), CommentDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().getDislikes().size());
+        assertEquals(10L, response.getBody().getDislikes().get(0));
+    }
+
 }
