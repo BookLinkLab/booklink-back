@@ -22,6 +22,7 @@ public class CommentDto {
     private Date updatedDate;
     private boolean isEdited;
     private List<Long> likes;
+    private List<Long> dislikes;
 
     public static CommentDto from(Comment comment) {
         return CommentDto.builder()
@@ -33,6 +34,7 @@ public class CommentDto {
                 .updatedDate(comment.getUpdatedDate())
                 .isEdited(comment.isEdited())
                 .likes(comment.getLikes())
+                .dislikes(comment.getDislikes())
                 .build();
     }
 }

@@ -12,4 +12,6 @@ public interface CommentService {
     void deleteComment(Long id, Long userId);
 
     CommentDto editComment(Long id, EditCommentDto editCommentDto, Long userId);
+
+    CommentDto toggleLike(Long id, Long userId);
 }

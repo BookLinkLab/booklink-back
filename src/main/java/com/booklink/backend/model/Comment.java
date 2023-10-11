@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Comment {
+public class Comment implements Reactable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -45,6 +45,9 @@ public class Comment {
     @ElementCollection
     private List<Long> likes;
 
+    @ElementCollection
+    private List<Long> dislikes;
+
 
     public static Comment from(CreateCommentDto createCommentDto, Long userId) {
         return Comment.builder()
@@ -52,9 +55,10 @@ public class Comment {
                 .postId(createCommentDto.getPostId())
                 .content(createCommentDto.getContent())
                 .createdDate(new Date())
-                .likes(new ArrayList<>())
                 .updatedDate(new Date())
                 .isEdited(false)
+                .likes(new ArrayList<>())
+                .dislikes(new ArrayList<>())
                 .build();
     }
 }

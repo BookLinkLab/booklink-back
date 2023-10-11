@@ -38,4 +38,8 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.editComment(id, editCommentDto, securityUtil.getLoggedUserId()));
     }
 
+    @PostMapping("/{id}/toggle-like")
+    public ResponseEntity<?> toggleLike(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.toggleLike(id, securityUtil.getLoggedUserId()));
+    }
 }
