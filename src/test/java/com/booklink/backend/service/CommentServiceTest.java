@@ -4,6 +4,7 @@ import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.comment.EditCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
+import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
@@ -133,7 +134,22 @@ public class CommentServiceTest {
     }
 
 
+    @Test
+    public void toggleLike() {
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+        CommentDto commentDto = commentService.createComment(createCommentDto, 1L);
 
+        assertEquals(0, commentDto.getLikes().size());
+
+        CommentDto likedComment = commentService.toggleLike(commentDto.getId(), 1L);
+        assertEquals(1, likedComment.getLikes().size());
+
+        likedComment = commentService.toggleLike(commentDto.getId(), 1L);
+        assertEquals(0, likedComment.getLikes().size());
+    }
 
 
 }

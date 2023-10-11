@@ -103,4 +103,18 @@ public class CommentControllerTest {
         assertEquals(HttpStatus.FORBIDDEN, editResponse.getStatusCode());
     }
 
+    @Test
+    void toggleLike(){
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+        ResponseEntity<CommentDto> commentDto = restTemplate.postForEntity(baseUrl, createCommentDto, CommentDto.class);
+
+        ResponseEntity<CommentDto> response = restTemplate.exchange(baseUrl + "/" + commentDto.getBody().getId() + "/toggle-like", HttpMethod.POST, new HttpEntity<>(null), CommentDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().getLikes().size());
+        assertEquals(10L, response.getBody().getLikes().get(0));
+    }
+
 }
