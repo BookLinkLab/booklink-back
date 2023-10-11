@@ -143,6 +143,7 @@ public class PostControllerTest {
 
     @Test
     public void toggleLike() {
+        utils.joinUserToForum(1L, restTemplate);
         utils.createPost(1L, "This is a test post", restTemplate);
         ResponseEntity<PostDto> response = restTemplate.exchange(baseUrl + "/1/toggle-like", HttpMethod.POST, new HttpEntity<>(null), PostDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -152,6 +153,7 @@ public class PostControllerTest {
 
     @Test
     public void toggleDislike() {
+        utils.joinUserToForum(1L, restTemplate);
         utils.createPost(1L, "This is a test post", restTemplate);
         ResponseEntity<PostDto> response = restTemplate.exchange(baseUrl + "/1/toggle-dislike", HttpMethod.POST, new HttpEntity<>(null), PostDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
