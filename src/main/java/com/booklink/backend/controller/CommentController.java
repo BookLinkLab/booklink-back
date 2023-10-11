@@ -42,4 +42,9 @@ public class CommentController {
     public ResponseEntity<?> toggleLike(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(commentService.toggleLike(id, securityUtil.getLoggedUserId()));
     }
+
+    @PostMapping("/{id}/toggle-dislike")
+    public ResponseEntity<?> toggleDislike(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.toggleDislike(id, securityUtil.getLoggedUserId()));
+    }
 }
