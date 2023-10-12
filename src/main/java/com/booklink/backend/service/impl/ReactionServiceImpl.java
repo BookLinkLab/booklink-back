@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 public class ReactionServiceImpl<T extends Reactable> implements ReactionService<T> {
     @Override
     public T toggleLike(T entity, Long userId) {
+        entity.getDislikes().remove(userId);
         if (entity.getLikes().contains(userId)) {
             entity.getLikes().remove(userId);
         } else {
