@@ -27,6 +27,7 @@ public class PostController {
         PostDto postDto = postService.createPost(createPostDto, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
     }
+
     @GetMapping("/forum/{id}")
     public ResponseEntity<?> getPostsByForumId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByForumId(id));
@@ -44,8 +45,17 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        postService.deletePost(id,securityUtil.getLoggedUserId());
+        postService.deletePost(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("La publicación fue eliminada con éxito");
     }
 
+    @PostMapping("/{id}/toggle-like")
+    public ResponseEntity<PostDto> toggleLike(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.toggleLike(id, securityUtil.getLoggedUserId()));
+    }
+
+    @PostMapping("/{id}/toggle-dislike")
+    public ResponseEntity<PostDto> toggleDislike(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.toggleDislike(id, securityUtil.getLoggedUserId()));
+    }
 }
