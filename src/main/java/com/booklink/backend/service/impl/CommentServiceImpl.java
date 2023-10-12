@@ -96,4 +96,12 @@ public class CommentServiceImpl implements CommentService {
         Comment savedComment = commentRepository.save(updatedComment);
         return CommentDto.from(savedComment);
     }
+
+    @Override
+    public CommentDto toggleDislike(Long id, Long userId) {
+        Comment comment = getCommentEntityById(id);
+        Comment updatedComment = reactionService.toggleDislike(comment, userId);
+        Comment savedComment = commentRepository.save(updatedComment);
+        return CommentDto.from(savedComment);
+    }
 }
