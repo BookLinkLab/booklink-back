@@ -7,14 +7,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Comment {
+public class Comment implements Reactable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -40,6 +42,13 @@ public class Comment {
 
     private boolean isEdited;
 
+    @ElementCollection
+    private List<Long> likes;
+
+    @ElementCollection
+    private List<Long> dislikes;
+
+
     public static Comment from(CreateCommentDto createCommentDto, Long userId) {
         return Comment.builder()
                 .userId(userId)
@@ -48,6 +57,8 @@ public class Comment {
                 .createdDate(new Date())
                 .updatedDate(new Date())
                 .isEdited(false)
+                .likes(new ArrayList<>())
+                .dislikes(new ArrayList<>())
                 .build();
     }
 }

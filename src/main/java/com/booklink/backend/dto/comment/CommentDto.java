@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +21,8 @@ public class CommentDto {
     private Date createdDate;
     private Date updatedDate;
     private boolean isEdited;
+    private List<Long> likes;
+    private List<Long> dislikes;
 
     public static CommentDto from(Comment comment) {
         return CommentDto.builder()
@@ -30,6 +33,8 @@ public class CommentDto {
                 .createdDate(comment.getCreatedDate())
                 .updatedDate(comment.getUpdatedDate())
                 .isEdited(comment.isEdited())
+                .likes(comment.getLikes())
+                .dislikes(comment.getDislikes())
                 .build();
     }
 }

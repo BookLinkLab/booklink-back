@@ -10,6 +10,7 @@ import com.booklink.backend.model.Comment;
 import com.booklink.backend.repository.CommentRepository;
 import com.booklink.backend.service.CommentService;
 import com.booklink.backend.service.PostService;
+import com.booklink.backend.service.ReactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +23,13 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final ForumDtoFactory forumDtoFactory;
+    private final ReactionService<Comment> reactionService;
 
-    public CommentServiceImpl(CommentRepository commentRepository, PostService postService, ForumDtoFactory forumDtoFactory) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostService postService, ForumDtoFactory forumDtoFactory, ReactionService<Comment> reactionService) {
         this.commentRepository = commentRepository;
         this.postService = postService;
         this.forumDtoFactory = forumDtoFactory;
+        this.reactionService = reactionService;
     }
 
     @Override
@@ -84,5 +87,13 @@ public class CommentServiceImpl implements CommentService {
             return CommentDto.from(savedComment);
         }
         return CommentDto.from(comment);
+    }
+
+    @Override
+    public CommentDto toggleLike(Long id, Long userId) {
+        Comment comment = getCommentEntityById(id);
+        Comment updatedComment = reactionService.toggleLike(comment, userId);
+        Comment savedComment = commentRepository.save(updatedComment);
+        return CommentDto.from(savedComment);
     }
 }
