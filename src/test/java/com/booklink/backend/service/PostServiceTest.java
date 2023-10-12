@@ -48,6 +48,8 @@ public class PostServiceTest {
 
         postService.createPost(createPostDto, 1L);
         assertEquals(1, postService.getPostsByForumId(1L).size());
+        //26 because of InitializationConfig
+        assertEquals(26L, postService.getPostsByForumId(1L).get(0).getId());
         CreatePostDto createPostDto2 = CreatePostDto.builder()
                 .forumId(1L)
                 .content("This is a test post")
@@ -55,6 +57,7 @@ public class PostServiceTest {
 
         postService.createPost(createPostDto2, 1L);
         assertEquals(2, postService.getPostsByForumId(1L).size());
+        assertEquals(27L, postService.getPostsByForumId(1L).get(1).getId());
     }
 
     @Test

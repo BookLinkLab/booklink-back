@@ -13,15 +13,17 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class PostInfoDto {
-    UserPostDto user;
-    String content;
-    Date date;
+    private Long id;
+    private UserPostDto user;
+    private String content;
+    private Date date;
 
-    public static PostInfoDto from(Post postInfoDto) {
+    public static PostInfoDto from(Post post) {
         return PostInfoDto.builder()
-                .user(UserPostDto.from(postInfoDto.getUser()))
-                .content(postInfoDto.getContent())
-                .date(postInfoDto.getCreatedDate())
+                .id(post.getId())
+                .user(UserPostDto.from(post.getUser()))
+                .content(post.getContent())
+                .date(post.getCreatedDate())
                 .build();
     }
 }
