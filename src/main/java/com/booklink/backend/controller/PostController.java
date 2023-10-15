@@ -1,14 +1,14 @@
 package com.booklink.backend.controller;
 
-import com.booklink.backend.dto.post.CreatePostDto;
-import com.booklink.backend.dto.post.EditPostDto;
-import com.booklink.backend.dto.post.PostDto;
+import com.booklink.backend.dto.post.*;
 import com.booklink.backend.service.PostService;
 import com.booklink.backend.utils.SecurityUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -29,22 +29,22 @@ public class PostController {
     }
 
     @GetMapping("/forum/{id}")
-    public ResponseEntity<?> getPostsByForumId(@PathVariable Long id) {
+    public ResponseEntity<List<PostInfoDto>> getPostsByForumId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByForumId(id));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Long id) {
+    public ResponseEntity<PostViewDto> getPostById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostViewById(securityUtil.getLoggedUserId(), id));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @Valid @RequestBody EditPostDto editPostDto) {
+    public ResponseEntity<PostDto> editPost(@PathVariable Long id, @Valid @RequestBody EditPostDto editPostDto) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(id, editPostDto, securityUtil.getLoggedUserId()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
         postService.deletePost(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("La publicación fue eliminada con éxito");
     }

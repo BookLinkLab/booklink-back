@@ -28,23 +28,23 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long id) {
+    public ResponseEntity<String> deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("Comentario eliminado correctamente");
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> editComment(@PathVariable Long id, @Valid @RequestBody EditCommentDto editCommentDto) {
+    public ResponseEntity<CommentDto> editComment(@PathVariable Long id, @Valid @RequestBody EditCommentDto editCommentDto) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.editComment(id, editCommentDto, securityUtil.getLoggedUserId()));
     }
 
     @PostMapping("/{id}/toggle-like")
-    public ResponseEntity<?> toggleLike(@PathVariable Long id){
+    public ResponseEntity<CommentDto> toggleLike(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(commentService.toggleLike(id, securityUtil.getLoggedUserId()));
     }
 
     @PostMapping("/{id}/toggle-dislike")
-    public ResponseEntity<?> toggleDislike(@PathVariable Long id){
+    public ResponseEntity<CommentDto> toggleDislike(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(commentService.toggleDislike(id, securityUtil.getLoggedUserId()));
     }
 }
