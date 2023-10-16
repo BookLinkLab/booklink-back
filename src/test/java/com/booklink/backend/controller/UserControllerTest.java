@@ -233,6 +233,15 @@ public class UserControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
     }
 
+    @Test
+    void setUserPrivacy(){
+        ResponseEntity<UserDto> response = restTemplate.exchange(
+                baseUrl + "/privacy", HttpMethod.POST, null, UserDto.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 
     private <T> ResponseEntity<T> UpdateRequest(Long userId, UpdateUserDto updateUserDTO, Class<T> responseType) {
         return restTemplate.exchange(

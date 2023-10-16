@@ -59,6 +59,20 @@ public class UserServiceTest {
         assertTrue(userDto.getForumsJoined().isEmpty());
         assertTrue(userDto.getForumsCreated().isEmpty());
 
+        UserDto privateUser = userService.setUserPrivacy(savedUser.getId());
+        assertTrue(privateUser.isPrivacy());
+
+        UserProfileDto privateUserDto = userService.getUserById(savedUser.getId(),1L);
+        assertTrue(privateUserDto.isPrivacy());
+        assertNull(privateUserDto.getEmail());
+        assertEquals(privateUserDto.getUsername(), savedUser.getUsername());
+
+        UserProfileDto privateUserProfile = userService.getUserById(savedUser.getId(),savedUser.getId());
+        assertTrue(privateUserProfile.isPrivacy());
+        assertEquals(privateUserProfile.getEmail(), savedUser.getEmail());
+        assertEquals(privateUserProfile.getUsername(), savedUser.getUsername());
+        assertNotNull(privateUserProfile.getForumsCreated());
+
     }
 
     @Test
