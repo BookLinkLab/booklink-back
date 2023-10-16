@@ -48,4 +48,9 @@ public class UserController {
     public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDto updateUserDTO) {
         return this.userService.updateUser(securityUtil.getLoggedUserId(), updateUserDTO);
     }
+
+    @PostMapping("/privacy")
+    public UserDto setUserPrivacy() {
+        return this.userService.setUserPrivacy(securityUtil.getLoggedUserId());
+    }
 }

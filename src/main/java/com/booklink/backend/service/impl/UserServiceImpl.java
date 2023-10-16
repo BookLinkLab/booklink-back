@@ -54,6 +54,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileDto getUserById(Long id, Long userWhoSearchesId) {
         User user = getUserEntityById(id);
+        if (user.isPrivacy() && !user.getId().equals(userWhoSearchesId)){
+            return new UserProfileDto(user.getUsername(), true);
+        }
         List<ForumDto> forumsCreated = forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
         List<ForumDto> forumsJoined = forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
         return UserProfileDto.from(user, forumsCreated, forumsJoined);
@@ -93,5 +96,12 @@ public class UserServiceImpl implements UserService {
             throw new WrongCredentialsException("Credenciales invalidas");
         }
         return UserDto.from(user);
+    }
+
+    @Override
+    public UserDto setUserPrivacy(Long id) {
+        User user = getUserEntityById(id);
+        user.setPrivacy(!user.isPrivacy());
+        return UserDto.from(userRepository.save(user));
     }
 }
