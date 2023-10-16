@@ -2,6 +2,7 @@ package com.booklink.backend.controller;
 
 
 import com.booklink.backend.dto.LoginRequestDto;
+import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.WrongCredentialsException;
 import com.booklink.backend.service.AuthService;
@@ -22,17 +23,8 @@ public class AuthController {
   }
 
   @PostMapping("/auth")
-  public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody LoginRequestDto loginRequestDto)
-          throws Exception {
-    try {
+  public ResponseEntity<LoginResponseDto> createAuthenticationToken(@Valid @RequestBody LoginRequestDto loginRequestDto){
       return ResponseEntity.status(HttpStatus.OK).body(this.authService.login(loginRequestDto));
-    }
-    catch (WrongCredentialsException | NotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-    catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-    }
   }
 
 
