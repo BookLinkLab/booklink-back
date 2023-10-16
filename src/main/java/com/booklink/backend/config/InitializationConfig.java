@@ -6,6 +6,7 @@ import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.model.*;
 import com.booklink.backend.repository.*;
 import com.booklink.backend.service.CommentService;
+import com.booklink.backend.service.ReactionService;
 import com.booklink.backend.service.UserService;
 import lombok.Generated;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class InitializationConfig implements CommandLineRunner {
         logger.info("Forums initialization begin");
         this.loadForums();
         this.generatePostsAndComments();
+        this.addReactionsToCommentsAndPosts();
         logger.info("DB data intialized");
     }
 
@@ -433,6 +435,62 @@ public class InitializationConfig implements CommandLineRunner {
                 "Esto es realmente valioso. Gracias por compartirlo."
         );
 
+
+
+    private void addReactionsToCommentsAndPosts(){
+        List<Post> posts = postRepository.findAll();
+        List<Comment> comments = commentRepository.findAll();
+
+        Random random = new Random();
+
+        for (Post post : posts) {
+            List<Long> usersWhoCanLike = getUsersWhoCanLike(post);
+            List<Long> usersWhoLike = new ArrayList<>();
+            List<Long> usersWhoDislike = new ArrayList<>();
+
+            // el primer post no se reacciona
+            if(post.getId() != 1L){
+                for (Long user : usersWhoCanLike) {
+                    int likeOrDislike = random.nextInt(2);
+                    if (likeOrDislike == 1) usersWhoLike.add(user);
+                    else usersWhoDislike.add(user);
+                }
+                post.setLikes(usersWhoLike);
+                post.setDislikes(usersWhoDislike);
+                postRepository.save(post);
+        }}
+
+        for (Comment comment : comments) {
+            List<Long> usersWhoCanLike = getUsersWhoCanLike(comment);
+            List<Long> usersWhoLike = new ArrayList<>();
+            List<Long> usersWhoDislike = new ArrayList<>();
+
+            // el primer comentario no se reacciona
+            if (comment.getId() != 1L) {
+                for (Long user : usersWhoCanLike) {
+                    int likeOrDislike = random.nextInt(2);
+                    if (likeOrDislike == 1) usersWhoLike.add(user);
+                    else usersWhoDislike.add(user);
+                }
+                comment.setLikes(usersWhoLike);
+                comment.setDislikes(usersWhoDislike);
+                commentRepository.save(comment);
+    }
+    }}
+
+    private List<Long> getUsersWhoCanLike(Post post) {
+        Long forumId = post.getForumId();
+        Forum forum = forumRepository.findById(forumId).get();
+        List<User> members = forum.getMembers();
+        return members.stream().map(User::getId).toList();
+    }
+
+    private List<Long> getUsersWhoCanLike(Comment comment) {
+        Long postId = comment.getPostId();
+        Post post = postRepository.findById(postId).get();
+        List<Long> membersIds = getUsersWhoCanLike(post);
+        return membersIds;
+    }
 
 }
 
