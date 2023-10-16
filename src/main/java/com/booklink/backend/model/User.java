@@ -26,6 +26,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private boolean privacy = false;
+
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Forum> forumsCreated;

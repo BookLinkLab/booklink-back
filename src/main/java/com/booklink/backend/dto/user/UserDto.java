@@ -14,12 +14,14 @@ public class UserDto {
     private Long id;
     private String username;
     private String email;
+    private boolean privacy;
 
     public static UserDto from(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .privacy(user.isPrivacy())
                 .build();
     }
 }
