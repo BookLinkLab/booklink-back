@@ -1,9 +1,6 @@
 package com.booklink.backend.controller;
 
-import com.booklink.backend.dto.forum.CreateForumDto;
-import com.booklink.backend.dto.forum.EditForumDto;
-import com.booklink.backend.dto.forum.ForumDto;
-import com.booklink.backend.dto.forum.ForumGetDto;
+import com.booklink.backend.dto.forum.*;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.service.ForumService;
 import com.booklink.backend.utils.SecurityUtil;
@@ -37,7 +34,7 @@ public class ForumController {
     }
 
     @DeleteMapping("/{id}/leave")
-    public ResponseEntity<?> leaveForum(@PathVariable Long id) {
+    public ResponseEntity<String> leaveForum(@PathVariable Long id) {
         forumService.leaveForum(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("Has abandonado el foro");
     }
@@ -53,11 +50,11 @@ public class ForumController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchForums(@RequestParam(name = "searchTerm", required = false) String searchTerm) {
+    public ResponseEntity<List<ForumViewDto>> searchForums(@RequestParam(name = "searchTerm", required = false) String searchTerm) {
         return ResponseEntity.status(HttpStatus.OK).body(forumService.searchForums(searchTerm, securityUtil.getLoggedUserId()));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteForum(@PathVariable Long id) {
+    public ResponseEntity<String> deleteForum(@PathVariable Long id) {
         forumService.deleteForum(id, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.OK).body("Foro eliminado correctamente");
     }
