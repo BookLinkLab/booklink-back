@@ -18,14 +18,21 @@ public class UserProfileDto {
     private Long id;
     private String username;
     private String email;
+    private boolean privacy;
     private List<ForumDto> forumsCreated;
     private List<ForumDto> forumsJoined;
+
+    public UserProfileDto(String username, boolean privacy) {
+        this.username = username;
+        this.privacy = privacy;
+    }
 
     public static UserProfileDto from(User user, List<ForumDto> forumCreated, List<ForumDto> forumJoined) {
         return UserProfileDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .privacy(user.isPrivacy())
                 .forumsCreated(forumCreated)
                 .forumsJoined(forumJoined)
                 .build();
