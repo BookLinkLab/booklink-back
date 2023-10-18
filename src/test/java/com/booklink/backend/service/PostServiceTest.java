@@ -76,6 +76,25 @@ public class PostServiceTest {
     }
 
     @Test
+    public void getPostWithCommentById() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a test post")
+                .build();
+        forumService.joinForum(1L, 1L);
+
+        PostDto postDto = postService.createPost(createPostDto, 1L);
+
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(26L)
+                .content("This is a test comment")
+                .build();
+        commentService.createComment(createCommentDto, 1L);
+
+        assertEquals("lucia21" ,postService.getPostViewById(1L, postDto.getId()).getComments().get(0).getUsername());
+    }
+
+    @Test
     public void editPost() {
         CreatePostDto createPostDto = CreatePostDto.builder()
                 .forumId(1L)
