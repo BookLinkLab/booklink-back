@@ -1,6 +1,6 @@
 package com.booklink.backend.dto.post;
 
-import com.booklink.backend.dto.comment.CommentDto;
+import com.booklink.backend.dto.comment.CommentViewDto;
 import com.booklink.backend.model.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,7 @@ public class PostViewDto {
     Date createdDate;
     boolean isEdited;
     Date updatedDate;
-    List<CommentDto> comments;
+    List<CommentViewDto> comments;
 
     public static PostViewDto from(Post post) {
         return PostViewDto.builder()
@@ -35,7 +35,7 @@ public class PostViewDto {
                 .createdDate(post.getCreatedDate())
                 .isEdited(post.isEdited())
                 .updatedDate(post.getUpdatedDate())
-                .comments(post.getComments().stream().map(CommentDto::from).toList())
+                .comments(post.getComments().stream().map(CommentViewDto::from).toList())
                 .build();
     }
 }
