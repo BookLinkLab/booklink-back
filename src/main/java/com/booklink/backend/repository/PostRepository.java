@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByForumId(Long forumId);
     Optional<Post> findById(@NonNull Long postId);
+    List<Post> findTop5ByUserIdOrderByCreatedDateDesc(Long userId);
 
 }
