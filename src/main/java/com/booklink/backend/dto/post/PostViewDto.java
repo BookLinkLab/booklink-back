@@ -23,6 +23,8 @@ public class PostViewDto {
     Date createdDate;
     boolean isEdited;
     Date updatedDate;
+    List<Long> likes;
+    List<Long> dislikes;
     List<CommentViewDto> comments;
 
     public static PostViewDto from(Post post) {
@@ -35,6 +37,8 @@ public class PostViewDto {
                 .createdDate(post.getCreatedDate())
                 .isEdited(post.isEdited())
                 .updatedDate(post.getUpdatedDate())
+                .likes(post.getLikes())
+                .dislikes(post.getDislikes())
                 .comments(post.getComments().stream().map(CommentViewDto::from).toList())
                 .build();
     }
