@@ -1,10 +1,7 @@
 package com.booklink.backend.service;
 
 import com.booklink.backend.dto.comment.CreateCommentDto;
-import com.booklink.backend.dto.post.CreatePostDto;
-import com.booklink.backend.dto.post.EditPostDto;
-import com.booklink.backend.dto.post.PostDto;
-import com.booklink.backend.dto.post.PostViewDto;
+import com.booklink.backend.dto.post.*;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -221,4 +220,16 @@ public class PostServiceTest {
         postDto = postService.toggleDislike(postDto.getId(), 1L);
         assertEquals(0, postDto.getDislikes().size());
     }
+
+    @Test
+    public void getPostsByForum(){
+        CreateCommentDto createCommentDto = CreateCommentDto.builder()
+                .postId(3L)
+                .content("This is a test comment")
+                .build();
+        commentService.createComment(createCommentDto, 3L);
+        List<PostInfoDto> posts = postService.getPostsByForumId(3L);
+        assertEquals(1, posts.get(0).getCommentsCount());
+    }
+
 }
