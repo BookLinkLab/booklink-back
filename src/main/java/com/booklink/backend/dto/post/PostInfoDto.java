@@ -18,6 +18,7 @@ public class PostInfoDto {
     private UserPostDto user;
     private String content;
     private Date date;
+    private int commentsCount;
     private List<Long> likes;
     private List<Long> dislikes;
 
@@ -29,6 +30,7 @@ public class PostInfoDto {
                 .date(post.getCreatedDate())
                 .likes(post.getLikes())
                 .dislikes(post.getDislikes())
+                .commentsCount(post.getComments().size())
                 .build();
     }
 }
