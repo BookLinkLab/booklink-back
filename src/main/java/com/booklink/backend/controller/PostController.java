@@ -23,7 +23,6 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody CreatePostDto createPostDto) {
-        System.out.println(createPostDto);
         PostDto postDto = postService.createPost(createPostDto, securityUtil.getLoggedUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(postDto);
     }
