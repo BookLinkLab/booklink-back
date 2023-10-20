@@ -17,7 +17,7 @@ public class PostInfoDto {
     private UserPostDto user;
     private String content;
     private Date date;
-    private int commentsQty;
+    private int commentsCount;
 
     public static PostInfoDto from(Post post) {
         return PostInfoDto.builder()
@@ -25,7 +25,7 @@ public class PostInfoDto {
                 .user(UserPostDto.from(post.getUser()))
                 .content(post.getContent())
                 .date(post.getCreatedDate())
-                .commentsQty(post.getComments().size())
+                .commentsCount(post.getComments().size())
                 .build();
     }
 }
