@@ -1,10 +1,6 @@
 package com.booklink.backend.service;
 
-import com.booklink.backend.dto.post.CreatePostDto;
-import com.booklink.backend.dto.post.EditPostDto;
-import com.booklink.backend.dto.post.PostDto;
-import com.booklink.backend.dto.post.PostInfoDto;
-import com.booklink.backend.dto.post.PostViewDto;
+import com.booklink.backend.dto.post.*;
 import com.booklink.backend.model.Post;
 
 import java.util.List;
@@ -19,4 +15,5 @@ public interface PostService {
     void deletePost(Long id, Long userId);
     PostDto toggleLike(Long id, Long userId);
     PostDto toggleDislike(Long id, Long userId);
+    List<PostPreviewDto> getLatestPostsByUserId(Long id);
 }
