@@ -4,6 +4,7 @@ import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,5 +248,16 @@ public class UserControllerTest {
         return restTemplate.exchange(
                 baseUrl + "/" + userId, HttpMethod.PATCH, new HttpEntity<>(updateUserDTO), responseType
         );
+    }
+
+    @Test
+    void getUserProfileTest() {
+        setOutputStreamingFalse(restTemplate);
+
+        ResponseEntity<UserProfileDto> response = restTemplate.exchange(
+                baseUrl + "/2", HttpMethod.GET, null, UserProfileDto.class
+        );
+        assertEquals(5, response.getBody().getLatestPosts().size());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
