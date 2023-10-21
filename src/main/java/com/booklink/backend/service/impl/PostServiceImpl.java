@@ -50,6 +50,7 @@ public class PostServiceImpl implements PostService {
                     .stream()
                     .map(User::getId)
                     .collect(Collectors.toList());
+            usersId.add(forum.getUser().getId());
             notificationService.createPostNotification(userId, usersId, forum.getId(), savedPost.getId());
             return PostDto.from(savedPost);
         } else throw new UserNotMemberException("No sos miembro de este foro");
