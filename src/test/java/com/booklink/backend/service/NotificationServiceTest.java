@@ -3,7 +3,9 @@ package com.booklink.backend.service;
 import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
+import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.model.Notification;
+import com.booklink.backend.model.Post;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,22 +40,42 @@ public class NotificationServiceTest {
         forumService.joinForum(1L, 1L);
         postService.createPost(createPostDto, 1L);
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(2, notifications.size());
+        assertEquals(3, notifications.size());
     }
 
     @Test
     void createCommentShouldHaveNotificationTest() {
+        CreatePostDto createPostDto = CreatePostDto.builder()
+                .forumId(1L)
+                .content("This is a post test")
+                .build();
+
+        forumService.joinForum(1L, 1L);
+        PostDto postDto = postService.createPost(createPostDto, 1L);
+
+        Long postId = postDto.getId();
+
         CreateCommentDto createCommentDto = CreateCommentDto.builder()
-                .postId(2L)
+                .postId(postId)
                 .content("This is a comment test")
                 .build();
 
-        forumService.joinForum(2L, 1L);
-        commentService.createComment(createCommentDto, 1L);
+        commentService.createComment(createCommentDto, 2L);
+
+        CreateCommentDto createCommentDto1 = CreateCommentDto.builder()
+                .postId(postId)
+                .content("This is a comment test")
+                .build();
+
+        commentService.createComment(createCommentDto1, 8L);
+
+
 
 
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(2, notifications.size());
-
+        assertEquals(6, notifications.size());  // 3 notifications for post, 3 notifications for comment
+        Notification commentNotification = notifications.get(3);
+        assertEquals(2L, commentNotification.getCommentAuthorId());
+        assertEquals(1L, commentNotification.getReceiverId());
     }
 }
