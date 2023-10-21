@@ -49,7 +49,8 @@ public class CommentServiceImpl implements CommentService {
         Comment savedComment = commentRepository.save(commentToSave);
 
         List<Long> usersId = post.getComments().stream().map(Comment::getUserId).distinct().collect(Collectors.toList());
-        notificationService.createCommentNotification(userId, post.getUserId(), usersId, post.getId(), savedComment.getId());
+        if(!usersId.contains(post.getUserId())) usersId.add(post.getUserId());
+        notificationService.createCommentNotification(userId, post.getUserId(), usersId, post.getForumId(), post.getId(), savedComment.getId());
 
         return CommentDto.from(savedComment);
     }
@@ -74,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
         boolean isCommentCreator = comment.getUserId().equals(userId);
         boolean isForumOwner = forumDtoFactory.isForumOwner(forumid, userId);
 
-        if (!isCommentCreator || !isForumOwner) throw new UserNotOwnerException("No tienes permiso para eliminar este comentario");
+        if (!isCommentCreator && !isForumOwner) throw new UserNotOwnerException("No tienes permiso para eliminar este comentario");
 
         commentRepository.deleteById(id);
     }

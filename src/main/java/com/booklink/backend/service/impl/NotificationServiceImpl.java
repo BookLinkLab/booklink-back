@@ -19,6 +19,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void createPostNotification(Long postAuthorId, List<Long> receiversId, Long forumId, Long postId) {
+
         receiversId.remove(postAuthorId);
         receiversId.forEach(receiverId -> {
             Notification notificationToSave = Notification.builder()
@@ -34,15 +35,16 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void createCommentNotification(Long commentAuthorId, Long postAuthorId, List<Long> receiversId, Long postId, Long commentId) {
+    public void createCommentNotification(Long commentAuthorId, Long postAuthorId, List<Long> receiversId, Long forumId, Long postId, Long commentId) {
         receiversId.remove(commentAuthorId);
-        receiversId.remove(postAuthorId);
         receiversId.forEach(receiverId -> {
             Notification notificationToSave = Notification.builder()
                     .type(NotificationType.COMMENT)
                     .commentAuthorId(commentAuthorId)
                     .postAuthorId(postAuthorId)
                     .receiverId(receiverId)
+                    .forumId(forumId)
+                    .postId(postId)
                     .createdDate(new Date())
                     .build();
             notificationRepository.save(notificationToSave);

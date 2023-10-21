@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface NotificationService {
     void createPostNotification(Long postAuthorId, List<Long> receiversId, Long forumId, Long postId);
-    void createCommentNotification(Long commentAuthorId, Long postAuthorId, List<Long> receiversId, Long postId, Long commentId);
+    void createCommentNotification(Long commentAuthorId, Long postAuthorId, List<Long> receiversId, Long forumId, Long postId, Long commentId);
 
     List<Notification> getNotificationsEntity();
 }
