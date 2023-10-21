@@ -9,6 +9,7 @@ import com.booklink.backend.model.Post;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.PostRepository;
 import com.booklink.backend.service.ForumService;
+import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.service.PostService;
 import com.booklink.backend.service.ReactionService;
 import org.springframework.stereotype.Service;
@@ -18,17 +19,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ForumService forumService;
+    private final NotificationService notificationService;
     private final ReactionService<Post> reactionService;
 
-    public PostServiceImpl(PostRepository postRepository, ForumService forumService, ReactionService<Post> reactionService) {
+    public PostServiceImpl(PostRepository postRepository, ForumService forumService, NotificationService notificationService, ReactionService<Post> reactionService) {
         this.postRepository = postRepository;
         this.forumService = forumService;
+        this.notificationService = notificationService;
         this.reactionService = reactionService;
     }
 
@@ -38,6 +42,12 @@ public class PostServiceImpl implements PostService {
         Forum forum = forumService.getForumEntityById(createPostDto.getForumId());
         if (isMember(userId, forum)) {
             Post savedPost = postRepository.save(post);
+            List<Long> usersId = forumService.getForumEntityById(createPostDto.getForumId()).getMembers()
+                    .stream()
+                    .map(User::getId)
+                    .collect(Collectors.toList());
+            usersId.add(forum.getUser().getId());
+            notificationService.createPostNotification(userId, usersId, forum.getId(), savedPost.getId());
             return PostDto.from(savedPost);
         } else throw new UserNotMemberException("No sos miembro de este foro");
     }
