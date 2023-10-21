@@ -1,10 +1,6 @@
 package com.booklink.backend.service.impl;
 
-import com.booklink.backend.dto.post.CreatePostDto;
-import com.booklink.backend.dto.post.EditPostDto;
-import com.booklink.backend.dto.post.PostDto;
-import com.booklink.backend.dto.post.PostInfoDto;
-import com.booklink.backend.dto.post.PostViewDto;
+import com.booklink.backend.dto.post.*;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotMemberException;
 import com.booklink.backend.exception.UserNotOwnerException;
@@ -134,5 +130,11 @@ public class PostServiceImpl implements PostService {
         Post dislikedPost = reactionService.toggleDislike(post, userId);
         Post savedPost = postRepository.save(dislikedPost);
         return PostDto.from(savedPost);
+    }
+
+    @Override
+    public List<PostPreviewDto> getLatestPostsByUserId(Long id) {
+        List<Post> posts = postRepository.findTop5ByUserIdOrderByCreatedDateDesc(id);
+        return posts.stream().map(PostPreviewDto::from).toList();
     }
 }
