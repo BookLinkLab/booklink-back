@@ -18,7 +18,7 @@ public class CreatePostDto {
     private Long forumId;
 
     @NotBlank(message = "La descripción no puede estar vacía")
-    @Size(max = 512)
+    @Size(max = 512,message = "La descripción no puede tener más de 512 caracteres")
     private String content;
 
 }
