@@ -21,6 +21,7 @@ public class PostInfoDto {
     private int commentsCount;
     private List<Long> likes;
     private List<Long> dislikes;
+    private Date updatedDate;
 
     public static PostInfoDto from(Post post) {
         return PostInfoDto.builder()
@@ -31,6 +32,7 @@ public class PostInfoDto {
                 .likes(post.getLikes())
                 .dislikes(post.getDislikes())
                 .commentsCount(post.getComments().size())
+                .updatedDate(post.getUpdatedDate())
                 .build();
     }
 }
