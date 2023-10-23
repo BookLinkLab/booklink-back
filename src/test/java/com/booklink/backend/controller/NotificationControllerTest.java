@@ -39,14 +39,13 @@ public class NotificationControllerTest {
     public void setUp(){
 
         UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password", restTemplate);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer tu-token-jwt");
+
 
 
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
-                .receiverId(2L)
+                .receiverId(user.getId())
                 .forumId(1L)
                 .postId(1L)
                 .createdDate(new Date())
