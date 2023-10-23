@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +17,8 @@ public class PostPreviewDto {
     private Long forumId;
     private String forumName;
     private String content;
+    private Date createdDate;
+    private Date updatedDate;
 
     public static PostPreviewDto from(Post post) {
         return PostPreviewDto.builder()

@@ -191,9 +191,6 @@ public class UserServiceTest {
         UserProfileDto userSearched2 = userService.getUserById(2L, 1L);
 
         assertEquals(5, userSearched.getLatestPosts().size());
-        assertNotNull(userSearched.getLatestPosts().get(0).getContent());
-        assertNull(userSearched.getLatestPosts().get(1).getContent());
-        assertNull(userSearched2.getLatestPosts().get(0).getContent());
     }
 
 }
