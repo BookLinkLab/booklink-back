@@ -56,16 +56,6 @@ public class NotificationControllerTest {
     @Test
     public void deleteNotificationTest(){
 
-        Notification notificationToSave = Notification.builder()
-                .type(NotificationType.POST)
-                .postAuthorId(1L)
-                .receiverId(2L)
-                .forumId(1L)
-                .postId(1L)
-                .createdDate(new Date())
-                .build();
-
-        restTemplate.postForEntity(baseUrl, notificationToSave, Notification.class);
         ResponseEntity<String> response = restTemplate.exchange(baseUrl + "/" + 1, HttpMethod.DELETE, new HttpEntity<>(null), String.class);
 
 

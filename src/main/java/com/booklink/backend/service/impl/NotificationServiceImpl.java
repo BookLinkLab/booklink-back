@@ -62,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void deleteNotification(Long id, Long userId) {
-        Notification notification = getNotificatiionEntityById(id);
+        Notification notification = getNotificationEntityById(id);
         if(notification.getReceiverId().equals(userId)){
             notificationRepository.deleteById(id);
         }
@@ -72,9 +72,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification getNotificatiionEntityById(Long id) {
+    public Notification getNotificationEntityById(Long id) {
         Optional<Notification> notificationOptional = notificationRepository.findById(id);
-        return notificationOptional.orElseThrow(() -> new NotFoundException("la notificacion no fue encontrada"));
+        return notificationOptional.orElseThrow(() -> new NotFoundException("La notificacion no fue encontrada"));
     }
 
 }

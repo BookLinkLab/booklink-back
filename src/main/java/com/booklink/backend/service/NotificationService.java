@@ -14,5 +14,5 @@ public interface NotificationService {
 
     void deleteNotification(Long id, Long userId);
 
-    Notification getNotificatiionEntityById(Long id);
+    Notification getNotificationEntityById(Long id);
 }
