@@ -1,5 +1,8 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.exception.NotFoundException;
+import com.booklink.backend.exception.UserNotOwnerException;
+import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
 import com.booklink.backend.repository.NotificationRepository;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -55,4 +59,22 @@ public class NotificationServiceImpl implements NotificationService {
     public List<Notification> getNotificationsEntity() {
         return notificationRepository.findAll();
     }
+
+    @Override
+    public void deleteNotification(Long id, Long userId) {
+        Notification notification = getNotificationEntityById(id);
+        if(notification.getReceiverId().equals(userId)){
+            notificationRepository.deleteById(id);
+        }
+        else{
+            throw new UserNotOwnerException("Solo el dueño de la notificacion puede eliminarla");
+        }
+    }
+
+    @Override
+    public Notification getNotificationEntityById(Long id) {
+        Optional<Notification> notificationOptional = notificationRepository.findById(id);
+        return notificationOptional.orElseThrow(() -> new NotFoundException("La notificacion no fue encontrada"));
+    }
+
 }
