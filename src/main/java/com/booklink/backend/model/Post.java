@@ -57,7 +57,6 @@ public class Post implements Reactable {
                 .forumId(postDto.getForumId())
                 .content(postDto.getContent())
                 .createdDate(new Date())
-                .updatedDate(new Date())
                 .isEdited(false)
                 .comments(new ArrayList<>())
                 .likes(new ArrayList<>())
