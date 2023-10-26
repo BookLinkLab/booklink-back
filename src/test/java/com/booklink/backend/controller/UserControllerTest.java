@@ -4,6 +4,7 @@ import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
+import com.booklink.backend.dto.user.UserProfileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -233,10 +234,30 @@ public class UserControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
     }
 
+    @Test
+    void setUserPrivacy(){
+        ResponseEntity<UserDto> response = restTemplate.exchange(
+                baseUrl + "/privacy", HttpMethod.POST, null, UserDto.class
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 
     private <T> ResponseEntity<T> UpdateRequest(Long userId, UpdateUserDto updateUserDTO, Class<T> responseType) {
         return restTemplate.exchange(
                 baseUrl + "/" + userId, HttpMethod.PATCH, new HttpEntity<>(updateUserDTO), responseType
         );
+    }
+
+    @Test
+    void getUserProfileTest() {
+        setOutputStreamingFalse(restTemplate);
+
+        ResponseEntity<UserProfileDto> response = restTemplate.exchange(
+                baseUrl + "/2", HttpMethod.GET, null, UserProfileDto.class
+        );
+        assertEquals(5, response.getBody().getLatestPosts().size());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

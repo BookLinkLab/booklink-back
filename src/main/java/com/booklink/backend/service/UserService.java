@@ -17,4 +17,5 @@ public interface UserService {
     List<UserDto> getAllUsers();
     UserDto updateUser(long id, UpdateUserDto updateUserDTO);
     UserDto authorizedGetByEmail(LoginRequestDto loginRequestDto);
+    UserDto setUserPrivacy(Long id);
 }

@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,6 +58,20 @@ public class UserServiceTest {
 
         assertTrue(userDto.getForumsJoined().isEmpty());
         assertTrue(userDto.getForumsCreated().isEmpty());
+
+        UserDto privateUser = userService.setUserPrivacy(savedUser.getId());
+        assertTrue(privateUser.isPrivacy());
+
+        UserProfileDto privateUserDto = userService.getUserById(savedUser.getId(),1L);
+        assertTrue(privateUserDto.isPrivacy());
+        assertNull(privateUserDto.getEmail());
+        assertEquals(privateUserDto.getUsername(), savedUser.getUsername());
+
+        UserProfileDto privateUserProfile = userService.getUserById(savedUser.getId(),savedUser.getId());
+        assertTrue(privateUserProfile.isPrivacy());
+        assertEquals(privateUserProfile.getEmail(), savedUser.getEmail());
+        assertEquals(privateUserProfile.getUsername(), savedUser.getUsername());
+        assertNotNull(privateUserProfile.getForumsCreated());
 
     }
 
@@ -113,12 +128,13 @@ public class UserServiceTest {
 
 
 
-        List<ForumDto> forums1 = userSearched.getForumsCreated();
-        forums1.addAll(userSearched.getForumsJoined());
+        List<ForumDto> forumsCreated = userSearched.getForumsCreated();
+        List<ForumDto> forumsJoined = userSearched.getForumsJoined();
+        List<ForumDto> joinedAndCreated = Stream.concat(forumsCreated.stream(), forumsJoined.stream()).toList();
 
         List<Long> ids = new ArrayList<>(List.of(4L, 9L));
         //testeando la primera busqueda
-        for (ForumDto forum : forums1) {
+        for (ForumDto forum : joinedAndCreated) {
             if (ids.contains(forum.getId())) {
                 assertTrue(forum.isSearcherIsMember()); // testeando que el userId 3 es miembro de los foros 4 y 9 del userId 2
             } else {
@@ -131,10 +147,11 @@ public class UserServiceTest {
         forumService.joinForum(2L, user2.getId());
         UserProfileDto userSearchedAgain = userService.getUserById(user1.getId(), user2.getId());
 
-        List<ForumDto> forumsAgain = userSearchedAgain.getForumsCreated();
-        forumsAgain.addAll(userSearchedAgain.getForumsJoined());
+        List<ForumDto> forumsCreatedAgain = userSearchedAgain.getForumsCreated();
+        List<ForumDto> forumsJoinedAgain = userSearchedAgain.getForumsJoined();
+        List<ForumDto> forumsCreatedAndJoinedAgain = Stream.concat(forumsCreatedAgain.stream(), forumsJoinedAgain.stream()).toList();
 
-        assertTrue(forumsAgain.get(2).isSearcherIsMember()); //despues de que el userid 3 se una al foro 4 del userid 2, se testea que ahora si es miembro de ese foro
+        assertTrue(forumsCreatedAndJoinedAgain.get(2).isSearcherIsMember()); //despues de que el userid 3 se una al foro 4 del userid 2, se testea que ahora si es miembro de ese foro
 
 
 
@@ -152,11 +169,12 @@ public class UserServiceTest {
         //tercera busqueda (usuario 8 busca al 3)
         UserProfileDto userSearched3 = userService.getUserById(3L, 8L);
 
-        List<ForumDto> forums3 = userSearched3.getForumsCreated();
-        forums3.addAll(userSearched3.getForumsJoined());
+        List<ForumDto> forumsCreated3 = userSearched3.getForumsCreated();
+        List<ForumDto> forumsJoined3 = userSearched3.getForumsJoined();
+        List<ForumDto> forumsJoinedAndCreated3 = Stream.concat(forumsCreated3.stream(), forumsJoined3.stream()).toList();
 
         //testeando que el user 8 no es miembro del foro 5 del que el user 3 creo (hecho mas arriba en el test) y si del resto de los foros del user 3
-        for (ForumDto forum : forums3) {
+        for (ForumDto forum : forumsJoinedAndCreated3) {
             if(forum.getId() == 2L || forum.getId() == 11L){assertFalse(forum.isSearcherIsMember());}
             else{
                 assertTrue(forum.isSearcherIsMember());
@@ -164,6 +182,15 @@ public class UserServiceTest {
         }
 
 
+    }
+
+    @Test
+    void testUserSearch(){
+
+        UserProfileDto userSearched = userService.getUserById(2L, 3L);
+        UserProfileDto userSearched2 = userService.getUserById(2L, 1L);
+
+        assertEquals(5, userSearched.getLatestPosts().size());
     }
 
 }

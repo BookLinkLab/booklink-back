@@ -25,7 +25,7 @@ public class Forum {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
@@ -34,10 +34,10 @@ public class Forum {
 
     private String img;
 
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<User> members;
 
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<Tag> tags;
 
     private int membersAmount;

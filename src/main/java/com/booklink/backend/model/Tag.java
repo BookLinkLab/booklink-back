@@ -23,7 +23,7 @@ public class Tag {
 
     private String name;
 
-    @ManyToMany(mappedBy = "tags", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<Forum> forums;
 
     public static Tag from(CreateTagDto createTagDto) {

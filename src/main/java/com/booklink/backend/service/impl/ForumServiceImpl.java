@@ -1,17 +1,19 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.*;
+import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
-import com.booklink.backend.dto.user.UserProfileDto;
 import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
+import com.booklink.backend.service.PostService;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
+import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -25,15 +27,18 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
 
 @Service
+@Transactional
 public class ForumServiceImpl implements com.booklink.backend.service.ForumService {
     private final ForumRepository forumRepository;
     private final UserService userService;
     private final TagService tagService;
+    private final ForumDtoFactory forumDtoFactory;
 
-    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService) {
+    public ForumServiceImpl(ForumRepository forumRepository, UserService userService, TagService tagService, @Lazy ForumDtoFactory forumDtoFactory) {
         this.forumRepository = forumRepository;
         this.userService = userService;
         this.tagService = tagService;
+        this.forumDtoFactory = forumDtoFactory;
     }
 
     @Override
@@ -93,7 +98,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
                 tagService.deleteTag(tag.getId());
             }
         }
-        return ForumDto.from(savedForum,true);
+        return ForumDto.from(savedForum, true);
     }
 
     @Override
@@ -117,7 +122,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToJoin.setMembersAmount(newMembersAmount);
         forumRepository.save(forumToJoin);
 
-        return ForumDto.from(forumToJoin,true);
+        return ForumDto.from(forumToJoin, true);
     }
 
     @Override
@@ -136,14 +141,14 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             List<Forum> tagSearchResults = new ArrayList<>();
             for (int i = 0; i < words.size(); i++) {
                 String word = words.get(i);
-                if(i == 0) {
+                if (i == 0) {
                     tagSearchResults.addAll(forumRepository.findAllByTagsNameIsIgnoreCase(word));
                     continue;
                 }
                 List<Forum> forumsToKeep = new ArrayList<>();
                 List<Forum> newForumsToAdd = forumRepository.findAllByTagsNameIsIgnoreCase(word);
                 tagSearchResults.forEach(forum -> {
-                    if(newForumsToAdd.stream().anyMatch(newForum -> newForum.getId().equals(forum.getId())))
+                    if (newForumsToAdd.stream().anyMatch(newForum -> newForum.getId().equals(forum.getId())))
                         forumsToKeep.add(forum);
                 });
                 tagSearchResults = forumsToKeep;
@@ -153,12 +158,13 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
             List<Forum> result = nameSearchResults.stream()
                     .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(Forum::getId))),
                             ArrayList::new));
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(result, userId, ForumViewDto::from);
+            return forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(result, userId, ForumViewDto::from);
         } else {
             List<Forum> forums = forumRepository.findAll();
-            return ForumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
+            return forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(forums, userId, ForumViewDto::from);
         }
     }
+
 
     @Override
     public void deleteForum(Long id, Long userId) {
@@ -177,10 +183,19 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
     @Override
     public ForumGetDto getForumById(Long id, Long userId) {
         Forum forum = this.getForumEntityById(id);
-        boolean isMember = ForumDtoFactory.isMember(forum, userId);
+        boolean isMember = forumDtoFactory.isMember(forum.getId(), userId);
         return ForumGetDto.from(forum, isMember);
     }
 
+    @Override
+    public List<Forum> getForumsJoined(Long userId) {
+        return userService.getUserEntityById(userId).getForumsJoined();
+    }
+
+    @Override
+    public List<Forum> getForumsCreated(Long userId) {
+        return userService.getUserEntityById(userId).getForumsCreated();
+    }
 
     @Override
     public void leaveForum(Long id, Long userId) {
@@ -191,12 +206,12 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         if (removed) {
             int newMembersAmount = forumToLeave.getMembersAmount() - 1;
             forumToLeave.setMembersAmount(newMembersAmount);
-            forumRepository.save(forumToLeave);}
-        else
+            forumRepository.save(forumToLeave);
+        } else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
     }
 
-    private void validateImage(String img){
+    private void validateImage(String img) {
         if (img != null) {
             try {
                 BufferedImage image = ImageIO.read(new URL(img));
@@ -207,3 +222,4 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         }
     }
 }
+

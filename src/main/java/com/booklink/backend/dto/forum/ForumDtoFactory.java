@@ -1,25 +1,48 @@
 package com.booklink.backend.dto.forum;
 
 import com.booklink.backend.model.Forum;
+import com.booklink.backend.service.ForumService;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
+@Service
+@Lazy
 public class ForumDtoFactory {
+    private final ForumService forumService;
 
-    public static <T> List<T> createForumDtoAndForumViewDtoWithIsMember(List<Forum> forums, Long userId, BiFunction<Forum, Boolean, T> builder) {
-        List<T> forumDtos = new ArrayList<>();
-        for (Forum forum : forums) {
-            boolean isMember = isMember(forum, userId);
-            forumDtos.add(builder.apply(forum, isMember));
-        }
-        return forumDtos;
+    public ForumDtoFactory(ForumService forumService) {
+        this.forumService = forumService;
     }
 
-    public static boolean isMember(Forum forum, Long userId) {
-        return forum.getMembers().stream().anyMatch(member -> member.getId().equals(userId)) || forum.getUserId().equals(userId);
+    public <T> List<T> createForumDtoAndForumViewDtoWithIsMember(List<Forum> forums, Long userId, BiFunction<Forum, Boolean, T> builder) {
+        List<Forum> forumsCreated = forumService.getForumsCreated(userId);
+        List<Forum> forumsJoined = forumService.getForumsJoined(userId);
+        return forums.stream()
+                .map(forum -> builder.apply(forum, isMember(forum.getId(), forumsCreated, forumsJoined)))
+                .toList();
     }
 
+    public boolean isMember(Long forumId, Long userId) {
+        List<Forum> forumsJoined = forumService.getForumsJoined(userId);
+        List<Forum> forumsCreated = forumService.getForumsCreated(userId);
+        return isMember(forumId, forumsCreated, forumsJoined);
+    }
 
+    public boolean isForumOwner(Long forumId, Long userId) {
+        Forum forum = forumService.getForumEntityById(forumId);
+        return forum.getUserId().equals(userId);
+    }
+
+    private boolean isMember(Long forumId, List<Forum> forumsCreated, List<Forum> forumsJoined) {
+        boolean isMemberOfJoined = forumsJoined.stream()
+                .anyMatch(joinedForum -> joinedForum.getId().equals(forumId));
+
+        boolean isMemberOfCreated = forumsCreated.stream()
+                .anyMatch(createdForum -> createdForum.getId().equals(forumId));
+
+        return isMemberOfJoined || isMemberOfCreated;
+    }
 }
