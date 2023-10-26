@@ -55,7 +55,6 @@ public class Comment implements Reactable {
                 .postId(createCommentDto.getPostId())
                 .content(createCommentDto.getContent())
                 .createdDate(new Date())
-                .updatedDate(new Date())
                 .isEdited(false)
                 .likes(new ArrayList<>())
                 .dislikes(new ArrayList<>())
