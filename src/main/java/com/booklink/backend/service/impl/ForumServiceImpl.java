@@ -50,6 +50,9 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToSave.setTags(tags);
 
         Forum savedForum = forumRepository.save(forumToSave);
+
+        userService.toggleUserForumNotification(userId, savedForum.getId());
+
         return ForumDto.from(savedForum, true);
     }
 
