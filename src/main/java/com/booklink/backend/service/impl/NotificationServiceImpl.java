@@ -1,5 +1,6 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Notification;
@@ -9,6 +10,7 @@ import com.booklink.backend.repository.NotificationRepository;
 import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -81,9 +83,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void toggleNotification(Long forumId, Long loggedUserId) {
+    @Transactional
+    public void toggleForumNotification(Long forumId, Long loggedUserId) {
         User user = userService.getUserEntityById(loggedUserId);
         if(isMemberOrOwner(forumId, user)) userService.toggleUserForumNotification(loggedUserId, forumId);
+        else throw new MemberDoesntBelongForumException("El usuario no pertenece al foro");
     }
 
     private boolean isMemberOrOwner(Long forumId, User user) {

@@ -38,7 +38,7 @@ public class User {
     @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
     private List<Forum> forumsJoined;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Long> forumNotifications;
 
     public static User from(CreateUserDto userDto, String encryptedPassword) {

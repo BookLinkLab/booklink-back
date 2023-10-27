@@ -1,7 +1,6 @@
 package com.booklink.backend.service;
 
 import com.booklink.backend.model.Notification;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -16,5 +15,5 @@ public interface NotificationService {
 
     Notification getNotificationEntityById(Long id);
 
-    void toggleNotification(Long forumId, Long loggedUserId);
+    void toggleForumNotification(Long forumId, Long loggedUserId);
 }
