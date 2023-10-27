@@ -21,7 +21,7 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NotificationViewDto>> getNotifications() {
+    public ResponseEntity<List<NotificationViewDto>> getUserNotifications() {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotificationsByUserId(securityUtil.getLoggedUserId()));
     }
 

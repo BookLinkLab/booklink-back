@@ -1,15 +1,12 @@
 package com.booklink.backend.service;
 
-import com.booklink.backend.dto.comment.CommentDto;
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
-import com.booklink.backend.model.Post;
 import com.booklink.backend.repository.NotificationRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -119,8 +116,8 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void getNotifications() {
-        Notification notificationToSave = Notification.builder()
+    public void getNotificationsTest() {
+        Notification postNotificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
                 .receiverId(2L)
@@ -128,8 +125,23 @@ public class NotificationServiceTest {
                 .postId(1L)
                 .createdDate(new Date())
                 .build();
-        notificationRepository.save(notificationToSave);
+        notificationRepository.save(postNotificationToSave);
 
-        notificationService.getNotificationsByUserId(2L);
+        assertEquals(1, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("@lucia21 creó una nueva publicación en Harry Potter!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+
+        Notification commentNotificationToSave = Notification.builder()
+                .type(NotificationType.COMMENT)
+                .postAuthorId(2L)
+                .commentAuthorId(2L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+        notificationRepository.save(commentNotificationToSave);
+
+        assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("@tomas creó un nuevo comentario en Harry Potter!", notificationService.getNotificationsByUserId(2L).get(1).getContent());
     }
 }

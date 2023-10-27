@@ -63,9 +63,21 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationViewDto> getNotificationsByUserId(Long userId) {
-        List<Notification> notifications = getNotificationsEntity();
-        List<Notification> userNotifications = notifications.stream().filter(notification -> notification.getReceiverId().equals(userId)).toList();
-        return userNotifications.stream().map(NotificationViewDto::from).toList();
+        List<Notification> allNotifications = getNotificationsEntity();
+        List<Notification> userNotifications = allNotifications.stream()
+                .filter(notification -> notification.getReceiverId().equals(userId)).toList();
+
+        return userNotifications.stream()
+                .map(notification -> {
+                    String notificationCreatorUsername;
+                    String forumName = notification.getForum().getName();
+                    if (notification.getType().equals(NotificationType.POST)) {
+                        notificationCreatorUsername = notification.getPostAuthor().getUsername();
+                    } else {
+                        notificationCreatorUsername = notification.getCommentAuthor().getUsername();
+                    }
+                    return NotificationViewDto.from(notification, notificationCreatorUsername, forumName);
+                }).toList();
     }
 
     @Override

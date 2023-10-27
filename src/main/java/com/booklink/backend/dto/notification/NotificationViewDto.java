@@ -26,10 +26,10 @@ public class NotificationViewDto {
 
     private final Date date;
 
-    public static NotificationViewDto from(Notification notification) {
+    public static NotificationViewDto from(Notification notification, String notificationCreatorUsername, String forumName) {
         if (notification.getType().equals(NotificationType.POST))
             return NotificationViewDto.builder()
-                    .content("@%s creó una nueva publicación en %s!".formatted(notification.getPostAuthorId(), notification.getForumId()))
+                    .content("@%s creó una nueva publicación en %s!".formatted(notificationCreatorUsername, forumName))
                     .postAuthorId(notification.getPostAuthorId())
                     .forumId(notification.getForumId())
                     .postId(notification.getPostId())
@@ -37,7 +37,7 @@ public class NotificationViewDto {
                     .build();
         else if (NotificationType.COMMENT.equals(notification.getType())) {
             return NotificationViewDto.builder()
-                    .content("@%s creó un nuevo comentario en %s!".formatted(notification.getCommentAuthorId(), notification.getForumId()))
+                    .content("@%s creó un nuevo comentario en %s!".formatted(notificationCreatorUsername, forumName))
                     .commentAuthorId(notification.getCommentAuthorId())
                     .forumId(notification.getForumId())
                     .commentId(notification.getCommentId())

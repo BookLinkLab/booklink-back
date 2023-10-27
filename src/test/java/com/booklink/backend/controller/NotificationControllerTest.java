@@ -1,6 +1,7 @@
 package com.booklink.backend.controller;
 
 
+import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
@@ -12,14 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,11 +36,8 @@ public class NotificationControllerTest {
     private ControllerTestUtils utils;
 
     @BeforeEach
-    public void setUp(){
-
+    public void setUp() {
         UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password", restTemplate);
-
-
 
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
@@ -54,7 +51,7 @@ public class NotificationControllerTest {
     }
 
     @Test
-    public void deleteNotificationTest(){
+    public void deleteNotificationTest() {
 
         ResponseEntity<String> response = restTemplate.exchange(baseUrl + "/" + 1, HttpMethod.DELETE, new HttpEntity<>(null), String.class);
 
@@ -63,5 +60,17 @@ public class NotificationControllerTest {
         assertEquals("Notificacion eliminada", response.getBody());
     }
 
+    @Test
+    public void getNotificationsTest() {
+        ResponseEntity<List<NotificationViewDto>> response = restTemplate.exchange(
+                baseUrl,
+                HttpMethod.GET,
+                new HttpEntity<>(null),
+                new ParameterizedTypeReference<List<NotificationViewDto>>() {
+                });
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+        assertEquals("@lucia21 creó una nueva publicación en Harry Potter!", response.getBody().get(0).getContent());
+    }
 }
