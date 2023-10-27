@@ -143,6 +143,7 @@ public class NotificationServiceTest {
         assertEquals(1, user2.getForumNotifications().size());
 
 
+        forumService.joinForum(1L, 1L);
         notificationService.toggleForumNotification(1L, 1L);
         User user3 = userService.getUserEntityById(1L);
         List<Long> otherForumsId = List.of(11L);
