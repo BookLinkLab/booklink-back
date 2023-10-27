@@ -2,11 +2,12 @@ package com.booklink.backend.service.impl;
 
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
-import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
 import com.booklink.backend.service.NotificationService;
+import com.booklink.backend.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,9 +17,11 @@ import java.util.Optional;
 @Service
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, UserService userService) {
         this.notificationRepository = notificationRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -75,6 +78,18 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification getNotificationEntityById(Long id) {
         Optional<Notification> notificationOptional = notificationRepository.findById(id);
         return notificationOptional.orElseThrow(() -> new NotFoundException("La notificacion no fue encontrada"));
+    }
+
+    @Override
+    public void toggleNotification(Long forumId, Long loggedUserId) {
+        User user = userService.getUserEntityById(loggedUserId);
+        if(isMemberOrOwner(forumId, user)) userService.toggleUserForumNotification(loggedUserId, forumId);
+    }
+
+    private boolean isMemberOrOwner(Long forumId, User user) {
+        if (user.getForumsCreated().stream().anyMatch(forum -> forum.getId().equals(forumId))) return true;
+        if (user.getForumsJoined().stream().anyMatch(forum -> forum.getId().equals(forumId))) return true;
+        return false;
     }
 
 }

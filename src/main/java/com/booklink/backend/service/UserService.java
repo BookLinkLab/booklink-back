@@ -18,4 +18,5 @@ public interface UserService {
     UserDto updateUser(long id, UpdateUserDto updateUserDTO);
     UserDto authorizedGetByEmail(LoginRequestDto loginRequestDto);
     UserDto setUserPrivacy(Long id);
+    void toggleUserForumNotification(Long userId, Long forumId);
 }

@@ -15,4 +15,6 @@ public interface NotificationService {
     void deleteNotification(Long id, Long userId);
 
     Notification getNotificationEntityById(Long id);
+
+    void toggleNotification(Long forumId, Long loggedUserId);
 }

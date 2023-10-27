@@ -120,4 +120,15 @@ public class UserServiceImpl implements UserService {
         user.setPrivacy(!user.isPrivacy());
         return UserDto.from(userRepository.save(user));
     }
+
+    @Override
+    public void toggleUserForumNotification(Long userId, Long forumId) {
+        User user = getUserEntityById(userId);
+        if (user.getForumNotifications().contains(forumId)) {
+            user.getForumNotifications().remove(forumId);
+        } else {
+            user.getForumNotifications().add(forumId);
+        }
+        userRepository.save(user);
+    }
 }

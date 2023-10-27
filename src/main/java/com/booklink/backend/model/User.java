@@ -38,11 +38,15 @@ public class User {
     @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
     private List<Forum> forumsJoined;
 
+    @ElementCollection
+    private List<Long> forumNotifications;
+
     public static User from(CreateUserDto userDto, String encryptedPassword) {
         return User.builder()
                 .email(userDto.getEmail())
                 .username(userDto.getUsername())
                 .password(encryptedPassword)
+                .forumNotifications(List.of())
                 .build();
     }
 }
