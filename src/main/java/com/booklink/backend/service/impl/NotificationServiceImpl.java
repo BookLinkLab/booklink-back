@@ -8,6 +8,7 @@ import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
 import com.booklink.backend.repository.NotificationRepository;
 import com.booklink.backend.service.NotificationService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
 
