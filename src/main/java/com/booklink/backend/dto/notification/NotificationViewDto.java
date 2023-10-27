@@ -1,0 +1,49 @@
+package com.booklink.backend.dto.notification;
+
+import com.booklink.backend.model.Notification;
+import com.booklink.backend.model.NotificationType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.Date;
+
+@Data
+@AllArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class NotificationViewDto {
+    private final String content;
+
+    private final Long postAuthorId;
+    private final Long commentAuthorId;
+
+    private final Long forumId;
+
+    private final Long postId;
+    private final Long commentId;
+
+    private final Date date;
+
+    public static NotificationViewDto from(Notification notification) {
+        if (notification.getType().equals(NotificationType.POST))
+            return NotificationViewDto.builder()
+                    .content("@%s creó una nueva publicación en %s!".formatted(notification.getPostAuthorId(), notification.getForumId()))
+                    .postAuthorId(notification.getPostAuthorId())
+                    .forumId(notification.getForumId())
+                    .postId(notification.getPostId())
+                    .date(notification.getCreatedDate())
+                    .build();
+        else if (NotificationType.COMMENT.equals(notification.getType())) {
+            return NotificationViewDto.builder()
+                    .content("@%s creó un nuevo comentario en %s!".formatted(notification.getCommentAuthorId(), notification.getForumId()))
+                    .commentAuthorId(notification.getCommentAuthorId())
+                    .forumId(notification.getForumId())
+                    .commentId(notification.getCommentId())
+                    .date(notification.getCreatedDate())
+                    .build();
+        }
+        throw new RuntimeException("Invalid notification type");
+    }
+}

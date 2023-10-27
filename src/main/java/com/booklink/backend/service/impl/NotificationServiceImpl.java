@@ -1,5 +1,6 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Forum;
@@ -61,12 +62,18 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public List<NotificationViewDto> getNotificationsByUserId(Long userId) {
+        List<Notification> notifications = getNotificationsEntity();
+        List<Notification> userNotifications = notifications.stream().filter(notification -> notification.getReceiverId().equals(userId)).toList();
+        return userNotifications.stream().map(NotificationViewDto::from).toList();
+    }
+
+    @Override
     public void deleteNotification(Long id, Long userId) {
         Notification notification = getNotificationEntityById(id);
-        if(notification.getReceiverId().equals(userId)){
+        if (notification.getReceiverId().equals(userId)) {
             notificationRepository.deleteById(id);
-        }
-        else{
+        } else {
             throw new UserNotOwnerException("Solo el dueño de la notificacion puede eliminarla");
         }
     }

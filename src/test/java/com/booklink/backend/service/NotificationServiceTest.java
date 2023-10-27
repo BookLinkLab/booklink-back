@@ -77,8 +77,6 @@ public class NotificationServiceTest {
         commentService.createComment(createCommentDto1, 8L);
 
 
-
-
         List<Notification> notifications = notificationService.getNotificationsEntity();
         assertEquals(6, notifications.size());  // 3 notifications for post, 3 notifications for comment
         Notification commentNotification = notifications.get(3);
@@ -87,7 +85,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void deleteNotification(){
+    public void deleteNotification() {
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
@@ -102,12 +100,10 @@ public class NotificationServiceTest {
         notificationService.deleteNotification(1L, 2L);
         List<Notification> notifications = notificationService.getNotificationsEntity();
         assertEquals(0, notifications.size());
-
     }
 
-
     @Test
-    public void unauthorizedUserDeletesNotification(){
+    public void unauthorizedUserDeletesNotification() {
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
@@ -119,9 +115,21 @@ public class NotificationServiceTest {
         notificationRepository.save(notificationToSave);
 
         assertEquals(1, notificationService.getNotificationsEntity().size());
-        assertThrows(UserNotOwnerException.class, () ->notificationService.deleteNotification(1L, 3L));
-
+        assertThrows(UserNotOwnerException.class, () -> notificationService.deleteNotification(1L, 3L));
     }
 
+    @Test
+    public void getNotifications() {
+        Notification notificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+        notificationRepository.save(notificationToSave);
 
+        notificationService.getNotificationsByUserId(2L);
+    }
 }
