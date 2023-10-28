@@ -2,7 +2,6 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.model.Notification;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -21,4 +20,6 @@ public interface NotificationService {
     void deleteNotification(Long id, Long userId);
 
     Notification getNotificationEntityById(Long id);
+
+    boolean toggleForumNotification(Long forumId, Long loggedUserId);
 }

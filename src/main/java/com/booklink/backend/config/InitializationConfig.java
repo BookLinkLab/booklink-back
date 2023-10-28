@@ -132,7 +132,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .description("Este foro es para los que se emocionan con el diario de Ana Frank, una niña judía que vivió el nazismo. Aquí podrás discutir los simbolismos de esta obra, que expresa los sentimientos de Ana y su familia. También podrás aprender cómo el diario de Ana Frank es un símbolo de resistencia y humanidad. Este foro es un espacio de homenaje y conocimiento para los que quieren conocer más sobre Ana Frank y su aporte a la historia y la literatura. ¡Disfruta del diario más famoso del mundo y comparte tus ideas!")
                 .img("https://sbslibreria.vteximg.com.br/arquivos/ids/215579-1000-1000/9789878354194.jpg")
                 .members(users4)
-                .membersAmount(3)
+                .membersAmount(users4.size() + 1)
                 .build();
         Forum forum5 = Forum.builder()
                 .name("SciFi Geeks")

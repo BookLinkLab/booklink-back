@@ -1,11 +1,13 @@
 package com.booklink.backend.service;
 
 import com.booklink.backend.dto.comment.CreateCommentDto;
+import com.booklink.backend.dto.forum.CreateForumDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class NotificationServiceTest {
     private PostService postService;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private UserService userService;
 
     @Test
     void createPostShouldHaveNotificationTest() {
@@ -140,6 +145,30 @@ public class NotificationServiceTest {
                 .createdDate(new Date())
                 .build();
         notificationRepository.save(commentNotificationToSave);
+    @Test
+    public void toggleForumNotification(){
+        forumService.joinForum(3L, 2L);
+        User user = userService.getUserEntityById(2L);
+        List<Long> forumsId = List.of(3L);
+        assertEquals(forumsId, user.getForumNotifications());
+
+        CreateForumDto createForumDto = CreateForumDto.builder()
+                .name("Interstellar")
+                .description("Welcome to the subreddit dedicated to the movie Interstellar!")
+                .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
+                .tags(new ArrayList<>())
+                .build();
+        forumService.createForum(createForumDto, 1L);
+        User user2 = userService.getUserEntityById(1L);
+        assertEquals(1, user2.getForumNotifications().size());
+
+
+        forumService.joinForum(1L, 1L);
+        notificationService.toggleForumNotification(1L, 1L);
+        User user3 = userService.getUserEntityById(1L);
+        List<Long> otherForumsId = List.of(11L);
+        assertEquals(otherForumsId, user3.getForumNotifications());
+    }
 
         //now the first notification (get(0)) is the comment notification -> the newest first
         assertEquals(2, notificationService.getNotificationsByUserId(2L).size());

@@ -39,6 +39,8 @@ public class NotificationControllerTest {
     public void setUp() {
         UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password", restTemplate);
 
+
+
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
@@ -72,5 +74,13 @@ public class NotificationControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", response.getBody().get(0).getContent());
+    }
+
+    @Test
+    public void toggleNotificationTest() {
+        ResponseEntity<String> response = restTemplate.exchange( "/forum/3/join", HttpMethod.POST, new HttpEntity<>(null), String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<Boolean> response2 = restTemplate.exchange( baseUrl + "/3/toggle", HttpMethod.POST, new HttpEntity<>(null), Boolean.class);
+        assertEquals(false, response2.getBody());
     }
 }
