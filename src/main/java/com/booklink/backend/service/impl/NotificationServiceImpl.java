@@ -71,7 +71,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> getNotificationsEntityByUserId(Long userId) {
-        return notificationRepository.findAllByReceiverId(userId);
+        List<Notification> notifications =  notificationRepository.findAllByReceiverId(userId);
+        List<Long> activatedNotifications = userService.getUserEntityById(userId).getForumNotifications();
+        return filterActivatedNotifications(notifications,activatedNotifications);
     }
 
     @Override
@@ -112,6 +114,11 @@ public class NotificationServiceImpl implements NotificationService {
     public boolean toggleForumNotification(Long forumId, Long loggedUserId) {
         if(this.forumDtoFactory.isMember(forumId,loggedUserId) || this.forumDtoFactory.isForumOwner(forumId,loggedUserId) ) return userService.toggleUserForumNotification(loggedUserId, forumId);
         else throw new MemberDoesntBelongForumException("El usuario no pertenece al foro");
+    }
+
+
+    private List<Notification> filterActivatedNotifications(List<Notification> notifications, List<Long> activatedNotifications){
+        return notifications.stream().filter(notification -> activatedNotifications.contains(notification.getId())).toList();
     }
 
 }
