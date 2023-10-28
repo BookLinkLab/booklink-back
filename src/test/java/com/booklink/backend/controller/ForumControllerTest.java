@@ -95,6 +95,7 @@ public class ForumControllerTest {
                 .description("Welcome to the forum dedicated to the book The Science of Interstellar!")
                 .img("https://imageio.forbes.com/specials-images/imageserve/5f85be4ed0acaafe77436710/0x0.jpg?format=jpg&width=1200")
                 .members(new ArrayList<>(List.of(newUser)))
+                .membersCount(2)
                 .searcherIsMember(true)
                 .tags(new ArrayList<>())
                 .build();
