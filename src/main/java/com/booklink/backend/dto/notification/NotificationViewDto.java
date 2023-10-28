@@ -14,10 +14,7 @@ import java.util.Date;
 @Builder
 public class NotificationViewDto {
     private final String content;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Long authorId;
-
     private final Long forumId;
     private final Long postId;
 
