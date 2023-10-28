@@ -16,9 +16,7 @@ public class NotificationViewDto {
     private final String content;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Long postAuthorId;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Long commentAuthorId;
+    private final Long authorId;
 
     private final Long forumId;
     private final Long postId;
@@ -29,26 +27,28 @@ public class NotificationViewDto {
     private final Date date;
 
     public static NotificationViewDto from(Notification notification, String notificationCreatorUsername, String forumName) {
-        if (notification.getType().equals(NotificationType.POST))
-            return NotificationViewDto.builder()
-                    .content("@%s creó una nueva publicación en %s!".formatted(notificationCreatorUsername, forumName))
-                    .postAuthorId(notification.getPostAuthorId())
-                    .forumId(notification.getForumId())
-                    .postId(notification.getPostId())
-                    .date(notification.getCreatedDate())
-                    .build();
-        else if (NotificationType.COMMENT.equals(notification.getType())) {
-            return NotificationViewDto.builder()
-                    .content("@%s creó un nuevo comentario en %s!".formatted(notificationCreatorUsername, forumName))
-                    .commentAuthorId(notification.getCommentAuthorId())
-                    .forumId(notification.getForumId())
-                    .postId(notification.getPostId())
-                    .commentId(notification.getCommentId())
-                    .date(notification.getCreatedDate())
-                    .build();
+        NotificationType notificationType = notification.getType();
+        switch (notificationType) {
+            case POST -> {
+                return NotificationViewDto.builder()
+                        .content("@%s creó una nueva publicación en \"%s\"!".formatted(notificationCreatorUsername, forumName))
+                        .authorId(notification.getPostAuthorId())
+                        .forumId(notification.getForumId())
+                        .postId(notification.getPostId())
+                        .date(notification.getCreatedDate())
+                        .build();
+            }
+            case COMMENT -> {
+                return NotificationViewDto.builder()
+                        .content("@%s creó un nuevo comentario en \"%s\"!".formatted(notificationCreatorUsername, forumName))
+                        .authorId(notification.getCommentAuthorId())
+                        .forumId(notification.getForumId())
+                        .postId(notification.getPostId())
+                        .commentId(notification.getCommentId())
+                        .date(notification.getCreatedDate())
+                        .build();
+            }
+            default -> throw new RuntimeException("Invalid notification type");
         }
-        throw new RuntimeException("Invalid notification type");
     }
 }
-
-

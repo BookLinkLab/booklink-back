@@ -128,7 +128,7 @@ public class NotificationServiceTest {
         notificationRepository.save(postNotificationToSave);
 
         assertEquals(1, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@lucia21 creó una nueva publicación en Harry Potter!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
 
         Notification commentNotificationToSave = Notification.builder()
                 .type(NotificationType.COMMENT)
@@ -143,6 +143,6 @@ public class NotificationServiceTest {
 
         //now the first notification (get(0)) is the comment notification -> the newest first
         assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@tomas creó un nuevo comentario en Harry Potter!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+        assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 }

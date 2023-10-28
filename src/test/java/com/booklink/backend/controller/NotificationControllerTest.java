@@ -71,6 +71,6 @@ public class NotificationControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
-        assertEquals("@lucia21 creó una nueva publicación en Harry Potter!", response.getBody().get(0).getContent());
+        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", response.getBody().get(0).getContent());
     }
 }
