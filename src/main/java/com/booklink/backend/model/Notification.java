@@ -47,9 +47,6 @@ public class Notification {
 
     @Column(name = "post_id", nullable = false)
     private Long postId;
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", insertable = false, updatable = false)
-    private Post post;
 
     @Column(name = "comment_id", nullable = true)
     private Long commentId;

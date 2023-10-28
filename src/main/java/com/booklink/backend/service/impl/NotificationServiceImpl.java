@@ -11,9 +11,11 @@ import com.booklink.backend.service.NotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -64,10 +66,13 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public List<Notification> getNotificationsEntityByUserId(Long userId) {
+        return notificationRepository.findAllByReceiverId(userId);
+    }
+
+    @Override
     public List<NotificationViewDto> getNotificationsByUserId(Long userId) {
-        List<Notification> allNotifications = getNotificationsEntity();
-        List<Notification> userNotifications = allNotifications.stream()
-                .filter(notification -> notification.getReceiverId().equals(userId)).toList();
+        List<Notification> userNotifications = getNotificationsEntityByUserId(userId);
 
         return userNotifications.stream()
                 .map(notification -> {

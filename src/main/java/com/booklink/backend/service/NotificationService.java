@@ -14,6 +14,8 @@ public interface NotificationService {
 
     List<Notification> getNotificationsEntity();
 
+    List<Notification> getNotificationsEntityByUserId(Long userId);
+
     List<NotificationViewDto> getNotificationsByUserId(Long userId);
 
     void deleteNotification(Long id, Long userId);

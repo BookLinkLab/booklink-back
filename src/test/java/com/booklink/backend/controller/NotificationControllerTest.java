@@ -57,7 +57,7 @@ public class NotificationControllerTest {
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Notificacion eliminada", response.getBody());
+        assertEquals("Notificación eliminada", response.getBody());
     }
 
     @Test

@@ -141,7 +141,8 @@ public class NotificationServiceTest {
                 .build();
         notificationRepository.save(commentNotificationToSave);
 
+        //now the first notification (get(0)) is the comment notification -> the newest first
         assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@tomas creó un nuevo comentario en Harry Potter!", notificationService.getNotificationsByUserId(2L).get(1).getContent());
+        assertEquals("@tomas creó un nuevo comentario en Harry Potter!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 }
