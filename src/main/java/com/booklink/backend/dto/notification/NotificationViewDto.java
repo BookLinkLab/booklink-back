@@ -12,16 +12,18 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class NotificationViewDto {
     private final String content;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Long postAuthorId;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Long commentAuthorId;
 
     private final Long forumId;
-
     private final Long postId;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Long commentId;
 
     private final Date date;
@@ -40,6 +42,7 @@ public class NotificationViewDto {
                     .content("@%s creó un nuevo comentario en %s!".formatted(notificationCreatorUsername, forumName))
                     .commentAuthorId(notification.getCommentAuthorId())
                     .forumId(notification.getForumId())
+                    .postId(notification.getPostId())
                     .commentId(notification.getCommentId())
                     .date(notification.getCreatedDate())
                     .build();
@@ -47,3 +50,5 @@ public class NotificationViewDto {
         throw new RuntimeException("Invalid notification type");
     }
 }
+
+
