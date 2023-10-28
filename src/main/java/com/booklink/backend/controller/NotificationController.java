@@ -24,9 +24,8 @@ public class NotificationController {
     }
 
     @PostMapping("/{forumId}/toggle")
-    public ResponseEntity<String> toggleNotification(@PathVariable Long forumId) {
-        notificationService.toggleForumNotification(forumId, securityUtil.getLoggedUserId());
-        return ResponseEntity.status(HttpStatus.OK).body("Notificacion cambiada");
+    public ResponseEntity<Boolean> toggleNotification(@PathVariable Long forumId) {
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.toggleForumNotification(forumId, securityUtil.getLoggedUserId()));
     }
 
 

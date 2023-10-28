@@ -15,5 +15,5 @@ public interface NotificationService {
 
     Notification getNotificationEntityById(Long id);
 
-    void toggleForumNotification(Long forumId, Long loggedUserId);
+    boolean toggleForumNotification(Long forumId, Long loggedUserId);
 }

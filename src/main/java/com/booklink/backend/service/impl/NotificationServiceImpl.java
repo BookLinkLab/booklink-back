@@ -1,5 +1,6 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.dto.forum.ForumDtoFactory;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
+    private final ForumDtoFactory forumDtoFactory;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository, UserService userService) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, UserService userService, ForumDtoFactory forumDtoFactory) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
+        this.forumDtoFactory = forumDtoFactory;
     }
 
     @Override
@@ -84,16 +87,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void toggleForumNotification(Long forumId, Long loggedUserId) {
-        User user = userService.getUserEntityById(loggedUserId);
-        if(isMemberOrOwner(forumId, user)) userService.toggleUserForumNotification(loggedUserId, forumId);
+    public boolean toggleForumNotification(Long forumId, Long loggedUserId) {
+        if(this.forumDtoFactory.isMember(forumId,loggedUserId) || this.forumDtoFactory.isForumOwner(forumId,loggedUserId) ) return userService.toggleUserForumNotification(loggedUserId, forumId);
         else throw new MemberDoesntBelongForumException("El usuario no pertenece al foro");
-    }
-
-    private boolean isMemberOrOwner(Long forumId, User user) {
-        if (user.getForumsCreated().stream().anyMatch(forum -> forum.getId().equals(forumId))) return true;
-        if (user.getForumsJoined().stream().anyMatch(forum -> forum.getId().equals(forumId))) return true;
-        return false;
     }
 
 }

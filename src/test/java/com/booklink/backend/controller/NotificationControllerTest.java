@@ -67,7 +67,7 @@ public class NotificationControllerTest {
     public void toggleNotificationTest() {
         ResponseEntity<String> response = restTemplate.exchange( "/forum/3/join", HttpMethod.POST, new HttpEntity<>(null), String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        ResponseEntity<String> response2 = restTemplate.exchange( baseUrl + "/3/toggle", HttpMethod.POST, new HttpEntity<>(null), String.class);
-        assertEquals("Notificacion cambiada", response2.getBody());
+        ResponseEntity<Boolean> response2 = restTemplate.exchange( baseUrl + "/3/toggle", HttpMethod.POST, new HttpEntity<>(null), Boolean.class);
+        assertEquals(false, response2.getBody());
     }
 }

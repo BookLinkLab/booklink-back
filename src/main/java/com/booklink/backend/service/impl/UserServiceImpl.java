@@ -122,13 +122,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void toggleUserForumNotification(Long userId, Long forumId) {
+    public boolean toggleUserForumNotification(Long userId, Long forumId) {
         User user = getUserEntityById(userId);
+        boolean isNotificationEnabled;
         if (user.getForumNotifications().contains(forumId)) {
             user.getForumNotifications().remove(forumId);
+            isNotificationEnabled = false;
         } else {
             user.getForumNotifications().add(forumId);
+            isNotificationEnabled = true;
         }
         userRepository.save(user);
+        return isNotificationEnabled;
     }
 }
