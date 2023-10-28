@@ -145,8 +145,14 @@ public class NotificationServiceTest {
                 .createdDate(new Date())
                 .build();
         notificationRepository.save(commentNotificationToSave);
+
+        //now the first notification (get(0)) is the comment notification -> the newest first
+        assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+    }
+
     @Test
-    public void toggleForumNotification(){
+    public void toggleForumNotification() {
         forumService.joinForum(3L, 2L);
         User user = userService.getUserEntityById(2L);
         List<Long> forumsId = List.of(3L);
@@ -168,10 +174,5 @@ public class NotificationServiceTest {
         User user3 = userService.getUserEntityById(1L);
         List<Long> otherForumsId = List.of(11L);
         assertEquals(otherForumsId, user3.getForumNotifications());
-    }
-
-        //now the first notification (get(0)) is the comment notification -> the newest first
-        assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 }

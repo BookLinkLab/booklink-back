@@ -1,25 +1,21 @@
 package com.booklink.backend.service.impl;
 
-import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.forum.ForumDtoFactory;
+import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
-import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
 import com.booklink.backend.service.NotificationService;
-import jakarta.transaction.Transactional;
 import com.booklink.backend.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional

@@ -6,7 +6,6 @@ import com.booklink.backend.utils.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,13 +28,11 @@ public class NotificationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNotification(@PathVariable Long id) {
         notificationService.deleteNotification(id, securityUtil.getLoggedUserId());
-        return ResponseEntity.status(HttpStatus.OK).body("Notificacion eliminada");
+        return ResponseEntity.status(HttpStatus.OK).body("Notificación eliminada");
     }
 
     @PostMapping("/{forumId}/toggle")
     public ResponseEntity<Boolean> toggleNotification(@PathVariable Long forumId) {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.toggleForumNotification(forumId, securityUtil.getLoggedUserId()));
     }
-
-
 }
