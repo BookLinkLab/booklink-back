@@ -1,23 +1,24 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.ForumDtoFactory;
+import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
-import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
 import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
@@ -69,12 +70,33 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public List<Notification> getNotificationsEntityByUserId(Long userId) {
+        return notificationRepository.findAllByReceiverId(userId);
+    }
+
+    @Override
+    public List<NotificationViewDto> getNotificationsByUserId(Long userId) {
+        List<Notification> userNotifications = getNotificationsEntityByUserId(userId);
+
+        return userNotifications.stream()
+                .map(notification -> {
+                    String notificationCreatorUsername;
+                    String forumName = notification.getForum().getName();
+                    if (notification.getType().equals(NotificationType.POST)) {
+                        notificationCreatorUsername = notification.getPostAuthor().getUsername();
+                    } else {
+                        notificationCreatorUsername = notification.getCommentAuthor().getUsername();
+                    }
+                    return NotificationViewDto.from(notification, notificationCreatorUsername, forumName);
+                }).toList();
+    }
+
+    @Override
     public void deleteNotification(Long id, Long userId) {
         Notification notification = getNotificationEntityById(id);
-        if(notification.getReceiverId().equals(userId)){
+        if (notification.getReceiverId().equals(userId)) {
             notificationRepository.deleteById(id);
-        }
-        else{
+        } else {
             throw new UserNotOwnerException("Solo el dueño de la notificacion puede eliminarla");
         }
     }

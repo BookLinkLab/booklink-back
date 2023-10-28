@@ -79,8 +79,6 @@ public class NotificationServiceTest {
         commentService.createComment(createCommentDto1, 8L);
 
 
-
-
         List<Notification> notifications = notificationService.getNotificationsEntity();
         assertEquals(6, notifications.size());  // 3 notifications for post, 3 notifications for comment
         Notification commentNotification = notifications.get(3);
@@ -89,7 +87,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void deleteNotification(){
+    public void deleteNotification() {
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
@@ -104,12 +102,10 @@ public class NotificationServiceTest {
         notificationService.deleteNotification(1L, 2L);
         List<Notification> notifications = notificationService.getNotificationsEntity();
         assertEquals(0, notifications.size());
-
     }
 
-
     @Test
-    public void unauthorizedUserDeletesNotification(){
+    public void unauthorizedUserDeletesNotification() {
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
                 .postAuthorId(1L)
@@ -121,12 +117,42 @@ public class NotificationServiceTest {
         notificationRepository.save(notificationToSave);
 
         assertEquals(1, notificationService.getNotificationsEntity().size());
-        assertThrows(UserNotOwnerException.class, () ->notificationService.deleteNotification(1L, 3L));
-
+        assertThrows(UserNotOwnerException.class, () -> notificationService.deleteNotification(1L, 3L));
     }
 
     @Test
-    public void toggleForumNotification(){
+    public void getNotificationsTest() {
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+        notificationRepository.save(postNotificationToSave);
+
+        assertEquals(1, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+
+        Notification commentNotificationToSave = Notification.builder()
+                .type(NotificationType.COMMENT)
+                .postAuthorId(2L)
+                .commentAuthorId(2L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+        notificationRepository.save(commentNotificationToSave);
+
+        //now the first notification (get(0)) is the comment notification -> the newest first
+        assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+    }
+
+    @Test
+    public void toggleForumNotification() {
         forumService.joinForum(3L, 2L);
         User user = userService.getUserEntityById(2L);
         List<Long> forumsId = List.of(3L);
@@ -149,5 +175,4 @@ public class NotificationServiceTest {
         List<Long> otherForumsId = List.of(11L);
         assertEquals(otherForumsId, user3.getForumNotifications());
     }
-
 }
