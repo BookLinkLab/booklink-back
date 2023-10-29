@@ -175,4 +175,16 @@ public class NotificationServiceTest {
         List<Long> otherForumsId = List.of(11L);
         assertEquals(otherForumsId, user3.getForumNotifications());
     }
+
+    @Test
+    public void removeForumNotificationWhenLeavingForum() {
+        forumService.joinForum(3L, 2L);
+        User user = userService.getUserEntityById(2L);
+        List<Long> forumsId = List.of(3L);
+        assertEquals(forumsId, user.getForumNotifications());
+
+        forumService.leaveForum(3L, 2L);
+        User user2 = userService.getUserEntityById(2L);
+        assertEquals(0, user2.getForumNotifications().size());
+    }
 }
