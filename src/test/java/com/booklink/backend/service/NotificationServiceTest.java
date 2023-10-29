@@ -6,6 +6,7 @@ import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.exception.UserNotOwnerException;
+import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
 import com.booklink.backend.model.User;
@@ -51,7 +52,12 @@ public class NotificationServiceTest {
                 .build();
 
         forumService.joinForum(1L, 1L);
+
+        activateNotifications(List.of(2L,7L,8L),1L);
         postService.createPost(createPostDto, 1L);
+
+
+
         List<Notification> notifications = notificationService.getNotificationsEntity();
         assertEquals(3, notifications.size());
     }
@@ -64,6 +70,8 @@ public class NotificationServiceTest {
                 .build();
 
         forumService.joinForum(1L, 1L);
+        activateNotifications(List.of(2L,7L,8L),1L);
+
         PostDto postDto = postService.createPost(createPostDto, 1L);
 
         Long postId = postDto.getId();
@@ -226,6 +234,14 @@ public class NotificationServiceTest {
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
 
 
+    }
+
+    private void activateNotifications(List<Long> longs,Long forumId) {
+        longs.forEach(aLong -> {
+            User user = userService.getUserEntityById(aLong);
+            user.setForumNotifications(List.of(forumId));
+            userRepository.save(user);
+        });
     }
 
 

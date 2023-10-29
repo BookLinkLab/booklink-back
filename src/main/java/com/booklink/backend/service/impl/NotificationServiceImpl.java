@@ -7,6 +7,7 @@ import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
 import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.service.UserService;
@@ -35,6 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         receiversId.remove(postAuthorId);
         receiversId.forEach(receiverId -> {
+            if(isForumNotificationActive(receiverId,forumId)){
             Notification notificationToSave = Notification.builder()
                     .type(NotificationType.POST)
                     .postAuthorId(postAuthorId)
@@ -44,13 +46,14 @@ public class NotificationServiceImpl implements NotificationService {
                     .createdDate(new Date())
                     .build();
             notificationRepository.save(notificationToSave);
-        });
+        }});
     }
 
     @Override
     public void createCommentNotification(Long commentAuthorId, Long postAuthorId, List<Long> receiversId, Long forumId, Long postId, Long commentId) {
         receiversId.remove(commentAuthorId);
         receiversId.forEach(receiverId -> {
+            if(isForumNotificationActive(receiverId,forumId)){
             Notification notificationToSave = Notification.builder()
                     .type(NotificationType.COMMENT)
                     .commentAuthorId(commentAuthorId)
@@ -61,7 +64,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .createdDate(new Date())
                     .build();
             notificationRepository.save(notificationToSave);
-        });
+        }});
     }
 
     @Override
@@ -71,9 +74,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> getNotificationsEntityByUserId(Long userId) {
-        List<Notification> notifications =  notificationRepository.findAllByReceiverId(userId);
-        List<Long> activatedNotifications = userService.getUserEntityById(userId).getForumNotifications();
-        return filterActivatedNotifications(notifications,activatedNotifications);
+        return notificationRepository.findAllByReceiverId(userId);
     }
 
     @Override
@@ -117,8 +118,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
 
-    private List<Notification> filterActivatedNotifications(List<Notification> notifications, List<Long> activatedNotifications){
-        return notifications.stream().filter(notification -> activatedNotifications.contains(notification.getId())).toList();
+    private boolean isForumNotificationActive(Long userID, Long forumID){
+         User user = userService.getUserEntityById(userID);
+         List<Long> activatedForums = user.getForumNotifications();
+         return activatedForums.contains(forumID);
     }
 
 }
