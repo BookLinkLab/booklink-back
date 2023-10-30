@@ -5,7 +5,10 @@ import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.user.UserDto;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
+import com.booklink.backend.repository.UserRepository;
+import com.booklink.backend.service.UserService;
 import com.booklink.backend.utils.ControllerTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,12 +37,16 @@ public class NotificationControllerTest {
     private NotificationRepository notificationRepository;
     @Autowired
     private ControllerTestUtils utils;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {
         UserDto user = utils.createUserAndLogIn("user", "user@email.com", "password", restTemplate);
 
-
+        User userEntity = userService.getUserEntityById(user.getId());
 
         Notification notificationToSave = Notification.builder()
                 .type(NotificationType.POST)
@@ -50,6 +57,10 @@ public class NotificationControllerTest {
                 .createdDate(new Date())
                 .build();
         notificationRepository.save(notificationToSave);
+
+        Long notificationId = notificationToSave.getId();
+        userEntity.setForumNotifications(List.of(notificationId));
+        userRepository.save(userEntity);
     }
 
     @Test

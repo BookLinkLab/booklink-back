@@ -2,13 +2,16 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
+import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.exception.UserNotOwnerException;
+import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
+import com.booklink.backend.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -38,6 +41,8 @@ public class NotificationServiceTest {
     private NotificationRepository notificationRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void createPostShouldHaveNotificationTest() {
@@ -47,7 +52,12 @@ public class NotificationServiceTest {
                 .build();
 
         forumService.joinForum(1L, 1L);
+
+        activateNotifications(List.of(2L,7L,8L),1L);
         postService.createPost(createPostDto, 1L);
+
+
+
         List<Notification> notifications = notificationService.getNotificationsEntity();
         assertEquals(3, notifications.size());
     }
@@ -60,6 +70,8 @@ public class NotificationServiceTest {
                 .build();
 
         forumService.joinForum(1L, 1L);
+        activateNotifications(List.of(2L,7L,8L),1L);
+
         PostDto postDto = postService.createPost(createPostDto, 1L);
 
         Long postId = postDto.getId();
@@ -131,6 +143,11 @@ public class NotificationServiceTest {
                 .createdDate(new Date())
                 .build();
         notificationRepository.save(postNotificationToSave);
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
 
         assertEquals(1, notificationService.getNotificationsByUserId(2L).size());
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
@@ -145,6 +162,11 @@ public class NotificationServiceTest {
                 .createdDate(new Date())
                 .build();
         notificationRepository.save(commentNotificationToSave);
+
+        Long notificationId2 = commentNotificationToSave.getId();
+        user.setForumNotifications(List.of(notificationId, notificationId2));
+        userRepository.save(user);
+
 
         //now the first notification (get(0)) is the comment notification -> the newest first
         assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
@@ -175,4 +197,52 @@ public class NotificationServiceTest {
         List<Long> otherForumsId = List.of(11L);
         assertEquals(otherForumsId, user3.getForumNotifications());
     }
+
+
+    @Test
+    public void onlyActivatedForumNotificationsTest(){
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+
+        Notification commentNotificationToSave = Notification.builder()
+                .type(NotificationType.COMMENT)
+                .postAuthorId(2L)
+                .commentAuthorId(2L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+        notificationRepository.save(postNotificationToSave);
+
+
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
+
+        List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
+
+        assertEquals(1, user_notifications.size());
+        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
+
+
+    }
+
+    private void activateNotifications(List<Long> longs,Long forumId) {
+        longs.forEach(aLong -> {
+            User user = userService.getUserEntityById(aLong);
+            user.setForumNotifications(List.of(forumId));
+            userRepository.save(user);
+        });
+    }
+
+
 }
