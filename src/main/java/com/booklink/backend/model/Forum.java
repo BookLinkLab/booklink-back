@@ -40,6 +40,11 @@ public class Forum {
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<Tag> tags;
 
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Post> posts;
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Notification> notifications;
+
     private int membersAmount;
 
     public static Forum from(CreateForumDto forumDto, Long userId) {

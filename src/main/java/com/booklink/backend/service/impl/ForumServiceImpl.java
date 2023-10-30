@@ -173,6 +173,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         List<Tag> tagToDelete = forumToDelete.getTags();
         if (!forumToDelete.getUserId().equals(userId))
             throw new UserNotAdminException("Solo el administrador puede eliminar sus foros");
+        forumToDelete.getUser().getForumNotifications().remove(forumToDelete.getId());
+        for (User member : forumToDelete.getMembers()) {
+            member.getForumNotifications().remove(forumToDelete.getId());
+        }
         forumRepository.delete(forumToDelete);
         for (Tag tag : tagToDelete) {
             if (!forumRepository.existsByTagsContaining(tag)) {
@@ -207,6 +211,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         if (removed) {
             int newMembersAmount = forumToLeave.getMembersAmount() - 1;
             forumToLeave.setMembersAmount(newMembersAmount);
+            memberToLeave.getForumNotifications().remove(forumToLeave.getId());
             forumRepository.save(forumToLeave);
         } else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
