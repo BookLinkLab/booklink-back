@@ -6,7 +6,6 @@ import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
 import com.booklink.backend.exception.UserNotOwnerException;
-import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
 import com.booklink.backend.model.User;
@@ -254,9 +253,8 @@ public class NotificationServiceTest {
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
         assertEquals(1, user_notifications.size());
+        assertEquals("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg", user_notifications.get(0).getImg());
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
-
-
     }
 
     @Test
@@ -314,5 +312,4 @@ public class NotificationServiceTest {
             userRepository.save(user);
         });
     }
-
 }
