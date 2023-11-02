@@ -117,6 +117,17 @@ public class NotificationServiceImpl implements NotificationService {
         else throw new MemberDoesntBelongForumException("El usuario no pertenece al foro");
     }
 
+    @Override
+    public boolean markNotificationAsSeen(Long notificationId, Long userId){
+        Notification notification = getNotificationEntityById(notificationId);
+        if(notification.getReceiverId().equals(userId)){
+            notification.setSeen(true);
+            Notification savedNotification = notificationRepository.save(notification);
+            return savedNotification.isSeen();
+        }else{
+            throw new UserNotOwnerException("Solo el recipiente de la notificacion puede marcarla como vista");
+        }
+    }
 
     private boolean isForumNotificationActive(Long userID, Long forumID){
          User user = userService.getUserEntityById(userID);

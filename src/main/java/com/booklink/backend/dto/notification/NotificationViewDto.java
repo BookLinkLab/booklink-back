@@ -22,6 +22,7 @@ public class NotificationViewDto {
     private final Long commentId;
 
     private final Date date;
+    private final boolean seen;
     private final String img;
 
     public static NotificationViewDto from(Notification notification, String notificationCreatorUsername, String forumName) {
@@ -34,6 +35,7 @@ public class NotificationViewDto {
                         .forumId(notification.getForumId())
                         .postId(notification.getPostId())
                         .date(notification.getCreatedDate())
+                        .seen(notification.isSeen())
                         .img(notification.getForum().getImg())
                         .build();
             }
@@ -45,6 +47,7 @@ public class NotificationViewDto {
                         .postId(notification.getPostId())
                         .commentId(notification.getCommentId())
                         .date(notification.getCreatedDate())
+                        .seen(notification.isSeen())
                         .img(notification.getForum().getImg())
                         .build();
             }
