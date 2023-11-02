@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -260,6 +259,54 @@ public class NotificationServiceTest {
 
     }
 
+    @Test
+    public void markNotificationAsSeenTest(){
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+
+        notificationRepository.save(postNotificationToSave);
+
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
+        notificationService.markNotificationAsSeen(notificationId,2L);
+
+        List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
+
+        assertEquals(1, user_notifications.size());
+        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
+        assertTrue(user_notifications.get(0).isSeen());
+    }
+
+    @Test
+    public void markNotificationAsSeenThrowsExceptionTest(){
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+
+        notificationRepository.save(postNotificationToSave);
+
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
+        assertThrows(UserNotOwnerException.class, () -> notificationService.markNotificationAsSeen(notificationId,3L));
+    }
+
     private void activateNotifications(List<Long> longs,Long forumId) {
         longs.forEach(aLong -> {
             User user = userService.getUserEntityById(aLong);
@@ -267,6 +314,5 @@ public class NotificationServiceTest {
             userRepository.save(user);
         });
     }
-
 
 }

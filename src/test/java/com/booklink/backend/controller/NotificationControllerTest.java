@@ -94,4 +94,11 @@ public class NotificationControllerTest {
         ResponseEntity<Boolean> response2 = restTemplate.exchange( baseUrl + "/3/toggle", HttpMethod.POST, new HttpEntity<>(null), Boolean.class);
         assertEquals(false, response2.getBody());
     }
+
+    @Test
+    public void markNotificationAsSeenTest() {
+        ResponseEntity<Boolean> response = restTemplate.exchange( baseUrl + "/1", HttpMethod.PATCH, new HttpEntity<>(null), Boolean.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(true, response.getBody());
+    }
 }
