@@ -35,4 +35,10 @@ public class NotificationController {
     public ResponseEntity<Boolean> toggleNotification(@PathVariable Long forumId) {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.toggleForumNotification(forumId, securityUtil.getLoggedUserId()));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Boolean> markNotificationAsSeen(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.markNotificationAsSeen(id, securityUtil.getLoggedUserId()));
+    }
+
 }

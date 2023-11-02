@@ -56,4 +56,8 @@ public class Notification {
 
     @Column(nullable = false)
     private Date createdDate;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean seen = false;
 }

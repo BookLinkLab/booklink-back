@@ -22,4 +22,6 @@ public interface NotificationService {
     Notification getNotificationEntityById(Long id);
 
     boolean toggleForumNotification(Long forumId, Long loggedUserId);
+
+    boolean markNotificationAsSeen(Long notificationId, Long userId);
 }
