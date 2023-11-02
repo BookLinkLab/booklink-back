@@ -258,6 +258,8 @@ public class UserControllerTest {
                 baseUrl + "/2", HttpMethod.GET, null, UserProfileDto.class
         );
         assertEquals(5, response.getBody().getLatestPosts().size());
+        assertEquals("https://escapetoromance.com/wp-content/uploads/sites/172/2017/05/iStock-503130452.jpg",
+                response.getBody().getLatestPosts().get(0).getImg());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
