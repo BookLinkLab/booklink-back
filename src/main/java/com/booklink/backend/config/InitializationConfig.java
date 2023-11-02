@@ -34,6 +34,8 @@ public class InitializationConfig implements CommandLineRunner {
     UserService userService;
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    NotificationRepository notificationRepository;
 
 
     final Logger logger = LoggerFactory.getLogger(InitializationConfig.class);
@@ -47,6 +49,7 @@ public class InitializationConfig implements CommandLineRunner {
         this.loadForums();
         this.generatePostsAndComments();
         this.addReactionsToCommentsAndPosts();
+        this.addNotifications();
         logger.info("DB data intialized");
     }
 
@@ -110,6 +113,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users1)
                 .membersAmount(users1.size() + 1)
                 .build();
+
         Forum forum2 = Forum.builder()
                 .name("Narnia")
                 .userId(user2.getId())
@@ -118,6 +122,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users2)
                 .membersAmount(users2.size() + 1)
                 .build();
+
         Forum forum3 = Forum.builder()
                 .name("1984")
                 .userId(user3.getId())
@@ -126,6 +131,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users3)
                 .membersAmount(users3.size() + 1)
                 .build();
+
         Forum forum4 = Forum.builder()
                 .name("Simbolismos de Ana Frank")
                 .userId(user4.getId())
@@ -134,6 +140,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users4)
                 .membersAmount(users4.size() + 1)
                 .build();
+
         Forum forum5 = Forum.builder()
                 .name("SciFi Geeks")
                 .userId(user5.getId())
@@ -142,6 +149,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users5)
                 .membersAmount(users5.size() + 1)
                 .build();
+
         Forum forum6 = Forum.builder()
                 .name("Los secretos de la fantasía")
                 .userId(user1.getId())
@@ -159,6 +167,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users2)
                 .membersAmount(users2.size() + 1)
                 .build();
+
 
         Forum forum8 = Forum.builder()
                 .name("La novela histórica")
@@ -178,6 +187,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .membersAmount(users4.size() + 1)
                 .build();
 
+
         Forum forum10 = Forum.builder()
                 .name("Los laberintos de Maze Runner")
                 .userId(user5.getId())
@@ -186,6 +196,7 @@ public class InitializationConfig implements CommandLineRunner {
                 .members(users5)
                 .membersAmount(users5.size() + 1)
                 .build();
+
 
         Tag tag1 = Tag.builder().name("Action").build();
         Tag tag2 = Tag.builder().name("Fiction").build();
@@ -197,8 +208,8 @@ public class InitializationConfig implements CommandLineRunner {
         Tag tag8 = Tag.builder().name("GeorgeOrwell").build();
 
         forum1.setTags(List.of(tag1, tag7));
-        forum2.setTags(List.of(tag1,tag2));
-        forum3.setTags(List.of(tag1,tag2,tag3, tag8));
+        forum2.setTags(List.of(tag1, tag2));
+        forum3.setTags(List.of(tag1, tag2, tag3, tag8));
         forum4.setTags(List.of(tag4));
         forum5.setTags(List.of(tag4));
         forum6.setTags(List.of(tag2, tag3));
@@ -217,15 +228,25 @@ public class InitializationConfig implements CommandLineRunner {
         tagRepository.save(tag8);
 
         forumRepository.save(forum1);
+        activateNotifications(users1, forum1.getId());
         forumRepository.save(forum2);
+        activateNotifications(users2, forum2.getId());
         forumRepository.save(forum3);
+        activateNotifications(users3, forum3.getId());
         forumRepository.save(forum4);
+        activateNotifications(users4, forum4.getId());
         forumRepository.save(forum5);
+        activateNotifications(users5, forum5.getId());
         forumRepository.save(forum6);
+        activateNotifications(users1, forum6.getId());
         forumRepository.save(forum7);
+        activateNotifications(users2, forum7.getId());
         forumRepository.save(forum8);
+        activateNotifications(users3, forum8.getId());
         forumRepository.save(forum9);
+        activateNotifications(users4, forum9.getId());
         forumRepository.save(forum10);
+        activateNotifications(users5, forum10.getId());
     }
 
     private void generatePostsAndComments() {
@@ -234,7 +255,6 @@ public class InitializationConfig implements CommandLineRunner {
 
 
         List<Forum> forums = forumRepository.findAll();
-
 
 
         for (Forum forum : forums) {
@@ -256,188 +276,188 @@ public class InitializationConfig implements CommandLineRunner {
                             .build();
                     postRepository.save(post);
 
-                  // el primer miembro hace más de un post
-                  if(i == 0)  {
-                      //los foros 2,3,4 son los que van a tener un miembro que hace 2 post
-                      if(forumId == 2){
-                          Post post1 = Post.builder()
-                                  .userId(memberId)
-                                  .forumId(forumId)
-                                  .content("Narnia es una de mis sagas favoritas. Me encanta el mundo mágico y los personajes.")
-                                  .createdDate(new Date())
-                                  .build();
-                          postRepository.save(post1);
+                    // el primer miembro hace más de un post
+                    if (i == 0) {
+                        //los foros 2,3,4 son los que van a tener un miembro que hace 2 post
+                        if (forumId == 2) {
+                            Post post1 = Post.builder()
+                                    .userId(memberId)
+                                    .forumId(forumId)
+                                    .content("Narnia es una de mis sagas favoritas. Me encanta el mundo mágico y los personajes.")
+                                    .createdDate(new Date())
+                                    .build();
+                            postRepository.save(post1);
 
-                          Comment comment1  = Comment.builder()
-                                  .userId(memberId)
-                                  .postId(post1.getId())
-                                  .content("sobre todo el primer libro")
-                                  .createdDate(new Date())
-                                  .build();
-                          commentRepository.save(comment1);
-                      }
-                      if(forumId == 3){
-                          Post post2 = Post.builder()
-                                  .userId(memberId)
-                                  .forumId(forumId)
-                                  .content("1984 es una de las mejores novelas que he leído. Me encanta la crítica social y política que hace.")
-                                  .createdDate(new Date())
-                                  .build();
-                          postRepository.save(post2);
+                            Comment comment1 = Comment.builder()
+                                    .userId(memberId)
+                                    .postId(post1.getId())
+                                    .content("sobre todo el primer libro")
+                                    .createdDate(new Date())
+                                    .build();
+                            commentRepository.save(comment1);
+                        }
+                        if (forumId == 3) {
+                            Post post2 = Post.builder()
+                                    .userId(memberId)
+                                    .forumId(forumId)
+                                    .content("1984 es una de las mejores novelas que he leído. Me encanta la crítica social y política que hace.")
+                                    .createdDate(new Date())
+                                    .build();
+                            postRepository.save(post2);
 
-                          Comment comment2  = Comment.builder()
-                                  .userId(memberId)
-                                  .postId(post2.getId())
-                                  .content("es junto a Un Mundo Feliz una de las mejores distopías que he leído")
-                                  .createdDate(new Date())
-                                  .build();
-                          commentRepository.save(comment2);
-                      }
-                      if(forumId == 4){
-                          Post post3 = Post.builder()
-                                  .userId(memberId)
-                                  .forumId(forumId)
-                                  .content("El diario de Ana Frank es una obra que todos deberían leer. Es el relato de una cruel realidad en durante uno de los momentos mas viles de la humanidad.")
-                                  .createdDate(new Date())
-                                  .build();
-                          postRepository.save(post3);
+                            Comment comment2 = Comment.builder()
+                                    .userId(memberId)
+                                    .postId(post2.getId())
+                                    .content("es junto a Un Mundo Feliz una de las mejores distopías que he leído")
+                                    .createdDate(new Date())
+                                    .build();
+                            commentRepository.save(comment2);
+                        }
+                        if (forumId == 4) {
+                            Post post3 = Post.builder()
+                                    .userId(memberId)
+                                    .forumId(forumId)
+                                    .content("El diario de Ana Frank es una obra que todos deberían leer. Es el relato de una cruel realidad en durante uno de los momentos mas viles de la humanidad.")
+                                    .createdDate(new Date())
+                                    .build();
+                            postRepository.save(post3);
 
-                          Comment comment3  = Comment.builder()
-                                  .userId(memberId)
-                                  .postId(post3.getId())
-                                  .content("es un libro que me ha marcado para siempre")
-                                  .createdDate(new Date())
-                                  .build();
-                          commentRepository.save(comment3);
-                      }
-                  }
+                            Comment comment3 = Comment.builder()
+                                    .userId(memberId)
+                                    .postId(post3.getId())
+                                    .content("es un libro que me ha marcado para siempre")
+                                    .createdDate(new Date())
+                                    .build();
+                            commentRepository.save(comment3);
+                        }
+                    }
 
 
                     //el primer post no se comenta
-                   if (i != 0) {
+                    if (i != 0) {
 
-                    Random random = new Random();
-                    User member = members.get(random.nextInt(members.size()));
-                    Long commentUserId = member.getId();
+                        Random random = new Random();
+                        User member = members.get(random.nextInt(members.size()));
+                        Long commentUserId = member.getId();
 
-                  Comment comment  = Comment.builder()
-                          .userId(commentUserId)
-                          .postId(post.getId())
-                          .content(genericComments.get(random.nextInt(genericComments.size())))
-                          .createdDate(new Date())
-                          .build();
+                        Comment comment = Comment.builder()
+                                .userId(commentUserId)
+                                .postId(post.getId())
+                                .content(genericComments.get(random.nextInt(genericComments.size())))
+                                .createdDate(new Date())
+                                .build();
 
-                  commentRepository.save(comment);}
+                        commentRepository.save(comment);
+                    }
                 }
             }
         }
     }
 
-        private Map<String, List<String>> generateOpinions() {
-            Map<String, List<String>> opiniones = new HashMap<>();
+    private Map<String, List<String>> generateOpinions() {
+        Map<String, List<String>> opiniones = new HashMap<>();
 
-            // Opinion para el foro "Harry Potter"
-            List<String> opinionesHarryPotter = new ArrayList<>();
-            opinionesHarryPotter.add("Ron es el mejor personaje de Harry Potter.");
-            opinionesHarryPotter.add("Se debería hablar más sobre la gran diferencia que se da en ciertos aspectos acerca de los libros con la película.");
-            opiniones.put("Harry Potter", opinionesHarryPotter);
+        // Opinion para el foro "Harry Potter"
+        List<String> opinionesHarryPotter = new ArrayList<>();
+        opinionesHarryPotter.add("Ron es el mejor personaje de Harry Potter.");
+        opinionesHarryPotter.add("Se debería hablar más sobre la gran diferencia que se da en ciertos aspectos acerca de los libros con la película.");
+        opiniones.put("Harry Potter", opinionesHarryPotter);
 
-            // Opinion para el foro "Narnia"
-            List<String> opinionesNarnia = new ArrayList<>();
-            opinionesNarnia.add("Narnia siempre me ha transportado a un mundo de aventuras y maravillas. ¿A alguien más le sucede lo mismo?");
-            opinionesNarnia.add("La relación entre Aslan y los niños Pevensie es conmovedora. Definitivamente, uno de los aspectos más destacados de la serie.");
-            opiniones.put("Narnia", opinionesNarnia);
+        // Opinion para el foro "Narnia"
+        List<String> opinionesNarnia = new ArrayList<>();
+        opinionesNarnia.add("Narnia siempre me ha transportado a un mundo de aventuras y maravillas. ¿A alguien más le sucede lo mismo?");
+        opinionesNarnia.add("La relación entre Aslan y los niños Pevensie es conmovedora. Definitivamente, uno de los aspectos más destacados de la serie.");
+        opiniones.put("Narnia", opinionesNarnia);
 
-            // Opinion para el foro "1984"
-            List<String> opiniones1984 = new ArrayList<>();
-            opiniones1984.add("1984 es una obra maestra de la literatura distópica. Me impactó profundamente.");
-            opiniones1984.add("La vigilancia constante en 1984 es aterradora y un reflejo de los peligros de la sociedad actual.");
-            opiniones1984.add("1984 es una novela que todos deberían leer. Es una advertencia sobre los peligros del totalitarismo.");
-            opiniones.put("1984", opiniones1984);
+        // Opinion para el foro "1984"
+        List<String> opiniones1984 = new ArrayList<>();
+        opiniones1984.add("1984 es una obra maestra de la literatura distópica. Me impactó profundamente.");
+        opiniones1984.add("La vigilancia constante en 1984 es aterradora y un reflejo de los peligros de la sociedad actual.");
+        opiniones1984.add("1984 es una novela que todos deberían leer. Es una advertencia sobre los peligros del totalitarismo.");
+        opiniones.put("1984", opiniones1984);
 
-            // Opinion para el foro "Simbolismos de Ana Frank"
-            List<String> opinionesAnaFrank = new ArrayList<>();
-            opinionesAnaFrank.add("El diario de Ana Frank es un testimonio conmovedor de la lucha por la supervivencia en tiempos oscuros.");
-            opinionesAnaFrank.add("Ana Frank sigue siendo un símbolo de esperanza y resistencia en todo el mundo.");
-            opinionesAnaFrank.add("El diario de Ana Frank es una de las obras más importantes de la historia. ¿Qué opinan ustedes?");
-            opinionesAnaFrank.add("Ana Frank es un ejemplo de valentía y humanidad. Su historia es una lección para todos.");
-            opiniones.put("Simbolismos de Ana Frank", opinionesAnaFrank);
+        // Opinion para el foro "Simbolismos de Ana Frank"
+        List<String> opinionesAnaFrank = new ArrayList<>();
+        opinionesAnaFrank.add("El diario de Ana Frank es un testimonio conmovedor de la lucha por la supervivencia en tiempos oscuros.");
+        opinionesAnaFrank.add("Ana Frank sigue siendo un símbolo de esperanza y resistencia en todo el mundo.");
+        opinionesAnaFrank.add("El diario de Ana Frank es una de las obras más importantes de la historia. ¿Qué opinan ustedes?");
+        opinionesAnaFrank.add("Ana Frank es un ejemplo de valentía y humanidad. Su historia es una lección para todos.");
+        opiniones.put("Simbolismos de Ana Frank", opinionesAnaFrank);
 
-            // Opinion para el foro "Los mejores libros de ciencia ficción"
-            List<String> opinionesCienciaFiccion = new ArrayList<>();
-            opinionesCienciaFiccion.add("Me encanta la ciencia ficción y siempre estoy buscando nuevas recomendaciones de libros.");
-            opinionesCienciaFiccion.add("La ciencia ficción nos permite explorar mundos y conceptos fascinantes. ¿Cuál es tu libro favorito del género?");
-            opiniones.put("SciFi Geeks", opinionesCienciaFiccion);
+        // Opinion para el foro "Los mejores libros de ciencia ficción"
+        List<String> opinionesCienciaFiccion = new ArrayList<>();
+        opinionesCienciaFiccion.add("Me encanta la ciencia ficción y siempre estoy buscando nuevas recomendaciones de libros.");
+        opinionesCienciaFiccion.add("La ciencia ficción nos permite explorar mundos y conceptos fascinantes. ¿Cuál es tu libro favorito del género?");
+        opiniones.put("SciFi Geeks", opinionesCienciaFiccion);
 
-            // Opinion para el foro "Los secretos de la fantasía"
-            List<String> opinionesFantasia = new ArrayList<>();
-            opinionesFantasia.add("La fantasía es mi género literario favorito. ¿Cuál es tu obra de fantasía preferida?");
-            opinionesFantasia.add("La magia y los mundos imaginarios de la fantasía siempre me han cautivado.");
-            opiniones.put("Los secretos de la fantasía", opinionesFantasia);
+        // Opinion para el foro "Los secretos de la fantasía"
+        List<String> opinionesFantasia = new ArrayList<>();
+        opinionesFantasia.add("La fantasía es mi género literario favorito. ¿Cuál es tu obra de fantasía preferida?");
+        opinionesFantasia.add("La magia y los mundos imaginarios de la fantasía siempre me han cautivado.");
+        opiniones.put("Los secretos de la fantasía", opinionesFantasia);
 
-            // Opinion para el foro "Los misterios del terror"
-            List<String> opinionesTerror = new ArrayList<>();
-            opinionesTerror.add("El terror es un género que me hace estremecer. ¿Cuál es la novela de terror más aterradora que has leído?");
-            opinionesTerror.add("Los maestros del terror como Poe y Lovecraft han dejado un legado duradero en la literatura.");
-            opiniones.put("Los misterios del terror", opinionesTerror);
+        // Opinion para el foro "Los misterios del terror"
+        List<String> opinionesTerror = new ArrayList<>();
+        opinionesTerror.add("El terror es un género que me hace estremecer. ¿Cuál es la novela de terror más aterradora que has leído?");
+        opinionesTerror.add("Los maestros del terror como Poe y Lovecraft han dejado un legado duradero en la literatura.");
+        opiniones.put("Los misterios del terror", opinionesTerror);
 
-            // Opinion para el foro "Los desafíos de la novela histórica"
-            List<String> opinionesHistorica = new ArrayList<>();
-            opinionesHistorica.add("La novela histórica nos transporta a épocas pasadas. Poder situarse en un contexto tan aleajdo y distinto es uno de los mayores desafios para lograr un relato verosimil en este género.");
-            opinionesHistorica.add("La investigación y la ambientación en las novelas históricas son impresionantes. ¡Admiro a los autores que pueden hacerlo tan bien!");
-            opinionesHistorica.add("La novela histórica es un género que me encanta. El mejor romance histórico que he leído es Orgullo y prejuicio.");
-            opiniones.put("La novela histórica", opinionesHistorica);
+        // Opinion para el foro "Los desafíos de la novela histórica"
+        List<String> opinionesHistorica = new ArrayList<>();
+        opinionesHistorica.add("La novela histórica nos transporta a épocas pasadas. Poder situarse en un contexto tan aleajdo y distinto es uno de los mayores desafios para lograr un relato verosimil en este género.");
+        opinionesHistorica.add("La investigación y la ambientación en las novelas históricas son impresionantes. ¡Admiro a los autores que pueden hacerlo tan bien!");
+        opinionesHistorica.add("La novela histórica es un género que me encanta. El mejor romance histórico que he leído es Orgullo y prejuicio.");
+        opiniones.put("La novela histórica", opinionesHistorica);
 
-            // Opinion para el foro "Los encantos de la novela romántica"
-            List<String> opinionesRomantica = new ArrayList<>();
-            opinionesRomantica.add("Las novelas románticas son perfectas para una lectura relajante y esperanzadora en un mundo de tanto odio");
-            opinionesRomantica.add("Las novelas románticas son una de mis formas favoritas de escapar de la realidad.");
-            opinionesRomantica.add("Las novelas románticas son una de mis formas favoritas de escapar de la realidad.");
-            opinionesRomantica.add("El romance es el género más infravalorado de la literatura.");
-            opiniones.put("Los encantos del romance", opinionesRomantica);
+        // Opinion para el foro "Los encantos de la novela romántica"
+        List<String> opinionesRomantica = new ArrayList<>();
+        opinionesRomantica.add("Las novelas románticas son perfectas para una lectura relajante y esperanzadora en un mundo de tanto odio");
+        opinionesRomantica.add("Las novelas románticas son una de mis formas favoritas de escapar de la realidad.");
+        opinionesRomantica.add("Las novelas románticas son una de mis formas favoritas de escapar de la realidad.");
+        opinionesRomantica.add("El romance es el género más infravalorado de la literatura.");
+        opiniones.put("Los encantos del romance", opinionesRomantica);
 
-            List<String> opinionesMazeRunner = new ArrayList<>();
-            opinionesMazeRunner.add("Maze Runner es una de mis series favoritas de ciencia ficción. Me encanta el misterio que rodea al laberinto.");
-            opinionesMazeRunner.add("Thomas es un protagonista increíble. Su valentía y determinación me inspiran.");
-            opiniones.put("Los laberintos de Maze Runner", opinionesMazeRunner);
+        List<String> opinionesMazeRunner = new ArrayList<>();
+        opinionesMazeRunner.add("Maze Runner es una de mis series favoritas de ciencia ficción. Me encanta el misterio que rodea al laberinto.");
+        opinionesMazeRunner.add("Thomas es un protagonista increíble. Su valentía y determinación me inspiran.");
+        opiniones.put("Los laberintos de Maze Runner", opinionesMazeRunner);
 
-            return opiniones;
+        return opiniones;
 
-        }
-
-
-        List<String> genericComments = Arrays.asList(
-                "Estoy de acuerdo contigo.",
-                "¡Qué interesante! Gracias por compartir.",
-                "No puedo esperar para leer más sobre este tema.",
-                "¿Puedes proporcionar más detalles?",
-                "Este es un gran post. Me ha ayudado mucho.",
-                "Estoy emocionado por lo que vendrá a continuación.",
-                "Tienes razón. Esto es muy importante.",
-                "Me encanta este foro. Siempre aprendo algo nuevo.",
-                "¿Alguien más tiene alguna opinión sobre esto?",
-                "Gracias por mantenernos informados.",
-                "¡Excelente trabajo!",
-                "Nunca me había dado cuenta de esto antes. ¡Qué revelador!",
-                "Completamente de acuerdo contigo.",
-                "Me hizo pensar mucho en este tema.",
-                "Espero ver más publicaciones tuyas pronto.",
-                "No puedo evitar sonreír después de leer esto.",
-                "Este foro siempre tiene contenido interesante.",
-                "Eres un autor talentoso. Sigue así.",
-                "¡Bravo! Me has dejado sin palabras.",
-                "No puedo dejar de leer una y otra vez este post.",
-                "¡Muy bien dicho!",
-                "Mis respetos por compartir tus conocimientos.",
-                "Me inspiras a aprender más sobre este tema.",
-                "Tus palabras son muy motivadoras.",
-                "Este post merece más atención.",
-                "Esto es realmente valioso. Gracias por compartirlo."
-        );
+    }
 
 
+    List<String> genericComments = Arrays.asList(
+            "Estoy de acuerdo contigo.",
+            "¡Qué interesante! Gracias por compartir.",
+            "No puedo esperar para leer más sobre este tema.",
+            "¿Puedes proporcionar más detalles?",
+            "Este es un gran post. Me ha ayudado mucho.",
+            "Estoy emocionado por lo que vendrá a continuación.",
+            "Tienes razón. Esto es muy importante.",
+            "Me encanta este foro. Siempre aprendo algo nuevo.",
+            "¿Alguien más tiene alguna opinión sobre esto?",
+            "Gracias por mantenernos informados.",
+            "¡Excelente trabajo!",
+            "Nunca me había dado cuenta de esto antes. ¡Qué revelador!",
+            "Completamente de acuerdo contigo.",
+            "Me hizo pensar mucho en este tema.",
+            "Espero ver más publicaciones tuyas pronto.",
+            "No puedo evitar sonreír después de leer esto.",
+            "Este foro siempre tiene contenido interesante.",
+            "Eres un autor talentoso. Sigue así.",
+            "¡Bravo! Me has dejado sin palabras.",
+            "No puedo dejar de leer una y otra vez este post.",
+            "¡Muy bien dicho!",
+            "Mis respetos por compartir tus conocimientos.",
+            "Me inspiras a aprender más sobre este tema.",
+            "Tus palabras son muy motivadoras.",
+            "Este post merece más atención.",
+            "Esto es realmente valioso. Gracias por compartirlo."
+    );
 
-    private void addReactionsToCommentsAndPosts(){
+
+    private void addReactionsToCommentsAndPosts() {
         List<Post> posts = postRepository.findAll();
         List<Comment> comments = commentRepository.findAll();
 
@@ -449,7 +469,7 @@ public class InitializationConfig implements CommandLineRunner {
             List<Long> usersWhoDislike = new ArrayList<>();
 
             // el primer post no se reacciona
-            if(post.getId() != 1L){
+            if (post.getId() != 1L) {
                 for (Long user : usersWhoCanLike) {
                     int likeOrDislike = random.nextInt(2);
                     if (likeOrDislike == 1) usersWhoLike.add(user);
@@ -490,6 +510,47 @@ public class InitializationConfig implements CommandLineRunner {
         Post post = postRepository.findById(postId).get();
         List<Long> membersIds = getUsersWhoCanLike(post);
         return membersIds;
+    }
+
+    private void addNotifications(){
+        List<User> users = userRepository.findAll();
+
+        for(int i = 0; i <= 8; i++) {
+            User user = users.get(i);
+            if(!user.getForumNotifications().isEmpty()){
+            Long forumId = user.getForumNotifications().get(0);
+            List<Post> posts = postRepository.findAllByForumId(forumId);
+
+            if (!posts.isEmpty()) {
+                for (Post post : posts) {
+                    Random r = new Random();
+
+                    int random1 = r.nextInt(2);
+                    boolean see = random1 == 1;
+                    Notification postNotificationToSave = Notification.builder()
+                            .type(NotificationType.POST)
+                            .postAuthorId(post.getUserId())
+                            .receiverId(user.getId())
+                            .forumId(forumId)
+                            .postId(post.getId())
+                            .createdDate(new Date())
+                            .seen(see)
+                            .build();
+
+                    notificationRepository.save(postNotificationToSave);
+                }
+            }
+        }
+        }
+    }
+
+    private void activateNotifications(List<User> users, Long forumId){
+        for(User user : users){
+            List<Long> forumsId = user.getForumNotifications();
+            forumsId.add(forumId);
+            user.setForumNotifications(forumsId);
+            userRepository.save(user);
+        }
     }
 
 }

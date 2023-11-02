@@ -57,7 +57,7 @@ public class NotificationServiceTest {
 
 
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(3, notifications.size());
+        assertEquals(14, notifications.size());
     }
 
     @Test
@@ -90,8 +90,8 @@ public class NotificationServiceTest {
 
 
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(6, notifications.size());  // 3 notifications for post, 3 notifications for comment
-        Notification commentNotification = notifications.get(3);
+        assertEquals(17, notifications.size());  // 3 notifications for post, 3 notifications for comment
+        Notification commentNotification = notifications.get(14);
         assertEquals(2L, commentNotification.getCommentAuthorId());
         assertEquals(1L, commentNotification.getReceiverId());
     }
@@ -108,10 +108,10 @@ public class NotificationServiceTest {
                 .build();
         notificationRepository.save(notificationToSave);
 
-        assertEquals(1, notificationService.getNotificationsEntity().size());
+        assertEquals(12, notificationService.getNotificationsEntity().size());
         notificationService.deleteNotification(1L, 2L);
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(0, notifications.size());
+        assertEquals(11, notifications.size());
     }
 
     @Test
@@ -126,7 +126,7 @@ public class NotificationServiceTest {
                 .build();
         notificationRepository.save(notificationToSave);
 
-        assertEquals(1, notificationService.getNotificationsEntity().size());
+        assertEquals(12, notificationService.getNotificationsEntity().size());
         assertThrows(UserNotOwnerException.class, () -> notificationService.deleteNotification(1L, 3L));
     }
 
@@ -147,7 +147,7 @@ public class NotificationServiceTest {
         userRepository.save(user);
 
 
-        assertEquals(1, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals(12, notificationService.getNotificationsByUserId(2L).size());
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
 
         Notification commentNotificationToSave = Notification.builder()
@@ -167,7 +167,7 @@ public class NotificationServiceTest {
 
 
         //now the first notification (get(0)) is the comment notification -> the newest first
-        assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals(13, notificationService.getNotificationsByUserId(2L).size());
         assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 
@@ -175,7 +175,7 @@ public class NotificationServiceTest {
     public void toggleForumNotification() {
         forumService.joinForum(3L, 2L);
         User user = userService.getUserEntityById(2L);
-        List<Long> forumsId = List.of(3L);
+        List<Long> forumsId = List.of(2L, 4L, 7L, 9L, 3L);
         assertEquals(forumsId, user.getForumNotifications());
 
         CreateForumDto createForumDto = CreateForumDto.builder()
@@ -200,24 +200,24 @@ public class NotificationServiceTest {
     public void removeForumNotificationWhenLeavingForum() {
         forumService.joinForum(3L, 2L);
         User user = userService.getUserEntityById(2L);
-        List<Long> forumsId = List.of(3L);
+        List<Long> forumsId = List.of(2L, 4L, 7L, 9L, 3L);
         assertEquals(forumsId, user.getForumNotifications());
 
         forumService.leaveForum(3L, 2L);
         User user2 = userService.getUserEntityById(2L);
-        assertEquals(0, user2.getForumNotifications().size());
+        assertEquals(4, user2.getForumNotifications().size());
     }
 
     @Test
     public void removeForumNotificationWhenDeletingForum(){
         forumService.joinForum(3L, 2L);
         User user = userService.getUserEntityById(2L);
-        List<Long> forumsId = List.of(3L);
+        List<Long> forumsId = List.of(2L, 4L, 7L, 9L, 3L);
         assertEquals(forumsId, user.getForumNotifications());
 
         forumService.deleteForum(3L, 3L);
         User user2 = userService.getUserEntityById(2L);
-        assertEquals(0, user2.getForumNotifications().size());
+        assertEquals(4, user2.getForumNotifications().size());
     }
 
 
@@ -252,7 +252,7 @@ public class NotificationServiceTest {
 
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
-        assertEquals(1, user_notifications.size());
+        assertEquals(12, user_notifications.size());
         assertEquals("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg", user_notifications.get(0).getImg());
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
     }
@@ -279,7 +279,7 @@ public class NotificationServiceTest {
 
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
-        assertEquals(1, user_notifications.size());
+        assertEquals(12, user_notifications.size());
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
         assertTrue(user_notifications.get(0).isSeen());
     }
