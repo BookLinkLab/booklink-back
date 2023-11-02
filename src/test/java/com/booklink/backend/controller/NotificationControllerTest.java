@@ -84,7 +84,10 @@ public class NotificationControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
+
         assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", response.getBody().get(0).getContent());
+        assertEquals("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg",
+                response.getBody().get(0).getImg());
     }
 
     @Test

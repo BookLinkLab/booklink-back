@@ -22,6 +22,7 @@ public class NotificationViewDto {
     private final Long commentId;
 
     private final Date date;
+    private final String img;
 
     public static NotificationViewDto from(Notification notification, String notificationCreatorUsername, String forumName) {
         NotificationType notificationType = notification.getType();
@@ -33,6 +34,7 @@ public class NotificationViewDto {
                         .forumId(notification.getForumId())
                         .postId(notification.getPostId())
                         .date(notification.getCreatedDate())
+                        .img(notification.getForum().getImg())
                         .build();
             }
             case COMMENT -> {
@@ -43,6 +45,7 @@ public class NotificationViewDto {
                         .postId(notification.getPostId())
                         .commentId(notification.getCommentId())
                         .date(notification.getCreatedDate())
+                        .img(notification.getForum().getImg())
                         .build();
             }
             default -> throw new RuntimeException("Invalid notification type");
