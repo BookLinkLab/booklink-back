@@ -4,6 +4,7 @@ import com.booklink.backend.dto.user.CreateUserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,7 +47,7 @@ public class User {
                 .email(userDto.getEmail())
                 .username(userDto.getUsername())
                 .password(encryptedPassword)
-                .forumNotifications(List.of())
+                .forumNotifications(new ArrayList<>())
                 .build();
     }
 }
