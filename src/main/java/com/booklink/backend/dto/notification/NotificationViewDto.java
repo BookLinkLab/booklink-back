@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class NotificationViewDto {
+    private final Long notificationId;
     private final String content;
     private final Long authorId;
     private final Long forumId;
@@ -30,6 +31,7 @@ public class NotificationViewDto {
         switch (notificationType) {
             case POST -> {
                 return NotificationViewDto.builder()
+                        .notificationId(notification.getId())
                         .content("@%s creó una nueva publicación en \"%s\"!".formatted(notificationCreatorUsername, forumName))
                         .authorId(notification.getPostAuthorId())
                         .forumId(notification.getForumId())
@@ -41,6 +43,7 @@ public class NotificationViewDto {
             }
             case COMMENT -> {
                 return NotificationViewDto.builder()
+                        .notificationId(notification.getId())
                         .content("@%s creó un nuevo comentario en \"%s\"!".formatted(notificationCreatorUsername, forumName))
                         .authorId(notification.getCommentAuthorId())
                         .forumId(notification.getForumId())
