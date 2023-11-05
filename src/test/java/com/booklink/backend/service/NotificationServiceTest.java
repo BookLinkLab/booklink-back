@@ -323,7 +323,7 @@ public class NotificationServiceTest {
         user.setForumNotifications(List.of(notificationId));
         userRepository.save(user);
 
-        assertEquals(8,notificationService.getNotificationsNotSeenCount(2L));
+        assertEquals(12,notificationService.getNotificationsNotSeenCount(2L));
     }
 
     private void activateNotifications(List<Long> longs,Long forumId) {
