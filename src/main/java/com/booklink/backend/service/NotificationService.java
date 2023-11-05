@@ -24,4 +24,6 @@ public interface NotificationService {
     boolean toggleForumNotification(Long forumId, Long loggedUserId);
 
     boolean markNotificationAsSeen(Long notificationId, Long userId);
+
+    Integer getNotificationsNotSeenCount(Long loggedUserId);
 }

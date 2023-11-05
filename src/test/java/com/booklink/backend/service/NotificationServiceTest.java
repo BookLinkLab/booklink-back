@@ -305,6 +305,27 @@ public class NotificationServiceTest {
         assertThrows(UserNotOwnerException.class, () -> notificationService.markNotificationAsSeen(notificationId,3L));
     }
 
+    @Test
+    public void getNotificationsNotSeenCountTest(){
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+
+        notificationRepository.save(postNotificationToSave);
+
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
+        assertEquals(8,notificationService.getNotificationsNotSeenCount(2L));
+    }
+
     private void activateNotifications(List<Long> longs,Long forumId) {
         longs.forEach(aLong -> {
             User user = userService.getUserEntityById(aLong);
@@ -312,4 +333,5 @@ public class NotificationServiceTest {
             userRepository.save(user);
         });
     }
+
 }

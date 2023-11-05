@@ -129,6 +129,11 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    @Override
+    public Integer getNotificationsNotSeenCount(Long loggedUserId) {
+        return this.getNotificationsEntityByUserId(loggedUserId).stream().filter(notification -> !notification.isSeen()).toList().size();
+    }
+
     private boolean isForumNotificationActive(Long userID, Long forumID){
          User user = userService.getUserEntityById(userID);
          List<Long> activatedForums = user.getForumNotifications();
