@@ -1,5 +1,6 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.forum.ForumDtoFactory;
 import com.booklink.backend.dto.notification.ForumNotificationDto;
 import com.booklink.backend.dto.notification.NotificationViewDto;
@@ -135,9 +136,11 @@ public class NotificationServiceImpl implements NotificationService {
         User user = userService.getUserEntityById(loggedUserId);
         return user.getForumNotifications().stream().map(forumId -> {
             boolean isForumNotificationActive = user.getForumNotifications().contains(forumId);
+            ForumDto forum = forumDtoFactory.getForumDtoById(forumId);
             return ForumNotificationDto.builder()
                     .forumId(forumId)
-                    .forumName(forumDtoFactory.getForumNameById(forumId))
+                    .forumName(forum.getName())
+                    .forumImage(forum.getImg())
                     .notification(isForumNotificationActive)
                     .build();
         }).toList();
