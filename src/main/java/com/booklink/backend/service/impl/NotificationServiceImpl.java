@@ -1,6 +1,7 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.ForumDtoFactory;
+import com.booklink.backend.dto.notification.ForumNotificationDto;
 import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
@@ -127,6 +128,19 @@ public class NotificationServiceImpl implements NotificationService {
         }else{
             throw new UserNotOwnerException("Solo el recipiente de la notificacion puede marcarla como vista");
         }
+    }
+
+    @Override
+    public List<ForumNotificationDto> getUserNotificationConfiguration(Long loggedUserId) {
+        User user = userService.getUserEntityById(loggedUserId);
+        return user.getForumNotifications().stream().map(forumId -> {
+            boolean isForumNotificationActive = user.getForumNotifications().contains(forumId);
+            return ForumNotificationDto.builder()
+                    .forumId(forumId)
+                    .forumName(forumDtoFactory.getForumNameById(forumId))
+                    .notification(isForumNotificationActive)
+                    .build();
+        }).toList();
     }
 
     private boolean isForumNotificationActive(Long userID, Long forumID){

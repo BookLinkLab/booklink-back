@@ -45,4 +45,9 @@ public class ForumDtoFactory {
 
         return isMemberOfJoined || isMemberOfCreated;
     }
+
+    public String getForumNameById(Long forumId) {
+        Forum forum = forumService.getForumEntityById(forumId);
+        return forum.getName();
+    }
 }
