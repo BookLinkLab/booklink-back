@@ -2,6 +2,7 @@ package com.booklink.backend.service;
 
 import com.booklink.backend.dto.comment.CreateCommentDto;
 import com.booklink.backend.dto.forum.CreateForumDto;
+import com.booklink.backend.dto.notification.ForumNotificationDto;
 import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.dto.post.CreatePostDto;
 import com.booklink.backend.dto.post.PostDto;
@@ -326,6 +327,15 @@ public class NotificationServiceTest {
         assertEquals(12,notificationService.getNotificationsNotSeenCount(2L));
     }
 
+    @Test
+    public void getUserNotificationConfigurationTest(){
+        List<ForumNotificationDto> userNotificationConfiguration = notificationService.getUserNotificationConfiguration(2L);
+        assertEquals(4, userNotificationConfiguration.size());
+        assertEquals("Narnia", userNotificationConfiguration.get(0).getForumName());
+        assertTrue(userNotificationConfiguration.get(0).isNotification());
+        assertEquals("Simbolismos de Ana Frank", userNotificationConfiguration.get(1).getForumName());
+    }
+
     private void activateNotifications(List<Long> longs,Long forumId) {
         longs.forEach(aLong -> {
             User user = userService.getUserEntityById(aLong);
@@ -333,5 +343,4 @@ public class NotificationServiceTest {
             userRepository.save(user);
         });
     }
-
 }

@@ -1,5 +1,6 @@
 package com.booklink.backend.service;
 
+import com.booklink.backend.dto.notification.ForumNotificationDto;
 import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.model.Notification;
 
@@ -26,4 +27,6 @@ public interface NotificationService {
     boolean markNotificationAsSeen(Long notificationId, Long userId);
 
     Integer getNotificationsNotSeenCount(Long loggedUserId);
+
+    List<ForumNotificationDto> getUserNotificationConfiguration(Long loggedUserId);
 }

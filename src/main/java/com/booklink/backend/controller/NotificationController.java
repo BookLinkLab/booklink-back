@@ -1,5 +1,6 @@
 package com.booklink.backend.controller;
 
+import com.booklink.backend.dto.notification.ForumNotificationDto;
 import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.utils.SecurityUtil;
@@ -45,4 +46,9 @@ public class NotificationController {
     public ResponseEntity<Integer> getAmountOfUnseenNotifications() {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotificationsNotSeenCount(securityUtil.getLoggedUserId()));
     }
+    @GetMapping("/configuration")
+    public ResponseEntity<List<ForumNotificationDto>> getUserNotificationConfiguration() {
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getUserNotificationConfiguration(securityUtil.getLoggedUserId()));
+    }
+
 }
