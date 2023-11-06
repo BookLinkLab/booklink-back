@@ -307,6 +307,27 @@ public class NotificationServiceTest {
     }
 
     @Test
+    public void getNotificationsNotSeenCountTest(){
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+
+        notificationRepository.save(postNotificationToSave);
+
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
+        assertEquals(12,notificationService.getNotificationsNotSeenCount(2L));
+    }
+
+    @Test
     public void getUserNotificationConfigurationTest(){
         List<ForumNotificationDto> userNotificationConfiguration = notificationService.getUserNotificationConfiguration(2L);
         assertEquals(4, userNotificationConfiguration.size());
