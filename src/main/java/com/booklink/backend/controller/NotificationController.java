@@ -1,5 +1,6 @@
 package com.booklink.backend.controller;
 
+import com.booklink.backend.dto.notification.ForumNotificationDto;
 import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.utils.SecurityUtil;
@@ -39,6 +40,11 @@ public class NotificationController {
     @PatchMapping("/{id}")
     public ResponseEntity<Boolean> markNotificationAsSeen(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.markNotificationAsSeen(id, securityUtil.getLoggedUserId()));
+    }
+
+    @GetMapping("/configuration")
+    public ResponseEntity<List<ForumNotificationDto>> getUserNotificationConfiguration() {
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getUserNotificationConfiguration(securityUtil.getLoggedUserId()));
     }
 
 }
