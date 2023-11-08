@@ -32,12 +32,11 @@ public class NotificationViewDto {
         NotificationType notificationType = notification.getType();
         switch (notificationType) {
             case POST -> {
-                String authorName = notification.getPostAuthor().getUsername();
 
                 return NotificationViewDto.builder()
                         .notificationId(notification.getId())
                         .authorName(notificationCreatorUsername)
-                        .content(authorName+" creó una nueva publicación en "+"\""+forumName+"\"!")
+                        .content("creó una nueva publicación en")
                         .authorId(notification.getPostAuthorId())
                         .forumId(notification.getForumId())
                         .forumName(forumName)
@@ -48,12 +47,11 @@ public class NotificationViewDto {
                         .build();
             }
             case COMMENT -> {
-                String authorName = notification.getPostAuthor().getUsername();
 
                 return NotificationViewDto.builder()
                         .notificationId(notification.getId())
                         .authorName(notificationCreatorUsername)
-                        .content(authorName+" creó un nuevo comentario en "+"\""+forumName+"\"!")
+                        .content("creó un nuevo comentario en")
                         .authorId(notification.getCommentAuthorId())
                         .forumId(notification.getForumId())
                         .forumName(forumName)
