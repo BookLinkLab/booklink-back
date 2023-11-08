@@ -16,7 +16,9 @@ public class NotificationViewDto {
     private final Long notificationId;
     private final String content;
     private final Long authorId;
+    private final String authorName;
     private final Long forumId;
+    private final String forumName;
     private final Long postId;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -30,11 +32,15 @@ public class NotificationViewDto {
         NotificationType notificationType = notification.getType();
         switch (notificationType) {
             case POST -> {
+                String authorName = notification.getPostAuthor().getUsername();
+
                 return NotificationViewDto.builder()
                         .notificationId(notification.getId())
-                        .content("@%s creó una nueva publicación en \"%s\"!".formatted(notificationCreatorUsername, forumName))
+                        .authorName(notificationCreatorUsername)
+                        .content(authorName+" creó una nueva publicación en "+"\""+forumName+"\"!")
                         .authorId(notification.getPostAuthorId())
                         .forumId(notification.getForumId())
+                        .forumName(forumName)
                         .postId(notification.getPostId())
                         .date(notification.getCreatedDate())
                         .seen(notification.isSeen())
@@ -42,11 +48,15 @@ public class NotificationViewDto {
                         .build();
             }
             case COMMENT -> {
+                String authorName = notification.getPostAuthor().getUsername();
+
                 return NotificationViewDto.builder()
                         .notificationId(notification.getId())
-                        .content("@%s creó un nuevo comentario en \"%s\"!".formatted(notificationCreatorUsername, forumName))
+                        .authorName(notificationCreatorUsername)
+                        .content(authorName+" creó un nuevo comentario en "+"\""+forumName+"\"!")
                         .authorId(notification.getCommentAuthorId())
                         .forumId(notification.getForumId())
+                        .forumName(forumName)
                         .postId(notification.getPostId())
                         .commentId(notification.getCommentId())
                         .date(notification.getCreatedDate())

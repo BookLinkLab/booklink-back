@@ -149,7 +149,7 @@ public class NotificationServiceTest {
 
 
         assertEquals(12, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+        assertEquals("lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
 
         Notification commentNotificationToSave = Notification.builder()
                 .type(NotificationType.COMMENT)
@@ -169,7 +169,7 @@ public class NotificationServiceTest {
 
         //now the first notification (get(0)) is the comment notification -> the newest first
         assertEquals(13, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+        assertEquals("tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 
     @Test
@@ -255,7 +255,7 @@ public class NotificationServiceTest {
 
         assertEquals(12, user_notifications.size());
         assertEquals("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg", user_notifications.get(0).getImg());
-        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
+        assertEquals("lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
     }
 
     @Test
@@ -281,7 +281,7 @@ public class NotificationServiceTest {
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
         assertEquals(12, user_notifications.size());
-        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
+        assertEquals("lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
         assertTrue(user_notifications.get(0).isSeen());
     }
 
