@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    @Query("SELECT n FROM Notification n ORDER BY n.createdDate DESC")
+    @Query("SELECT n FROM Notification n WHERE n.receiverId = ?1 ORDER BY n.createdDate DESC")
     List<Notification> findAllByReceiverId(Long receiverId);
 }
