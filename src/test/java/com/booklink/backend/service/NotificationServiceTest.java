@@ -330,10 +330,10 @@ public class NotificationServiceTest {
     @Test
     public void getUserNotificationConfigurationTest(){
         List<ForumNotificationDto> userNotificationConfiguration = notificationService.getUserNotificationConfiguration(2L);
-        assertEquals(4, userNotificationConfiguration.size());
-        assertEquals("Narnia", userNotificationConfiguration.get(0).getForumName());
-        assertTrue(userNotificationConfiguration.get(0).isNotification());
-        assertEquals("Simbolismos de Ana Frank", userNotificationConfiguration.get(1).getForumName());
+        assertEquals(6, userNotificationConfiguration.size());
+        assertEquals("Harry Potter", userNotificationConfiguration.get(0).getForumName());
+        assertTrue(userNotificationConfiguration.get(2).isNotification());
+        assertEquals("Harry Potter", userNotificationConfiguration.get(0).getForumName());
     }
 
     private void activateNotifications(List<Long> longs,Long forumId) {
