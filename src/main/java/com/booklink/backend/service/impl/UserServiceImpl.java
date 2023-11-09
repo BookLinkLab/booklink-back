@@ -4,6 +4,7 @@ import com.booklink.backend.dto.LoginRequestDto;
 import com.booklink.backend.dto.LoginResponseDto;
 import com.booklink.backend.dto.forum.ForumDto;
 import com.booklink.backend.dto.forum.ForumDtoFactory;
+import com.booklink.backend.dto.post.LatestPostDto;
 import com.booklink.backend.dto.post.PostPreviewDto;
 import com.booklink.backend.dto.user.CreateUserDto;
 import com.booklink.backend.dto.user.UserDto;
@@ -64,13 +65,13 @@ public class UserServiceImpl implements UserService {
         }
         List<ForumDto> forumsCreated = forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsCreated(), userWhoSearchesId, ForumDto::from);
         List<ForumDto> forumsJoined = forumDtoFactory.createForumDtoAndForumViewDtoWithIsMember(user.getForumsJoined(), userWhoSearchesId, ForumDto::from);
-        List<PostPreviewDto> latestPosts = getUserLatestPosts(id, userWhoSearchesId);
-        return UserProfileDto.from(user, forumsCreated, forumsJoined,latestPosts);
+        List<LatestPostDto> latestPosts = getUserLatestPosts(id, userWhoSearchesId);
+        return UserProfileDto.from(user, forumsCreated, forumsJoined, latestPosts);
 
     }
 
-    private List<PostPreviewDto> getUserLatestPosts(Long id, Long userWhoSearchesId) {
-        List<PostPreviewDto> latestPosts = postService.getLatestPostsByUserId(id);
+    private List<LatestPostDto> getUserLatestPosts(Long id, Long userWhoSearchesId) {
+        List<LatestPostDto> latestPosts = postService.getLatestPostsByUserId(id);
         latestPosts.forEach(post -> {
             if (!forumDtoFactory.isMember(post.getForumId(), userWhoSearchesId)) {
                 post.setContent(null);
