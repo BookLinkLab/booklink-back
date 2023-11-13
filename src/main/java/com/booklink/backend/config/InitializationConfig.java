@@ -537,7 +537,7 @@ public class InitializationConfig implements CommandLineRunner {
                             .seen(see)
                             .build();
 
-                    notificationRepository.save(postNotificationToSave);
+                    if(!Objects.equals(post.getUserId(), user.getId())) notificationRepository.save(postNotificationToSave);
                 }
             }
         }
