@@ -66,7 +66,7 @@ public class NotificationControllerTest {
     @Test
     public void deleteNotificationTest() {
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl + "/" + 12, HttpMethod.DELETE, new HttpEntity<>(null), String.class);
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl + "/" + 7, HttpMethod.DELETE, new HttpEntity<>(null), String.class);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -100,7 +100,7 @@ public class NotificationControllerTest {
 
     @Test
     public void markNotificationAsSeenTest() {
-        ResponseEntity<Boolean> response = restTemplate.exchange( baseUrl + "/12", HttpMethod.PATCH, new HttpEntity<>(null), Boolean.class);
+        ResponseEntity<Boolean> response = restTemplate.exchange( baseUrl + "/7", HttpMethod.PATCH, new HttpEntity<>(null), Boolean.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(true, response.getBody());
     }
