@@ -58,7 +58,7 @@ public class NotificationServiceTest {
 
 
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(14, notifications.size());
+        assertEquals(9, notifications.size());
     }
 
     @Test
@@ -91,9 +91,9 @@ public class NotificationServiceTest {
 
 
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(17, notifications.size());  // 3 notifications for post, 3 notifications for comment
-        Notification commentNotification = notifications.get(14);
-        assertEquals(2L, commentNotification.getCommentAuthorId());
+        assertEquals(12, notifications.size());  // 3 notifications for post, 3 notifications for comment
+        Notification commentNotification = notifications.get(11);
+        assertEquals(8L, commentNotification.getCommentAuthorId());
         assertEquals(1L, commentNotification.getReceiverId());
     }
 
@@ -109,10 +109,10 @@ public class NotificationServiceTest {
                 .build();
         notificationRepository.save(notificationToSave);
 
-        assertEquals(12, notificationService.getNotificationsEntity().size());
-        notificationService.deleteNotification(1L, 2L);
+        assertEquals(7, notificationService.getNotificationsEntity().size());
+        notificationService.deleteNotification(7L, 2L);
         List<Notification> notifications = notificationService.getNotificationsEntity();
-        assertEquals(11, notifications.size());
+        assertEquals(6, notifications.size());
     }
 
     @Test
@@ -127,8 +127,8 @@ public class NotificationServiceTest {
                 .build();
         notificationRepository.save(notificationToSave);
 
-        assertEquals(12, notificationService.getNotificationsEntity().size());
-        assertThrows(UserNotOwnerException.class, () -> notificationService.deleteNotification(1L, 3L));
+        assertEquals(7, notificationService.getNotificationsEntity().size());
+        assertThrows(UserNotOwnerException.class, () -> notificationService.deleteNotification(7L, 3L));
     }
 
     @Test
@@ -148,7 +148,7 @@ public class NotificationServiceTest {
         userRepository.save(user);
 
 
-        assertEquals(3, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals(1, notificationService.getNotificationsByUserId(2L).size());
         assertEquals("creó una nueva publicación en", notificationService.getNotificationsByUserId(2L).get(0).getContent());
 
         Notification commentNotificationToSave = Notification.builder()
@@ -168,7 +168,7 @@ public class NotificationServiceTest {
 
 
         //now the first notification (get(0)) is the comment notification -> the newest first
-        assertEquals(4, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals(2, notificationService.getNotificationsByUserId(2L).size());
         assertEquals("creó un nuevo comentario en", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 
@@ -253,7 +253,7 @@ public class NotificationServiceTest {
 
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
-        assertEquals(3, user_notifications.size());
+        assertEquals(1, user_notifications.size());
         assertEquals("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg", user_notifications.get(0).getImg());
         assertEquals("creó una nueva publicación en", user_notifications.get(0).getContent());
     }
@@ -280,7 +280,7 @@ public class NotificationServiceTest {
 
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
-        assertEquals(3, user_notifications.size());
+        assertEquals(1, user_notifications.size());
         assertEquals("creó una nueva publicación en", user_notifications.get(0).getContent());
         assertTrue(user_notifications.get(0).isSeen());
     }
@@ -324,7 +324,7 @@ public class NotificationServiceTest {
         user.setForumNotifications(List.of(notificationId));
         userRepository.save(user);
 
-        assertEquals(3 ,notificationService.getNotificationsNotSeenCount(2L));
+        assertEquals(1 ,notificationService.getNotificationsNotSeenCount(2L));
     }
 
     @Test
