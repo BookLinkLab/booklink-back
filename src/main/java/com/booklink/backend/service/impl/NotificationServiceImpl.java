@@ -7,10 +7,12 @@ import com.booklink.backend.dto.notification.NotificationViewDto;
 import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
+import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
+import com.booklink.backend.service.ForumService;
 import com.booklink.backend.service.NotificationService;
 import com.booklink.backend.service.UserService;
 import jakarta.transaction.Transactional;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -26,11 +29,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final ForumDtoFactory forumDtoFactory;
+    private final ForumService forumService;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository, UserService userService, ForumDtoFactory forumDtoFactory) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, UserService userService, ForumDtoFactory forumDtoFactory, ForumService forumService) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
         this.forumDtoFactory = forumDtoFactory;
+        this.forumService = forumService;
     }
 
     @Override
@@ -132,9 +137,21 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public Integer getNotificationsNotSeenCount(Long loggedUserId) {
+        return this.getNotificationsEntityByUserId(loggedUserId).stream().filter(notification -> !notification.isSeen()).toList().size();
+    }
+
+    @Override
     public List<ForumNotificationDto> getUserNotificationConfiguration(Long loggedUserId) {
         User user = userService.getUserEntityById(loggedUserId);
-        return user.getForumNotifications().stream().map(forumId -> {
+
+        List<Forum> forumsCreated = forumService.getForumsCreated(user.getId());
+        List<Forum> forumsJoined = forumService.getForumsJoined(user.getId());
+        List<Forum> forumsCreatedAndJoined = Stream.concat(forumsCreated.stream(), forumsJoined.stream()).toList();
+
+        List<Long> forumsCreatedAndJoinedIds = forumsCreatedAndJoined.stream().map(Forum::getId).toList();
+
+        return forumsCreatedAndJoinedIds.stream().map(forumId -> {
             boolean isForumNotificationActive = user.getForumNotifications().contains(forumId);
             ForumDto forum = forumDtoFactory.getForumDtoById(forumId);
             return ForumNotificationDto.builder()

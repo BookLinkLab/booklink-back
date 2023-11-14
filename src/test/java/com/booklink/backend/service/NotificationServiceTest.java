@@ -148,8 +148,8 @@ public class NotificationServiceTest {
         userRepository.save(user);
 
 
-        assertEquals(12, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+        assertEquals(3, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("creó una nueva publicación en", notificationService.getNotificationsByUserId(2L).get(0).getContent());
 
         Notification commentNotificationToSave = Notification.builder()
                 .type(NotificationType.COMMENT)
@@ -168,8 +168,8 @@ public class NotificationServiceTest {
 
 
         //now the first notification (get(0)) is the comment notification -> the newest first
-        assertEquals(13, notificationService.getNotificationsByUserId(2L).size());
-        assertEquals("@tomas creó un nuevo comentario en \"Harry Potter\"!", notificationService.getNotificationsByUserId(2L).get(0).getContent());
+        assertEquals(4, notificationService.getNotificationsByUserId(2L).size());
+        assertEquals("creó un nuevo comentario en", notificationService.getNotificationsByUserId(2L).get(0).getContent());
     }
 
     @Test
@@ -253,9 +253,9 @@ public class NotificationServiceTest {
 
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
-        assertEquals(12, user_notifications.size());
+        assertEquals(3, user_notifications.size());
         assertEquals("https://images.hola.com/imagenes/actualidad/20210901195369/harry-potter-curiosidades-pelicula-20-aniversario-nf/0-989-980/harry-t.jpg", user_notifications.get(0).getImg());
-        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
+        assertEquals("creó una nueva publicación en", user_notifications.get(0).getContent());
     }
 
     @Test
@@ -280,8 +280,8 @@ public class NotificationServiceTest {
 
         List<NotificationViewDto> user_notifications = notificationService.getNotificationsByUserId(2L);
 
-        assertEquals(12, user_notifications.size());
-        assertEquals("@lucia21 creó una nueva publicación en \"Harry Potter\"!", user_notifications.get(0).getContent());
+        assertEquals(3, user_notifications.size());
+        assertEquals("creó una nueva publicación en", user_notifications.get(0).getContent());
         assertTrue(user_notifications.get(0).isSeen());
     }
 
@@ -307,12 +307,33 @@ public class NotificationServiceTest {
     }
 
     @Test
+    public void getNotificationsNotSeenCountTest(){
+        Notification postNotificationToSave = Notification.builder()
+                .type(NotificationType.POST)
+                .postAuthorId(1L)
+                .receiverId(2L)
+                .forumId(1L)
+                .postId(1L)
+                .createdDate(new Date())
+                .build();
+
+        notificationRepository.save(postNotificationToSave);
+
+        Long notificationId = postNotificationToSave.getId();
+        User user = userService.getUserEntityById(2L);
+        user.setForumNotifications(List.of(notificationId));
+        userRepository.save(user);
+
+        assertEquals(3 ,notificationService.getNotificationsNotSeenCount(2L));
+    }
+
+    @Test
     public void getUserNotificationConfigurationTest(){
         List<ForumNotificationDto> userNotificationConfiguration = notificationService.getUserNotificationConfiguration(2L);
-        assertEquals(4, userNotificationConfiguration.size());
-        assertEquals("Narnia", userNotificationConfiguration.get(0).getForumName());
-        assertTrue(userNotificationConfiguration.get(0).isNotification());
-        assertEquals("Simbolismos de Ana Frank", userNotificationConfiguration.get(1).getForumName());
+        assertEquals(6, userNotificationConfiguration.size());
+        assertEquals("Harry Potter", userNotificationConfiguration.get(0).getForumName());
+        assertTrue(userNotificationConfiguration.get(2).isNotification());
+        assertEquals("Harry Potter", userNotificationConfiguration.get(0).getForumName());
     }
 
     private void activateNotifications(List<Long> longs,Long forumId) {

@@ -133,8 +133,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostPreviewDto> getLatestPostsByUserId(Long id) {
+    public List<LatestPostDto> getLatestPostsByUserId(Long id) {
         List<Post> posts = postRepository.findTop5ByUserIdOrderByCreatedDateDesc(id);
-        return posts.stream().map(PostPreviewDto::from).toList();
+        return posts.stream().map(LatestPostDto::from).toList();
     }
 }

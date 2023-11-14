@@ -26,5 +26,7 @@ public interface NotificationService {
 
     boolean markNotificationAsSeen(Long notificationId, Long userId);
 
+    Integer getNotificationsNotSeenCount(Long loggedUserId);
+
     List<ForumNotificationDto> getUserNotificationConfiguration(Long loggedUserId);
 }

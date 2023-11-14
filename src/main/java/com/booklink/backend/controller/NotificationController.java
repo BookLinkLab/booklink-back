@@ -42,6 +42,10 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.markNotificationAsSeen(id, securityUtil.getLoggedUserId()));
     }
 
+    @GetMapping("/amount")
+    public ResponseEntity<Integer> getAmountOfUnseenNotifications() {
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotificationsNotSeenCount(securityUtil.getLoggedUserId()));
+    }
     @GetMapping("/configuration")
     public ResponseEntity<List<ForumNotificationDto>> getUserNotificationConfiguration() {
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.getUserNotificationConfiguration(securityUtil.getLoggedUserId()));

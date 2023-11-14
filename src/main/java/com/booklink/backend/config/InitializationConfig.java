@@ -336,7 +336,7 @@ public class InitializationConfig implements CommandLineRunner {
                     //el primer post no se comenta
                     if (i != 0) {
 
-                        Random random = new Random();
+                        Random random = new Random(12345);
                         User member = members.get(random.nextInt(members.size()));
                         Long commentUserId = member.getId();
 
@@ -461,7 +461,7 @@ public class InitializationConfig implements CommandLineRunner {
         List<Post> posts = postRepository.findAll();
         List<Comment> comments = commentRepository.findAll();
 
-        Random random = new Random();
+        Random random = new Random(12345);
 
         for (Post post : posts) {
             List<Long> usersWhoCanLike = getUsersWhoCanLike(post);
@@ -523,7 +523,7 @@ public class InitializationConfig implements CommandLineRunner {
 
             if (!posts.isEmpty()) {
                 for (Post post : posts) {
-                    Random r = new Random();
+                    Random r = new Random(12345);
 
                     int random1 = r.nextInt(2);
                     boolean see = random1 == 1;
