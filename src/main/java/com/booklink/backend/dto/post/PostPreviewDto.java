@@ -19,6 +19,7 @@ public class PostPreviewDto {
     private String content;
     private Date createdDate;
     private Date updatedDate;
+    private String img;
 
     public static PostPreviewDto from(Post post) {
         return PostPreviewDto.builder()
@@ -26,7 +27,7 @@ public class PostPreviewDto {
                 .forumId(post.getForum().getId())
                 .forumName(post.getForum().getName())
                 .content(post.getContent())
+                .img(post.getForum().getImg())
                 .build();
     }
-
 }

@@ -1,24 +1,41 @@
 package com.booklink.backend.service.impl;
 
+import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.forum.ForumDtoFactory;
+import com.booklink.backend.dto.notification.ForumNotificationDto;
+import com.booklink.backend.dto.notification.NotificationViewDto;
+import com.booklink.backend.exception.MemberDoesntBelongForumException;
 import com.booklink.backend.exception.NotFoundException;
 import com.booklink.backend.exception.UserNotOwnerException;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Notification;
 import com.booklink.backend.model.NotificationType;
+import com.booklink.backend.model.User;
 import com.booklink.backend.repository.NotificationRepository;
+import com.booklink.backend.service.ForumService;
 import com.booklink.backend.service.NotificationService;
+import com.booklink.backend.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
+@Transactional
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
+    private final ForumDtoFactory forumDtoFactory;
+    private final ForumService forumService;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, UserService userService, ForumDtoFactory forumDtoFactory, ForumService forumService) {
         this.notificationRepository = notificationRepository;
+        this.userService = userService;
+        this.forumDtoFactory = forumDtoFactory;
+        this.forumService = forumService;
     }
 
     @Override
@@ -26,6 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         receiversId.remove(postAuthorId);
         receiversId.forEach(receiverId -> {
+            if(isForumNotificationActive(receiverId,forumId)){
             Notification notificationToSave = Notification.builder()
                     .type(NotificationType.POST)
                     .postAuthorId(postAuthorId)
@@ -35,13 +53,14 @@ public class NotificationServiceImpl implements NotificationService {
                     .createdDate(new Date())
                     .build();
             notificationRepository.save(notificationToSave);
-        });
+        }});
     }
 
     @Override
     public void createCommentNotification(Long commentAuthorId, Long postAuthorId, List<Long> receiversId, Long forumId, Long postId, Long commentId) {
         receiversId.remove(commentAuthorId);
         receiversId.forEach(receiverId -> {
+            if(isForumNotificationActive(receiverId,forumId)){
             Notification notificationToSave = Notification.builder()
                     .type(NotificationType.COMMENT)
                     .commentAuthorId(commentAuthorId)
@@ -52,7 +71,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .createdDate(new Date())
                     .build();
             notificationRepository.save(notificationToSave);
-        });
+        }});
     }
 
     @Override
@@ -61,12 +80,33 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public List<Notification> getNotificationsEntityByUserId(Long userId) {
+        return notificationRepository.findAllByReceiverId(userId);
+    }
+
+    @Override
+    public List<NotificationViewDto> getNotificationsByUserId(Long userId) {
+        List<Notification> userNotifications = getNotificationsEntityByUserId(userId);
+
+        return userNotifications.stream()
+                .map(notification -> {
+                    String notificationCreatorUsername;
+                    String forumName = notification.getForum().getName();
+                    if (notification.getType().equals(NotificationType.POST)) {
+                        notificationCreatorUsername = notification.getPostAuthor().getUsername();
+                    } else {
+                        notificationCreatorUsername = notification.getCommentAuthor().getUsername();
+                    }
+                    return NotificationViewDto.from(notification, notificationCreatorUsername, forumName);
+                }).toList();
+    }
+
+    @Override
     public void deleteNotification(Long id, Long userId) {
         Notification notification = getNotificationEntityById(id);
-        if(notification.getReceiverId().equals(userId)){
+        if (notification.getReceiverId().equals(userId)) {
             notificationRepository.deleteById(id);
-        }
-        else{
+        } else {
             throw new UserNotOwnerException("Solo el dueño de la notificacion puede eliminarla");
         }
     }
@@ -75,6 +115,58 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification getNotificationEntityById(Long id) {
         Optional<Notification> notificationOptional = notificationRepository.findById(id);
         return notificationOptional.orElseThrow(() -> new NotFoundException("La notificacion no fue encontrada"));
+    }
+
+    @Override
+    @Transactional
+    public boolean toggleForumNotification(Long forumId, Long loggedUserId) {
+        if(this.forumDtoFactory.isMember(forumId,loggedUserId) || this.forumDtoFactory.isForumOwner(forumId,loggedUserId) ) return userService.toggleUserForumNotification(loggedUserId, forumId);
+        else throw new MemberDoesntBelongForumException("El usuario no pertenece al foro");
+    }
+
+    @Override
+    public boolean markNotificationAsSeen(Long notificationId, Long userId){
+        Notification notification = getNotificationEntityById(notificationId);
+        if(notification.getReceiverId().equals(userId)){
+            notification.setSeen(true);
+            Notification savedNotification = notificationRepository.save(notification);
+            return savedNotification.isSeen();
+        }else{
+            throw new UserNotOwnerException("Solo el recipiente de la notificacion puede marcarla como vista");
+        }
+    }
+
+    @Override
+    public Integer getNotificationsNotSeenCount(Long loggedUserId) {
+        return this.getNotificationsEntityByUserId(loggedUserId).stream().filter(notification -> !notification.isSeen()).toList().size();
+    }
+
+    @Override
+    public List<ForumNotificationDto> getUserNotificationConfiguration(Long loggedUserId) {
+        User user = userService.getUserEntityById(loggedUserId);
+
+        List<Forum> forumsCreated = forumService.getForumsCreated(user.getId());
+        List<Forum> forumsJoined = forumService.getForumsJoined(user.getId());
+        List<Forum> forumsCreatedAndJoined = Stream.concat(forumsCreated.stream(), forumsJoined.stream()).toList();
+
+        List<Long> forumsCreatedAndJoinedIds = forumsCreatedAndJoined.stream().map(Forum::getId).toList();
+
+        return forumsCreatedAndJoinedIds.stream().map(forumId -> {
+            boolean isForumNotificationActive = user.getForumNotifications().contains(forumId);
+            ForumDto forum = forumDtoFactory.getForumDtoById(forumId);
+            return ForumNotificationDto.builder()
+                    .forumId(forumId)
+                    .forumName(forum.getName())
+                    .forumImage(forum.getImg())
+                    .notification(isForumNotificationActive)
+                    .build();
+        }).toList();
+    }
+
+    private boolean isForumNotificationActive(Long userID, Long forumID){
+         User user = userService.getUserEntityById(userID);
+         List<Long> activatedForums = user.getForumNotifications();
+         return activatedForums.contains(forumID);
     }
 
 }

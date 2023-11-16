@@ -1,6 +1,7 @@
 package com.booklink.backend.dto.user;
 
 import com.booklink.backend.dto.forum.ForumDto;
+import com.booklink.backend.dto.post.LatestPostDto;
 import com.booklink.backend.dto.post.PostPreviewDto;
 import com.booklink.backend.model.User;
 import lombok.AllArgsConstructor;
@@ -22,14 +23,14 @@ public class UserProfileDto {
     private boolean privacy;
     private List<ForumDto> forumsCreated;
     private List<ForumDto> forumsJoined;
-    private List<PostPreviewDto> latestPosts;
+    private List<LatestPostDto> latestPosts;
 
     public UserProfileDto(String username, boolean privacy) {
         this.username = username;
         this.privacy = privacy;
     }
 
-    public static UserProfileDto from(User user, List<ForumDto> forumCreated, List<ForumDto> forumJoined, List<PostPreviewDto> latestPosts) {
+    public static UserProfileDto from(User user, List<ForumDto> forumCreated, List<ForumDto> forumJoined, List<LatestPostDto> latestPosts) {
         return UserProfileDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())

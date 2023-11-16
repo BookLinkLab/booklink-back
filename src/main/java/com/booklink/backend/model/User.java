@@ -4,6 +4,7 @@ import com.booklink.backend.dto.user.CreateUserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,11 +39,15 @@ public class User {
     @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
     private List<Forum> forumsJoined;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Long> forumNotifications;
+
     public static User from(CreateUserDto userDto, String encryptedPassword) {
         return User.builder()
                 .email(userDto.getEmail())
                 .username(userDto.getUsername())
                 .password(encryptedPassword)
+                .forumNotifications(new ArrayList<>())
                 .build();
     }
 }

@@ -1,14 +1,12 @@
 package com.booklink.backend.service.impl;
 
 import com.booklink.backend.dto.forum.*;
-import com.booklink.backend.dto.post.PostInfoDto;
 import com.booklink.backend.dto.tag.CreateTagDto;
 import com.booklink.backend.exception.*;
 import com.booklink.backend.model.Forum;
 import com.booklink.backend.model.Tag;
 import com.booklink.backend.model.User;
 import com.booklink.backend.repository.ForumRepository;
-import com.booklink.backend.service.PostService;
 import com.booklink.backend.service.TagService;
 import com.booklink.backend.service.UserService;
 import jakarta.transaction.Transactional;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -53,6 +50,9 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         forumToSave.setTags(tags);
 
         Forum savedForum = forumRepository.save(forumToSave);
+
+        userService.toggleUserForumNotification(userId, savedForum.getId());
+
         return ForumDto.from(savedForum, true);
     }
 
@@ -121,6 +121,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         int newMembersAmount = forumToJoin.getMembersAmount() + 1;
         forumToJoin.setMembersAmount(newMembersAmount);
         forumRepository.save(forumToJoin);
+        userService.toggleUserForumNotification(userId, forumToJoin.getId());
 
         return ForumDto.from(forumToJoin, true);
     }
@@ -172,6 +173,10 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         List<Tag> tagToDelete = forumToDelete.getTags();
         if (!forumToDelete.getUserId().equals(userId))
             throw new UserNotAdminException("Solo el administrador puede eliminar sus foros");
+        forumToDelete.getUser().getForumNotifications().remove(forumToDelete.getId());
+        for (User member : forumToDelete.getMembers()) {
+            member.getForumNotifications().remove(forumToDelete.getId());
+        }
         forumRepository.delete(forumToDelete);
         for (Tag tag : tagToDelete) {
             if (!forumRepository.existsByTagsContaining(tag)) {
@@ -206,6 +211,7 @@ public class ForumServiceImpl implements com.booklink.backend.service.ForumServi
         if (removed) {
             int newMembersAmount = forumToLeave.getMembersAmount() - 1;
             forumToLeave.setMembersAmount(newMembersAmount);
+            memberToLeave.getForumNotifications().remove(forumToLeave.getId());
             forumRepository.save(forumToLeave);
         } else
             throw new MemberDoesntBelongForumException("No perteneces al foro %s".formatted(forumToLeave.getName()));
